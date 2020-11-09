@@ -117,7 +117,7 @@ class SuggestController extends Controller
             $suggest->save();
             Session::flash('message', 'Your suggestion has been received.');
             Session::flash('status', 'success');
-            return redirect('suggest/create');
+            return redirect('services');
         } catch (\Throwable $th) {
 
             Session::flash('message', $th->getMessage());

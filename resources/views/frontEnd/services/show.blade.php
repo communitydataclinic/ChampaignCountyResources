@@ -1,10 +1,95 @@
+<?php
+
+use App\Model\Organization;
+use App\Model\Service;
+?>
 @extends('layouts.app')
 @section('title')
 {{$service->service_name}}
 @stop
 
 @section('content')
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 @include('layouts.filter')
+{{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> --}}
+
+
+<style type="text/css">
+    /* .table a {
+        text-decoration: none !important;
+        color: rgba(40, 53, 147, .9);
+        white-space: normal;
+    }
+
+    .footable.breakpoint>tbody>tr>td>span.footable-toggle {
+        position: absolute;
+        right: 25px;
+        font-size: 25px;
+        color: #000000;
+    }
+
+    .ui-menu .ui-menu-item .ui-state-active {
+        padding-left: 0 !important;
+    }
+
+    ul#ui-id-1 {
+        width: 260px !important;
+    }
+
+    #map {
+        position: relative !important;
+        z-index: 0 !important;
+    }
+
+    @media (max-width: 768px) {
+        .property {
+            padding-left: 30px !important;
+        }
+
+        #map {
+            display: block !important;
+            width: 100% !important;
+        }
+    } */
+    .suggest-button{
+        display: inline-block;
+        border-radius: 15px;
+        border-color: #beb6b6;
+        color: black;
+        background-color: #ffffff;
+        padding-left: 5%;
+        padding-right: 5%;
+        margin-left: 10%;
+        margin-right: 10%;
+        font-family: "Neue Haas Grotesk Display Roman";
+        margin-top: 5;
+        margin-bottom: 1;
+        border-width: thin;
+        padding-top: 1%;
+        padding-bottom: 1%;
+    }
+    button[data-id="suggest_organization"] {
+        height: 100%;
+        border: 1px solid #ddd;
+    }
+    .error-category{
+        font-family: "Neue Haas Grotesk Display Roman";
+        width:100% !important;
+
+    }
+    .select-extend{
+    }
+</style>
+
 <div>
 
     <!-- Page Content Holder -->
@@ -209,6 +294,16 @@
                                         at="child_{{$service_taxonomy_info->taxonomy_recordid}}">{{$service_taxonomy_info->taxonomy_name}}</a>
                                     @endforeach
                                     @endif
+                                </span>
+                            </h4>
+                            <h4>
+                                <span class="subtitle" style="display:flex; justify-content: center;">
+                                <button class = "suggest-button" type="button" data-toggle="modal" data-target="#suggestModal">
+                                <img src="../../../../images/suggest-icon.png" alt="" width="25" height="25">
+                                Make Suggestions</button>
+                                <button class = "suggest-button" type="button" data-toggle="modal" data-target="#reportModal">
+                                <img src="../../../../images/error-icon.png" alt="" width="25" height="25">
+                                Report Errors</button>
                                 </span>
                             </h4>
                         </div>
@@ -435,10 +530,159 @@
         </div>
     </div>
 </div>
+<div id="suggestModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+     
+        <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Suggest Form</h4>
+              </div>
+              <div class="modal-body">
+                <div class="card all_form_field">
+                    <div class="card-block">
+                        <h4 class="card-title mb-30 ">
+                            <p>Suggest A Change</p>
+                        </h4>
+                        {{-- <form action="/add_new_suggestion" method="GET"> --}}
+                            {!! Form::open(['route' => 'suggest.store']) !!}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Organization * </label>
+                                        <p>Select the organization for which you're suggesting a change</p>
+                                        {!! Form::select('suggest_organization',Organization::pluck('organization_name', "organization_recordid"),$service->organizations()->first() ? $service->organizations()->first()->organization_recordid : '',['class'=> 'form-control selectpicker','id' => 'suggest_organization','data-live-search' => 'true','data-size' => '5']) !!}
+                                         @error('suggest_organization')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Suggestion * </label>
+                                        <p>Explain what should be changed: Please be specific-reference the field that contains information which is incorrect or incomplete, and tell us what should be there instead. Thank you!</p>
+                                        <textarea id="suggest_content" name="suggest_content" rows="3" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Your Name * </label>
+                                        {!! Form::text('name',null,['class' => 'form-control','id' => 'name']) !!}
+                                        @error('name')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Your Email * </label>
+                                        {!! Form::email('email',null,['class' => 'form-control','id' => 'email']) !!}
+                                        
+                                        @error('email')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Your Phone </label>
+                                        {!! Form::text('phone',null,['class' => 'form-control','id' => 'phone']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-20 text-center">
+                                    <!-- <a href="/contacts" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" id="view-contact-btn"><i class="fa fa-arrow-left"></i> Back</a> -->
+                                    <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic" id="save-suggestion-btn">Submit</button>
+                                </div>
+                            </div>
+                        {{-- </form> --}}
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+              </div>
+            </div>
+     
+        </div>
+    </div>
+    <div id="reportModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+     
+        <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Report Form</h4>
+              </div>
+              <div class="modal-body">
+              <div class="card all_form_field">
+                    <div class="card-block">
+                        <h4 class="card-title mb-30 ">
+                            <p>Report Errors</p>
+                        </h4>
+                        {{-- <form action="/add_new_suggestion" method="GET"> --}}
+                            {!! Form::open(['route' => 'suggest.store']) !!}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Organization * </label>
+                                        <p>Select the organization for which you're reporting</p>
+                                        {!! Form::select('suggest_organization',Organization::pluck('organization_name', "organization_recordid"),$service->organizations()->first() ? $service->organizations()->first()->organization_recordid : '',['class'=> 'form-control selectpicker','id' => 'suggest_organization','data-live-search' => 'true','data-size' => '5']) !!}
+                                         @error('suggest_organization')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Service * </label>
+                                        <p>Select the service for which you're reporting</p>
+                                        {!! Form::select('report_service',Service::pluck('service_name', "service_recordid"),$service->service_recordid,['class'=> 'form-control selectpicker','id' => 'report_service','data-live-search' => 'true','data-size' => '5']) !!}
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Category * </label>
+                                        <p>We are really sorry for the errors, tell us what it is about?</p>
+                                        <div class="error-category" id="error-category">
+                                            <select class="extend-select" style="width:100%;">
+                                                <option value="Wrong-Phone-Number">Wrong Phone Number</option>
+                                                <option value="Wrong-Address">Wrong Address</option>
+                                                <option value="Wrong-Schedule">Wrong Schedule</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Your Name * </label>
+                                        {!! Form::text('name',null,['class' => 'form-control','id' => 'name']) !!}
+                                        @error('name')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Your Email * </label>
+                                        {!! Form::email('email',null,['class' => 'form-control','id' => 'email']) !!}
+                                        
+                                        @error('email')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Your Phone </label>
+                                        {!! Form::text('phone',null,['class' => 'form-control','id' => 'phone']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-20 text-center">
+                                    <!-- <a href="/contacts" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" id="view-contact-btn"><i class="fa fa-arrow-left"></i> Back</a> -->
+                                    <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic" id="save-suggestion-btn">Submit</button>
+                                </div>
+                            </div>
+                        {{-- </form> --}}
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+              </div>
+            </div>
+     
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function(){
         // navigator.geolocation.getCurrentPosition(showPosition)
-
+        //$('select#suggest_organization').val([]).change();
     setTimeout(function(){
         var locations = <?php print_r(json_encode($locations)) ?>;
         var maplocation = <?php print_r(json_encode($map)) ?>;
