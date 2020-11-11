@@ -558,6 +558,11 @@ use App\Model\Service;
                                         @enderror
                                     </div>
                                     <div class="form-group">
+                                        <label>Service * </label>
+                                        <p>Select the service for which you're reporting</p>
+                                        {!! Form::select('report_service',Service::pluck('service_name', "service_recordid"),$service->service_recordid,['class'=> 'form-control selectpicker','id' => 'report_service','data-live-search' => 'true','data-size' => '5']) !!}
+                                    </div>
+                                    <div class="form-group">
                                         <label>Suggestion * </label>
                                         <p>Explain what should be changed: Please be specific-reference the field that contains information which is incorrect or incomplete, and tell us what should be there instead. Thank you!</p>
                                         <textarea id="suggest_content" name="suggest_content" rows="3" required></textarea>
@@ -633,13 +638,7 @@ use App\Model\Service;
                                     <div class="form-group">
                                         <label>Category * </label>
                                         <p>We are really sorry for the errors, tell us what it is about?</p>
-                                        <div class="error-category" id="error-category">
-                                            <select class="extend-select" style="width:100%;">
-                                                <option value="Wrong-Phone-Number">Wrong Phone Number</option>
-                                                <option value="Wrong-Address">Wrong Address</option>
-                                                <option value="Wrong-Schedule">Wrong Schedule</option>
-                                            </select>
-                                        </div>
+                                        {!! Form::text('error-category',null,['class' => 'form-control','id' => 'error-category']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-12">
