@@ -2,6 +2,8 @@
 
 use App\Model\Organization;
 use App\Model\Service;
+use App\Model\Suggest;
+use App\Model\Error;
 ?>
 @extends('layouts.app')
 @section('title')
@@ -134,6 +136,9 @@ use App\Model\Service;
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-block">
+                            @if(str_contains(Error::pluck('error_service'), $service->service_recordid))
+                            <p>someone has report this to be wrong</p>
+                            @endif
                             <h4 class="card-title">
                                 <a href="#">{{$service->service_name}}</a>
                                 @if (Auth::user() && Auth::user()->roles && $organization && Auth::user()->user_organization &&
@@ -560,7 +565,7 @@ use App\Model\Service;
                                     <div class="form-group">
                                         <label>Service * </label>
                                         <p>Select the service for which you're reporting</p>
-                                        {!! Form::select('report_service',Service::pluck('service_name', "service_recordid"),$service->service_recordid,['class'=> 'form-control selectpicker','id' => 'report_service','data-live-search' => 'true','data-size' => '5']) !!}
+                                        {!! Form::select('suggest_service',Service::pluck('service_name', "service_recordid"),$service->service_recordid,['class'=> 'form-control selectpicker','id' => 'suggest_service','data-live-search' => 'true','data-size' => '5']) !!}
                                     </div>
                                     <div class="form-group">
                                         <label>Suggestion * </label>
@@ -618,14 +623,14 @@ use App\Model\Service;
                         <h4 class="card-title mb-30 ">
                             <p>Report Errors</p>
                         </h4>
-                        {{-- <form action="/add_new_suggestion" method="GET"> --}}
-                            {!! Form::open(['route' => 'suggest.store']) !!}
+                        {{-- <form action="/add_new_error" method="GET"> --}}
+                            {!! Form::open(['route' => 'error.store']) !!}
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Organization * </label>
                                         <p>Select the organization for which you're reporting</p>
-                                        {!! Form::select('suggest_organization',Organization::pluck('organization_name', "organization_recordid"),$service->organizations()->first() ? $service->organizations()->first()->organization_recordid : '',['class'=> 'form-control selectpicker','id' => 'suggest_organization','data-live-search' => 'true','data-size' => '5']) !!}
+                                        {!! Form::select('error_organization',Organization::pluck('organization_name', "organization_recordid"),$service->organizations()->first() ? $service->organizations()->first()->organization_recordid : '',['class'=> 'form-control selectpicker','id' => 'error_organization','data-live-search' => 'true','data-size' => '5']) !!}
                                          @error('suggest_organization')
                                             <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
@@ -633,25 +638,25 @@ use App\Model\Service;
                                     <div class="form-group">
                                         <label>Service * </label>
                                         <p>Select the service for which you're reporting</p>
-                                        {!! Form::select('report_service',Service::pluck('service_name', "service_recordid"),$service->service_recordid,['class'=> 'form-control selectpicker','id' => 'report_service','data-live-search' => 'true','data-size' => '5']) !!}
+                                        {!! Form::select('error_service',Service::pluck('service_name', "service_recordid"),$service->service_recordid,['class'=> 'form-control selectpicker','id' => 'error_service','data-live-search' => 'true','data-size' => '5']) !!}
                                     </div>
                                     <div class="form-group">
                                         <label>Category * </label>
                                         <p>We are really sorry for the errors, tell us what it is about?</p>
-                                        {!! Form::text('error-category',null,['class' => 'form-control','id' => 'error-category']) !!}
+                                        {!! Form::text('error_content',null,['class' => 'form-control','id' => 'error_content']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Your Name * </label>
-                                        {!! Form::text('name',null,['class' => 'form-control','id' => 'name']) !!}
+                                        {!! Form::text('error_name',null,['class' => 'form-control','id' => 'error_name']) !!}
                                         @error('name')
                                             <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
                                     </div>
                                     <div class="form-group">
                                         <label>Your Email * </label>
-                                        {!! Form::email('email',null,['class' => 'form-control','id' => 'email']) !!}
+                                        {!! Form::email('error_email',null,['class' => 'form-control','id' => 'error_email']) !!}
                                         
                                         @error('email')
                                             <span class="error-message"><strong>{{ $message }}</strong></span>
@@ -660,7 +665,7 @@ use App\Model\Service;
                                     
                                     <div class="form-group">
                                         <label>Your Phone </label>
-                                        {!! Form::text('phone',null,['class' => 'form-control','id' => 'phone']) !!}
+                                        {!! Form::text('error_phone',null,['class' => 'form-control','id' => 'error_phone']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-12 mt-20 text-center">

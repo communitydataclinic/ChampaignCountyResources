@@ -10901,6 +10901,7 @@ CREATE TABLE `suggests` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `suggest_recordid` bigint(20) DEFAULT NULL,
   `suggest_organization` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `suggest_service` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `suggest_content` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `suggest_username` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `suggest_user_email` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,

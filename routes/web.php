@@ -137,6 +137,11 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::resource('/suggest', 'frontEnd\SuggestController');
     Route::get('/add_new_suggestion', 'frontEnd\SuggestController@add_new_suggestion');
 
+    //error reporting
+    Route::resource('/error', 'frontEnd\ErrorReportController');
+    Route::get('/add_new_error', 'frontEnd\ErrorReportController@add_new_error');
+
+
     // message
     Route::get('messagesSetting', 'frontEnd\MessageController@messagesSetting')->name('messagesSetting');
     Route::post('saveMessageCredential', 'frontEnd\MessageController@saveMessageCredential')->name('saveMessageCredential');
