@@ -1,3 +1,11 @@
+<?php
+
+use App\Model\Organization;
+use App\Model\Service;
+use App\Model\Suggest;
+use App\Model\Error;
+use Carbon\Carbon;
+?>
 @extends('layouts.app')
 @section('title')
 {{$organization->organization_name}}
@@ -7,6 +15,21 @@
 @section('content')
 @include('layouts.filter_organization')
 @include('layouts.sidebar_organization')
+<style type="text/css">
+    .grid-container {
+        display: grid;
+        grid-template-columns: 70px 200px 100px 80px;
+        overflow: scroll;
+        margin-top: 5px;
+    }
+
+    /* Responsive layout - makes a one column layout instead of a two-column layout */
+    @media (max-width: 800px) {
+        .flex-container {
+            flex-direction: column;
+        }
+    }
+</style>
 <div class="breadcume_top">
     <div class="container">
         <div class="row">
@@ -205,7 +228,25 @@
                 </div>
                 @endif
                 <!-- Services area design -->
-
+                <!--Error changing design-->
+                @if(Auth::user() && Auth::user()->roles && str_contains(Error::pluck('error_organization'), $organization->organization_recordid))
+                <div class="card">
+                    <div class="card-block">
+                        <h4 class="card_services_title">Reported Errors</h4>
+                        <h4 style="margin-top: 20px;">
+                            @foreach($error_list as $key => $error)
+                                <div class="grid-container">
+                                    <div>From: {{$error->error_username}}</div>
+                                    <div>Created at: {{$error->created_at}}</div>
+                                    <div><button class = "detail" type="button" data-toggle="modal" data-target="#detailModal">See Details</button></div>
+                                    <div><button>Fixed it!</button></div>
+                                </div>
+                            @endforeach
+                        </h4>
+                    </div>
+                </div>
+                @endif
+                <!--Error changing design-->
                 <!-- comment area design -->
                 @if (Auth::user() && Auth::user()->roles)
                     <div class="card">
@@ -503,6 +544,31 @@
 
 
             </div>
+        </div>
+    </div>
+    <div id="detailModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+     
+        <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Report Form</h4>
+              </div>
+              <div class="modal-body">
+              <div class="card all_form_field">
+                    <div class="card-block">
+                        <div>Service Name: {{$error->error_service_name}}</div>
+                        <div>Reporting Content: {{$error->error_content}}</div>
+                        <div>Reporter: {{$error->error_username}}</div>
+                        <div>Contact Email: {{$error->error_user_email}}</div>
+                        <div>Contact Phone: {{$error->error_user_divhone}}</div>
+                        <div>Created Time: {{$error->created_at}}</div>
+                    </div>
+                </div>
+              </div>
+            </div>
+     
         </div>
     </div>
 </div>

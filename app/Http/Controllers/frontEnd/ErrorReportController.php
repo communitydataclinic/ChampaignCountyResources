@@ -74,6 +74,7 @@ class ErrorReportController extends Controller
             $organization_info = Organization::where('organization_recordid', '=', $request->error_organization)->first();
             $error->error_service = $request->error_service;
             $service_info = Service::where('service_recordid', '=', $request->error_service)->first();
+            $error->error_service_name = $service_info->service_name;
             $error->error_content = $request->error_content;
             $error->error_username = $request->error_name;
             $error->error_user_email = $request->error_email;
@@ -174,8 +175,14 @@ class ErrorReportController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         //
+        // $error_recordid = $request->input('error_recordid');
+        // $error = Error::where('error_recordid', '=', $error_recordid)->first();
+        // if ($error) {
+        //     $error->delete();
+        //     return redirect()->back();
+        // }
     }
 }
