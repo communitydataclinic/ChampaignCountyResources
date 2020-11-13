@@ -4,6 +4,7 @@ use App\Model\Organization;
 use App\Model\Service;
 use App\Model\Suggest;
 use App\Model\Error;
+use Carbon\Carbon;
 ?>
 @extends('layouts.app')
 @section('title')
@@ -136,9 +137,45 @@ use App\Model\Error;
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-block">
-                            @if(str_contains(Error::pluck('error_service'), $service->service_recordid))
-                            <p>someone has report this to be wrong</p>
-                            @endif
+                            <?php 
+                                $rest = str_replace(array('"', '[', ']', '.000000Z'), '', Error::where('error_service', '=', $service->service_recordid)->pluck('created_at'));
+                                $rest = str_replace(array('T'), ' ', $rest);
+                                $time_list = explode(",", $rest);
+                                $now = Carbon::now();
+                                $time_work = [];
+                                $diff = [];
+                                $count = 0;
+                                for($i = 0; $i < count($time_list); $i++){
+                                    $time_work[$i] = new Carbon($time_list[$i]);
+                                    $diff[$i] = $time_work[$i]->diffInSeconds($now);
+                                    if($diff[$i] >= 86400){
+                                        $count++;
+                                    }
+                                }
+                                if($count > 0): ?>
+                                    <h4>
+                                        <img src="../../../../images/error-report.png" alt="" width="25" height="25" style="margin-right:10px">
+                                        <?php 
+                                            $rest = str_replace(array('"', '[', ']', '.000000Z'), '', Error::where('error_service', '=', $service->service_recordid)->pluck('created_at'));
+                                            $rest = str_replace(array('T'), ' ', $rest);
+                                            $time_list = explode(",", $rest);
+                                            $now = Carbon::now();
+                                            $time_work = [];
+                                            $diff = [];
+                                            $count = 0;
+                                            for($i = 0; $i < count($time_list); $i++){
+                                                $time_work[$i] = new Carbon($time_list[$i]);
+                                                $diff[$i] = $time_work[$i]->diffInSeconds($now);
+                                                if($diff[$i] >= 86400){
+                                                    $count++;
+                                                }
+                                            }
+                                            echo $count;
+                                            
+                                        ?>
+                                            user(s) reported the information to be inaccurate
+                                    </h4>
+                            <?php endif; ?>
                             <h4 class="card-title">
                                 <a href="#">{{$service->service_name}}</a>
                                 @if (Auth::user() && Auth::user()->roles && $organization && Auth::user()->user_organization &&
