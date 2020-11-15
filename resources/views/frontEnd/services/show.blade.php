@@ -192,7 +192,7 @@ use Carbon\Carbon;
                             </h4>
                             @if(isset($service->service_alternate_name))
                                 <h4>
-                                    <span class="subtitle"><b>Alternate Name: </b></span> {{$service->service_alternate_name}}
+                                    <span class="subtitle"><b>Program Name: </b></span> {{$service->service_alternate_name}}
                                 </h4>
                             @endif
 
@@ -252,26 +252,26 @@ use Carbon\Carbon;
 
                             @if($service->service_application_process)
                             <h4>
-                                <span class="subtitle"><b>Application</b></span> {!! $service->service_application_process
+                                <span class="subtitle"><b>Application: </b></span> {!! $service->service_application_process
                                 !!}
                             </h4>
                             @endif
 
                             @if($service->service_wait_time)
-                            <h4><span class="subtitle"><b>Wait Time:</b></span> {{$service->service_wait_time}}</h4>
+                            <h4><span class="subtitle"><b>Eligibility: </b></span> {{$service->service_wait_time}}</h4>
                             @endif
 
                             @if($service->service_fees)
-                            <h4><span class="subtitle"><b>Fees:</b></span> {{$service->service_fees}}</h4>
+                            <h4><span class="subtitle"><b>Fees: </b></span> {{$service->service_fees}}</h4>
                             @endif
 
                             @if($service->service_accreditations)
-                            <h4><span class="subtitle"><b>Accreditations</b></span> {{$service->service_accreditations}}
+                            <h4><span class="subtitle"><b>Documents needed: </b></span> {{$service->service_accreditations}}
                             </h4>
                             @endif
 
                             @if($service->service_licenses)
-                            <h4><span class="subtitle"><b>Licenses</b></span> {{$service->service_licenses}}</h4>
+                            <h4><span class="subtitle"><b>Income guidelines: </b></span> {{$service->service_licenses}}</h4>
                             @endif
 
 
