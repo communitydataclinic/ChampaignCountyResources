@@ -602,7 +602,7 @@ class ServiceController extends Controller
             $service_phone1 = Phone::where('phone_recordid', '=', $phone1_recordid)->select('phone_number')->first();
             $service_phone2 = Phone::where('phone_recordid', '=', $phone2_recordid)->select('phone_number')->first();
     
-            // $schedule_info_list = Schedule::select('schedule_recordid', 'schedule_opens_at', 'schedule_closes_at')->whereNotNull('schedule_opens_at')->orderBy('schedule_opens_at')->distinct()->get();
+            $schedule_info_list = Schedule::select('schedule_recordid', 'schedule_opens_at', 'schedule_closes_at')->whereNotNull('schedule_opens_at')->orderBy('schedule_opens_at')->distinct()->get();
             $monday = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_days_of_week', 'monday')->first();
             $tuesday = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_days_of_week', 'tuesday')->first();
             $wednesday = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_days_of_week', 'wednesday')->first();

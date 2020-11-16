@@ -85,6 +85,7 @@ Home
     </div>
 </div>
 @else
+<!-- JRA Start of search box panel. Previous if does not seem useful -->
 <div class="page-register layout-full page-dark">
     <div class="page" data-animsition-in="fade-in" data-animsition-out="fade-out">
         <div class="container">
@@ -106,6 +107,22 @@ Home
                     <form method="post" role="form" autocomplete="off" class="home_serach_form" action="/search">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-group text-left form-material" data-plugin="formMaterial">
+                            <div class="form-group">
+                                <div class="row m-0">
+                                    <div class="col-md-9 pl-0">
+                                        <img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
+                                        <input type="text" class="form-control" id="inputName" name="find" placeholder="Search for service">
+                                        </div>
+                                    <div class="col-md-3 p-0">
+                                        <button type="submit" class="btn btn-primary btn-block btn-lg">Search</button>
+                                    </div>
+                                </div>
+                            </div>                                        
+                        </div>
+                        {{-- <button type="submit" class="btn btn-primary btn-block btn-lg">Search</button> --}}
+
+                        <!-- JRA2020.11.06 Begin - Original search form -->
+                        <!--div class="form-group text-left form-material" data-plugin="formMaterial">
                             <img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
                             <input type="text" class="form-control" id="inputName" name="find" placeholder="Search for service">
                         </div>
@@ -125,12 +142,14 @@ Home
                             </div>
                         </div>
                         {{-- <button type="submit" class="btn btn-primary btn-block btn-lg">Search</button> --}}
+                        -->
+                        <!-- JRA2020.11.06 Begin - Original search form -->
                     </form>
                 </div>
-                <div class="scoll_category">
+                <!--div class="scoll_category">
                     <img src="/frontend/assets/images/Group.png" alt="" title="" >
                     <a href="#category" class="ml-10"> Scroll to see all categories</a>
-                </div>
+                </div-->
             </div>
         </div>
         {{-- <div class="page-content vertical-align-middle">
@@ -152,8 +171,8 @@ Home
                     </label>
                     <div class="form-group">
                         <div class="input-group">
-                            <a href="/services_near_me" class="input-search-btn" style="z-index: 100;"><img
-                                    src="frontend/assets/examples/images/location.png"></a>
+                            <!--a href="/services_near_me" class="input-search-btn" style="z-index: 100;"><img
+                                    src="frontend/assets/examples/images/location.png"></a-->
                             <input type="text" class="form-control pr-50" id="location1" name="search_address">
                         </div>
                     </div>
