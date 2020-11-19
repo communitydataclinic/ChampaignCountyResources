@@ -153,13 +153,13 @@ Services
 
                                     <?php endif; ?>
                                     <h4 class="card-title">
-                                        <a href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>
+                                        @if(isset($service->organizations))
+                                            <a class="notranslate" href="/organizations/{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>
+                                        @endif
                                         <p style="float: right;">{{ isset($service->miles)  ? floatval(number_format($service->miles,2)) .' miles'  : '' }}</p>
                                     </h4>
-                                    <h4 class="org_title"><span class="subtitle"><b>Organization:</b></span>
-                                        @if(isset($service->organizations))
-                                            <a class="panel-link" class="notranslate" href="/organizations/{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>
-                                        @endif
+                                    <h4 class="org_title"><span class="subtitle"><b>Service:</b></span>
+                                        <a class="panel-link" href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>                                        
                                     </h4>
                                     <h4  style="line-height: inherit;">{!! Str::limit(str_replace(array('\n', '/n', '*'), array(' ', ' ', ' '), $service->service_description), 200) !!}</h4>
                                     <h4>
