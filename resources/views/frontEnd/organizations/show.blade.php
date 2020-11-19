@@ -1,5 +1,4 @@
 <?php
-
 use App\Model\Organization;
 use App\Model\Service;
 use App\Model\Suggest;
@@ -18,11 +17,10 @@ use Carbon\Carbon;
 <style type="text/css">
     .grid-container {
         display: grid;
-        grid-template-columns: 70px 200px 100px 80px;
+        grid-template-columns: 200px 100px 80px;
         overflow: scroll;
         margin-top: 5px;
     }
-
     /* Responsive layout - makes a one column layout instead of a two-column layout */
     @media (max-width: 800px) {
         .flex-container {
@@ -235,12 +233,39 @@ use Carbon\Carbon;
                         <h4 class="card_services_title">Reported Errors</h4>
                         <h4 style="margin-top: 20px;">
                             @foreach($error_list as $key => $error)
+                            <div>
                                 <div class="grid-container">
-                                    <div>From: {{$error->error_username}}</div>
                                     <div>Created at: {{$error->created_at}}</div>
-                                    <div><button class = "detail" type="button" data-toggle="modal" data-target="#detailModal">See Details</button></div>
-                                    <div><button>Fixed it!</button></div>
+                                    <div><button class = "myBtn" id="myBtn" onclick="ShowModal('myModal-{{$error->error_recordid}}')">See Details</button></div>
+                                    <div><button type="button" class="red_btn" id="delete-error-btn" value="{{$error->error_recordid}}" data-toggle="modal" data-target=".bs-delete-modal-lg" >Delete</button></div>
+                                    
                                 </div>
+                                <div id="myModal-{{$error->error_recordid}}" class="modal" role="dialog">
+                                    <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" onclick="closeModal('myModal-{{$error->error_recordid}}')">&times;</button>
+                                                <h4 class="modal-title">Report Form</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card all_form_field">
+                                                        <div class="card-block">
+                                                            <div>Service Name: {{$error->error_service_name}}</div>
+                                                            <div>Reporting Content: {{$error->error_content}}</div>
+                                                            <div>Reporter: {{$error->error_username}}</div>
+                                                            <div>Contact Email: {{$error->error_user_email}}</div>
+                                                            <div>Contact Phone: {{$error->error_user_divhone}}</div>
+                                                            <div>Created Time: {{$error->created_at}}</div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                
+                            </div>
                             @endforeach
                         </h4>
                     </div>
@@ -546,32 +571,30 @@ use Carbon\Carbon;
             </div>
         </div>
     </div>
-    <div id="detailModal" class="modal fade" role="dialog">
+    <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
-     
-        <!-- Modal content-->
             <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Report Form</h4>
-              </div>
-              <div class="modal-body">
-              <div class="card all_form_field">
-                    <div class="card-block">
-                        <div>Service Name: {{$error->error_service_name}}</div>
-                        <div>Reporting Content: {{$error->error_content}}</div>
-                        <div>Reporter: {{$error->error_username}}</div>
-                        <div>Contact Email: {{$error->error_user_email}}</div>
-                        <div>Contact Phone: {{$error->error_user_divhone}}</div>
-                        <div>Created Time: {{$error->created_at}}</div>
+                <form action="{{ route('delete_error') }}" method="POST" id="error_delete_filter">
+                    {!! Form::token() !!}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Delete service</h4>
                     </div>
-                </div>
-              </div>
+                    <div class="modal-body text-center">
+                        <input type="hidden" id="error_recordid" name="error_recordid">
+                        <h4>Are you sure to delete this error?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-raised btn-lg btn_danger waves-effect waves-classic waves-effect waves-classic">Delete</button>
+                        <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
             </div>
-     
         </div>
     </div>
 </div>
+
 
 <script type="text/javascript" src="http://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js">
 </script>
@@ -579,8 +602,8 @@ use Carbon\Carbon;
     src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
 
 <script>
-    var tag_source = <?php print_r(json_encode($existing_tags)) ?>;
 
+    var tag_source = <?php print_r(json_encode($existing_tags)) ?>;
   $(document).ready(function() {
       $('#tokenfield').tokenfield({
       autocomplete: {
@@ -590,19 +613,15 @@ use Carbon\Carbon;
       showAutocompleteOnFocus: true
       });
   });
-
   $(document).ready(function() {
       $('.comment-reply').hide();
       $('#reply_content').val('');
   });
-
   $(document).ready(function(){
-
       var locations = <?php print_r(json_encode($locations)) ?>;
       var organization = <?php print_r(json_encode($organization->organization_name)) ?>;
       var maplocation = <?php print_r(json_encode($map)) ?>;
     //   console.log(locations);
-
       if(maplocation.active == 1){
         avglat = maplocation.lat;
         avglng = maplocation.long;
@@ -614,20 +633,16 @@ use Carbon\Carbon;
           avglng = -73.998107;
           zoom = 12;
       }
-
       latitude = locations[0].location_latitude;
       longitude = locations[0].location_longitude;
-
       if(latitude == null){
         latitude = avglat;
         longitude = avglng;
       }
-
       var map = new google.maps.Map(document.getElementById('map'), {
           zoom: zoom,
           center: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
       });
-
       var latlongbounds = new google.maps.LatLngBounds();
       var markers = locations.map(function(location, i) {
           var position = {
@@ -636,7 +651,6 @@ use Carbon\Carbon;
           }
           var latlong = new google.maps.LatLng(position.lat, position.lng);
           latlongbounds.extend(latlong);
-
            var content = '<div id="iw-container">';
                    for(i = 0; i < location.services.length; i ++){
                             content +=  '<div class="iw-title"> <a href="/services/'+location.services[i].service_recordid+'">'+location.services[i].service_name+'</a></div>';
@@ -650,11 +664,9 @@ use Carbon\Carbon;
                         '</div>' +
                         '<div class="iw-bottom-gradient"></div>' +
                         '</div>';
-
             var infowindow = new google.maps.InfoWindow({
                 content: content
             });
-
           var marker = new google.maps.Marker({
               position: position,
               map: map,
@@ -665,13 +677,10 @@ use Carbon\Carbon;
             });
           return marker;
       });
-
       if (locations.length > 1) {
           map.fitBounds(latlongbounds);
       }
-
   });
-
   $(document).ready(function() {
     var showChar = 250;
     var ellipsestext = "...";
@@ -679,19 +688,13 @@ use Carbon\Carbon;
     var lesstext = "Less";
     $('.more').each(function() {
       var content = $(this).html();
-
       if(content.length > showChar) {
-
         var c = content.substr(0, showChar);
         var h = content.substr(showChar, content.length - showChar);
-
         var html = c + '<span class="moreelipses">'+ellipsestext+'</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">'+moretext+'</a></span>';
-
         $(this).html(html);
       }
-
     });
-
     $(".morelink").click(function(){
       if($(this).hasClass("less")) {
         $(this).removeClass("less");
@@ -704,7 +707,6 @@ use Carbon\Carbon;
       $(this).prev().toggle();
       return false;
     });
-
     $('.panel-link').on('click', function(e){
           if($(this).hasClass('target-population-link') || $(this).hasClass('target-population-child'))
               return;
@@ -714,21 +716,16 @@ use Carbon\Carbon;
           $("#checked_" +  id).prop( "checked", true );
           $("#filter").submit();
       });
-
       $('.panel-link.target-population-link').on('click', function(e){
           $("#target_all").val("all");
           $("#filter").submit();
       });
-
       $('.panel-link.target-population-child').on('click', function(e){
           var id = $(this).attr('at');
           $("#target_multiple").val(id);
           $("#filter").submit();
-
       });
   });
-
-
   $("#reply-btn").on('click', function(e) {
       e.preventDefault();
       $('.comment-reply').show();
@@ -737,6 +734,19 @@ use Carbon\Carbon;
       e.preventDefault();
       $('.comment-reply').hide();
   });
-
+  $('button#delete-error-btn').on('click', function() {
+        var value = $(this).val();
+        $('input#error_recordid').val(value);
+    });
+  function ShowModal(id)
+{
+  var modal = document.getElementById(id);
+  modal.style.display = "block";
+}
+function closeModal(id)
+{
+  var modal = document.getElementById(id);
+  modal.style.display = "none";
+}
 </script>
 @endsection

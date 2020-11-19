@@ -107,22 +107,6 @@ Home
                     <form method="post" role="form" autocomplete="off" class="home_serach_form" action="/search">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-group text-left form-material" data-plugin="formMaterial">
-                            <div class="form-group">
-                                <div class="row m-0">
-                                    <div class="col-md-9 pl-0">
-                                        <img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
-                                        <input type="text" class="form-control" id="inputName" name="find" placeholder="Search for service">
-                                        </div>
-                                    <div class="col-md-3 p-0">
-                                        <button type="submit" class="btn btn-primary btn-block btn-lg">Search</button>
-                                    </div>
-                                </div>
-                            </div>                                        
-                        </div>
-                        {{-- <button type="submit" class="btn btn-primary btn-block btn-lg">Search</button> --}}
-
-                        <!-- JRA2020.11.06 Begin - Original search form -->
-                        <!--div class="form-group text-left form-material" data-plugin="formMaterial">
                             <img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
                             <input type="text" class="form-control" id="inputName" name="find" placeholder="Search for service">
                         </div>
@@ -142,8 +126,6 @@ Home
                             </div>
                         </div>
                         {{-- <button type="submit" class="btn btn-primary btn-block btn-lg">Search</button> --}}
-                        -->
-                        <!-- JRA2020.11.06 Begin - Original search form -->
                     </form>
                 </div>
                 <!--div class="scoll_category">

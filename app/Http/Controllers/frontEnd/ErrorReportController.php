@@ -175,7 +175,7 @@ class ErrorReportController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function delete_error(Request $request)
     {
         //
         // $error_recordid = $request->input('error_recordid');
@@ -184,5 +184,15 @@ class ErrorReportController extends Controller
         //     $error->delete();
         //     return redirect()->back();
         // }
+        try {
+            Error::where('error_recordid', $request->error_recordid)->delete();
+            Session::flash('message', 'Error deleted successfully!');
+            Session::flash('status', 'success');
+            return back();
+        } catch (\Throwable $th) {
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
+        }
     }
 }
