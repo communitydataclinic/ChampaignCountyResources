@@ -62,7 +62,7 @@
 					</li>
 					@endif
 					<li class="nav-item">
-                        <a class="nav-link" href="{{ route('suggest.create') }}">Suggest</a>
+                        <a class="nav-link" href="{{ route('suggest.create') }}">Events</a>
 					</li>
 					<li class="nav-item">
 						<a id="google_translate_element" class="nav-link"></a>
@@ -70,7 +70,7 @@
                     @if (Auth::user() && Auth::user()->roles)
                     <li class="nav-item">
 						<div class="dropdown">
-							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">(+)</button>
+							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">New &#9207;</button>
 							<div class="dropdown-content">
 								@if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles &&  Auth::user()->roles->name == 'System Admin')
 								<a href="{{ route('organizations.create') }}">New Organization</a>

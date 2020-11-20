@@ -376,7 +376,7 @@ $(function () {
   }
   #google_translate_element{
     padding-top: 21px;
-    width: 140px;
+    width: 112px;
   }
   .goog-te-banner-frame.skiptranslate{
     display: none;
@@ -424,7 +424,7 @@ $(function () {
     visibility: hidden;
   }
   .goog-te-gadget-simple .goog-te-menu-value span:before {
-    content: "Select Language";
+    content: "Language ⏷";
     visibility: visible;
     font-family: "Neue Haas Grotesk Display Medium" !important;
     font-weight: 500;

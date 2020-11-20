@@ -107,7 +107,7 @@ Edit Service
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Wait Time: </label>
+                                    <label>Eligibility: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_wait_time" name="service_wait_time" value="{{$service->service_wait_time}}">
                                 </div>
                             </div>
@@ -119,13 +119,13 @@ Edit Service
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Accreditations: </label>
+                                    <label>Documents needed: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_accreditations" name="service_accreditations" value="{{$service->service_accreditations}}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Licenses: </label>
+                                    <label>Area served: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_licenses" name="service_licenses" value="{{$service->service_licenses}}">
                                 </div>
                             </div>

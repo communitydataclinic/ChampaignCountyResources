@@ -49,28 +49,12 @@ ul#ui-id-1 {
                         <h2>{{$service->service_name}}</h2>
                         <h4 class="panel-text"><span class="badge bg-red">Alternate Name:</span> {{$service->service_alternate_name}}</h4>
 
-                         <h4 class="panel-text"><span class="badge bg-red">Category:</span>
-                            @if($service->service_taxonomy!=0 || $service->service_taxonomy==null)
-                                @foreach($service->taxonomy as $key => $taxonomy)
-                                    @if($loop->last)
-                                    <a class="panel-link" href="{{ config('app.url')}}/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>                                    @else
-                                    <a class="panel-link" href="{{ config('app.url')}}/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
-                                    @endif
-                                @endforeach
-                            @endif
-                        </h4>
                         <h4 class="panel-text"><span class="badge bg-red">Organization:</span>
-                            @if(isset($service->organizations))
-                                @foreach($service->organizations as $organization)
-                                    @if(isset($organization->organization_name))
-                                        @if($loop->last)
-                                        <a class="panel-link" href="{{ config('app.url')}}/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>
-                                        @else
-                                        <a class="panel-link" href="{{ config('app.url')}}/organization_{{$organization->organization_recordid}}"> {{$organization->organization_name}}</a>
-                                        @endif
-                                    @endif
-                                @endforeach
-                            @endif
+                            @if($service->service_organization!=0)
+                                @if(isset($service->organizations))
+                                <a class="panel-link" href="{{ config('app.url')}}/organizations/{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>
+                                @endif
+                            @endif                        
                         </h4>
 
                         <h4 class="panel-text"><span class="badge bg-blue">Description:</span> {!! $service->service_description !!}</h4>
@@ -78,18 +62,24 @@ ul#ui-id-1 {
                         <h4 class="panel-text"><span class="badge bg-red">Phone:</span>
                             @foreach($service->phone as $phone)
                                 @if($loop->last)
-                                {{$phone->phone_number}}
+                                {{$phone->phone_number}} {!! $phone->phone_extension !!}
                                 @else
-                                {{$phone->phone_number}},
+                                {{$phone->phone_number}} {!! $phone->phone_extension !!},
                                 @endif
                             @endforeach
                         </h4>
 
-                        <h4 class="panel-text"><span class="badge bg-red">Extension:</span>
-                            @foreach($service->phone as $phone) {!! $phone->phone_extension !!} @endforeach
+                        @if(isset($service->address))
+                        <h4><span class="badge bg-blue">Address:</span>
+                                @foreach($service->address as $address)
+                                   {{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}<br>
+                                @endforeach
                         </h4>
+                        @endif
 
-                        <h4 class="panel-text" style="word-wrap: break-word;"><span class="badge bg-blue" >Url:</span> @if($service->service_url!=NULL)<a href="{!! $service->service_url !!}">{!! $service->service_url !!}</a> @endif</h4>
+                        @if($service->service_url!=NULL)
+                        <h4 class="panel-text" style="word-wrap: break-word;"><span class="badge bg-blue" >Url:</span> <a href="{!! $service->service_url !!}">{!! $service->service_url !!}</a></h4>
+                        @endif
 
                         @if($service->service_email!=NULL)
                         <h4 class="panel-text"><span class="badge bg-blue">Email:</span> {{$service->service_email}}</h4>
@@ -101,31 +91,33 @@ ul#ui-id-1 {
 
                         <h4 class="panel-text"><span class="badge bg-blue">Application Process:</span> {!! $service->service_application_process !!}</h4>
 
-                        <h4 class="panel-text"><span class="badge bg-blue">Wait Time:</span> {{$service->service_wait_time}}</h4>
+                        <h4 class="panel-text"><span class="badge bg-blue">Eligibility:</span> {{$service->service_wait_time}}</h4>
 
                         <h4 class="panel-text"><span class="badge bg-blue">Fees:</span> {{$service->service_fees}}</h4>
 
-                        <h4 class="panel-text"><span class="badge bg-blue">Accreditations:</span> {{$service->service_accreditations}}</h4>
+                        <h4 class="panel-text"><span class="badge bg-blue">Documents needed:</span> {{$service->service_accreditations}}</h4>
 
-                        <h4 class="panel-text"><span class="badge bg-blue">Licenses:</span> {{$service->service_licenses}}</h4>
+                        <h4 class="panel-text"><span class="badge bg-blue">Area served:</span> {{$service->service_licenses}}</h4>
 
                         <hr>
-
-                        @if(isset($service->address))
-                        <h4><span class="badge bg-blue">Address:</span>
-
-                                @foreach($service->address as $address)
-                                   <br>{{ $address->address_1 }} {{ $address->address_city }} {{ $address->address_state_province }} {{ $address->address_postal_code }}
-                                @endforeach
-
-                        </h4>
-                        @endif
 
                         @if(isset($service->contact()->first()->contact_name))
                         <h4><span class="badge bg-red">Contact:</span>
                             {{$service->contact()->first()->contact_name}}
                         </h4>
                         @endif
+
+                        <h4 class="panel-text"><span class="badge bg-red">Category: </span>
+                            @if($service->service_taxonomy!=0 || $service->service_taxonomy==null)
+                                @foreach($service->taxonomy as $key => $taxonomy)                                
+                                    @if($loop->last)
+                                    <a class="panel-link" href="{{ config('app.url')}}/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>                                    
+                                    @else
+                                    <a class="panel-link" href="{{ config('app.url')}}/category_{{$taxonomy->taxonomy_recordid}}">{{$taxonomy->taxonomy_name}}</a>,
+                                    @endif
+                                @endforeach
+                            @endif
+                        </h4>
 
                         <h3>Details</h3>
                         @if($service->service_details!=NULL)

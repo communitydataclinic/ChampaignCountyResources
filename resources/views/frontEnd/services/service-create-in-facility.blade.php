@@ -109,7 +109,7 @@ Service Create
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Wait Time: </label>
+                                        <label>Eligibility: </label>
                                         <input class="form-control selectpicker" type="text" id="service_wait_time"
                                             name="service_wait_time" value="">
                                     </div>
@@ -123,13 +123,13 @@ Service Create
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Service Accrediations: </label>
+                                        <label>Documents needed: </label>
                                         <input class="form-control selectpicker" type="text" id="service_accrediations" name="service_accrediations" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Licenses: </label>
+                                        <label>Area served: </label>
                                         <input class="form-control selectpicker" type="text" id="service_licenses" name="service_licenses" value="">
                                     </div>
                                 </div>
