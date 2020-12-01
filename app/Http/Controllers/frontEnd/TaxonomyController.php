@@ -33,7 +33,9 @@ class TaxonomyController extends Controller
         $airtable_key_info->base_url = $base_url;
         $airtable_key_info->save();
 
-        Taxonomy::truncate();
+        //Allow adding new records by not truncating the table when importing
+        //Taxonomy::truncate();
+
         // $airtable = new Airtable(array(
         //     'api_key'   => env('AIRTABLE_API_KEY'),
         //     'base'      => env('AIRTABLE_BASE_URL'),

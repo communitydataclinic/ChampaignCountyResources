@@ -48,8 +48,11 @@ class OrganizationController extends Controller
         $airtable_key_info->base_url = $base_url;
         $airtable_key_info->save();
 
+        //Allow adding new records by not truncating the tables when importing
+        /*        
         Organization::truncate();
         OrganizationDetail::truncate();
+        */
 
         // $airtable = new Airtable(array(
         //     'api_key'   => env('AIRTABLE_API_KEY'),

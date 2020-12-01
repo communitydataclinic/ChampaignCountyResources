@@ -870,7 +870,9 @@ class ServiceController extends Controller
             $airtable_key_info->api_key = $api_key;
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
-
+        
+            //Allow adding new records by not truncating the tables when importing
+            /*
             Service::truncate();
             ServiceLocation::truncate();
             ServiceAddress::truncate();
@@ -880,6 +882,7 @@ class ServiceController extends Controller
             ServiceContact::truncate();
             ServiceTaxonomy::truncate();
             ServiceSchedule::truncate();
+            */
 
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),

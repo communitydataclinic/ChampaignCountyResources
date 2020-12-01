@@ -147,7 +147,7 @@ Import
                     <tr>
                       <td class="text-center">{{$key+1}}</td>
                       <td class="text-center">{{$airtable->name}}</td>
-                      <td class="text-center">ORnycServices(ATv1.1)</td>
+                      <td class="text-center">New directory</td>
                       <td class="text-center">{{$airtable->records}}</td>
                       <td class="text-center">{{$airtable->syncdate}}</td>
                       <td class="text-center">
