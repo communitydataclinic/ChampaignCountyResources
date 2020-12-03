@@ -264,7 +264,29 @@ use Carbon\Carbon;
 
                                     </div>
                                 </div>
-                                
+                                <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form action="{{ route('delete_error') }}" method="POST" id="error_delete_filter">
+                                                {!! Form::token() !!}
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <h4 class="modal-title" id="myModalLabel">Delete service</h4>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <input type="hidden" id="error_recordid" name="error_recordid">
+                                                    <h4>Are you sure to delete this error?</h4>
+                                                    <div id="{{$error->error_service_name}}"></div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-raised btn-lg btn_danger waves-effect waves-classic waves-effect waves-classic">Delete</button>
+                                                    <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             @endforeach
                         </h4>
@@ -571,7 +593,7 @@ use Carbon\Carbon;
             </div>
         </div>
     </div>
-    <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form action="{{ route('delete_error') }}" method="POST" id="error_delete_filter">
@@ -592,7 +614,7 @@ use Carbon\Carbon;
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 
 

@@ -111,7 +111,7 @@ class ErrorReportController extends Controller
 
             // $error = '';
 
-            $username = 'Larable Team';
+            $username = 'Champaign County 211 Resource Team';
             $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
 
             foreach ($contact_email_list as $key => $contact_email) {
@@ -177,14 +177,48 @@ class ErrorReportController extends Controller
      */
     public function delete_error(Request $request)
     {
-        //
-        // $error_recordid = $request->input('error_recordid');
-        // $error = Error::where('error_recordid', '=', $error_recordid)->first();
-        // if ($error) {
-        //     $error->delete();
-        //     return redirect()->back();
-        // }
         try {
+            $from = env('MAIL_FROM_ADDRESS');
+            $name = env('MAIL_FROM_NAME');
+            // $from_phone = env('MAIL_FROM_PHONE');
+            $layout = Layout::find(1);
+
+            $site_name = '';
+            if ($layout) {
+                $site_name = $layout->site_name;
+            }
+            $email = new Mail();
+            $email->setFrom($from, $name);
+            $subject = 'An update was made for the error you reported at ' . $site_name;
+            $email->setSubject($subject);
+            
+            $body = 'Thank you for helping us improve! Check out the service page to see the new update.';
+
+            $error_info = Error::where('error_recordid', '=', $request->error_recordid)->first();
+            $service_info = Service::where('service_recordid', '=', $error_info->error_service)->first();
+            $organization_info = Organization::where('organization_recordid', '=', $error_info->error_organization)->first();
+            $message = '<html><body>';
+            $message .= '<h1 style="color:#424242;">Thanks for your suggestion!</h1>';
+            $message .= '<p style="color:#424242;font-size:18px;">Errors are fixed at ' . $site_name . ' website.</p>';
+            $message .= '<p style="color:#424242;font-size:12px;">Timestamp: ' . Carbon::now() . '</p>';
+            $message .= '<p style="color:#424242;font-size:12px;">Organization: ' . $organization_info->organization_name . '</p>';
+            $message .= '<p style="color:#424242;font-size:12px;">Service: ' . $service_info->service_name  . '</p>';
+            $message .= '<p style="color:#424242;font-size:12px;">Body: ' . $body . '</p>';
+            $message .= '</body></html>';
+            $email->addContent("text/html", $message);
+            $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+
+
+            $username = 'Champaign County 211 Resource Team';
+            $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
+
+            foreach ($contact_email_list as $key => $contact_email) {
+                $email->addTo($contact_email, $username);
+            }
+            // $email->addTo($request->email, $username);
+            $email->addTo($service_info->service_email, $username);
+            $response = $sendgrid->send($email);
+
             Error::where('error_recordid', $request->error_recordid)->delete();
             Session::flash('message', 'Error deleted successfully!');
             Session::flash('status', 'success');
@@ -194,5 +228,6 @@ class ErrorReportController extends Controller
             Session::flash('status', 'error');
             return redirect()->back();
         }
+        
     }
 }
