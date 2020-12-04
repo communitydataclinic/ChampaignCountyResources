@@ -120,9 +120,13 @@ class ErrorReportController extends Controller
                 $email->addTo($contact_email, $username);
             }
             $email->addTo($request->error_email, $username);
-            foreach ($user_info as $key => $user_info_list){
-                $email->addTo($user_info_list->email, $username);
+
+            if($user_info != NULL){
+                foreach ($user_info as $key => $user_info_list){
+                    $email->addTo($user_info_list->email, $username);
+                }
             }
+            
             
             $response = $sendgrid->send($email);
             if ($response->statusCode() == 401) {

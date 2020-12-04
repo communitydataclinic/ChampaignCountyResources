@@ -117,8 +117,10 @@ class SuggestController extends Controller
             foreach ($contact_email_list as $key => $contact_email) {
                 $email->addTo($contact_email, $username);
             }
-            foreach ($user_info as $key => $user_info_list){
-                $email->addTo($user_info_list->email, $username);
+            if($user_info != NULL){
+                foreach ($user_info as $key => $user_info_list){
+                    $email->addTo($user_info_list->email, $username);
+                }
             }
             $email->addTo($request->email, $username);
             $response = $sendgrid->send($email);
