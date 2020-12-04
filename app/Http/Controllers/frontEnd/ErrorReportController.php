@@ -11,6 +11,7 @@ use App\Model\Error;
 use App\Model\Suggest;
 use App\Model\Email;
 use App\Model\Layout;
+use App\Model\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use SendGrid;
@@ -72,6 +73,7 @@ class ErrorReportController extends Controller
             $error->error_recordid = $new_recordid;
             $error->error_organization = $request->error_organization;
             $organization_info = Organization::where('organization_recordid', '=', $request->error_organization)->first();
+            $user_info = User::where('user_organization', '=', $request->error_organization)->get();
             $error->error_service = $request->error_service;
             $service_info = Service::where('service_recordid', '=', $request->error_service)->first();
             $error->error_service_name = $service_info->service_name;
@@ -118,7 +120,10 @@ class ErrorReportController extends Controller
                 $email->addTo($contact_email, $username);
             }
             $email->addTo($request->error_email, $username);
-            $email->addTo($service_info->service_email, $username);
+            foreach ($user_info as $key => $user_info_list){
+                $email->addTo($user_info_list->email, $username);
+            }
+            
             $response = $sendgrid->send($email);
             if ($response->statusCode() == 401) {
                 $error = json_decode($response->body());

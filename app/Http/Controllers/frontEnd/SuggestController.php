@@ -10,6 +10,7 @@ use App\Model\Service;
 use App\Model\Suggest;
 use App\Model\Email;
 use App\Model\Layout;
+use App\Model\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use SendGrid;
@@ -71,6 +72,7 @@ class SuggestController extends Controller
             $suggest->suggest_recordid = $new_recordid;
             $suggest->suggest_organization = $request->suggest_organization;
             $organization_info = Organization::where('organization_recordid', '=', $request->suggest_organization)->first();
+            $user_info = User::where('user_organization', '=', $request->suggest_organization)->get();
             $suggest->suggest_service = $request->suggest_service;
             $service_info = Service::where('service_recordid', '=', $request->suggest_service)->first();
             $suggest->suggest_content = $request->suggest_content;
@@ -115,8 +117,10 @@ class SuggestController extends Controller
             foreach ($contact_email_list as $key => $contact_email) {
                 $email->addTo($contact_email, $username);
             }
+            foreach ($user_info as $key => $user_info_list){
+                $email->addTo($user_info_list->email, $username);
+            }
             $email->addTo($request->email, $username);
-            $email->addTo($service_info->service_email, $username);
             $response = $sendgrid->send($email);
             if ($response->statusCode() == 401) {
                 $error = json_decode($response->body());

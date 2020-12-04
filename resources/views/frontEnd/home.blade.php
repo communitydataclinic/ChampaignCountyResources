@@ -504,7 +504,7 @@ Home
     </div>
 </div>
 @endif
-<div class="home_page_content text-center">
+<div class="home_page_content text-center" style="padding-bottom:20px;">
     <div class="panel-heading text-center">
         <h3 class="panel-title" style="font-size: 32px; font-weight:500;">Highlighted Events</h3>
     </div>
@@ -553,7 +553,7 @@ Home
         ?>
         </h4>
         </div>
-        <div class = "see_more col-sm-2" style="padding-top:5em;"><h4 style="text-decoration: underline;">>>See More</h4></div>
+        <div class = "see_more col-sm-2" style="padding-top:5em;"><h4 style="text-decoration: underline;"><a href="/events">>>See More</a></h4></div>
         </div>
         </div>
 </div>
