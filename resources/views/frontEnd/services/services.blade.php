@@ -123,7 +123,8 @@ Services
                                     for($i = 0; $i < count($time_list); $i++){
                                         $time_work[$i] = new Carbon($time_list[$i]);
                                         $diff[$i] = $time_work[$i]->diffInSeconds($now);
-                                        if($diff[$i] >= 86400){
+                                        //86400
+                                        if($diff[$i] >= 1){
                                             $count++;
                                         }
                                     }
@@ -141,14 +142,17 @@ Services
                                                 for($i = 0; $i < count($time_list); $i++){
                                                     $time_work[$i] = new Carbon($time_list[$i]);
                                                     $diff[$i] = $time_work[$i]->diffInSeconds($now);
-                                                    if($diff[$i] >= 86400){
+                                                    //86400
+                                                    if($diff[$i] >= 1){
                                                         $count++;
                                                     }
                                                 }
-                                                echo $count;
-                                                
+                                                if ($count > 1)
+                                                    echo $count . " users ";
+                                                else
+                                                    echo $count . " user ";                                                
                                             ?>
-                                                user(s) reported the information to be inaccurate
+                                                reported the information to be inaccurate
                                         </h4>
 
                                     <?php endif; ?>
@@ -183,8 +187,10 @@ Services
 
                                         </span>
                                     </h4>
-                                    <h4>
-                                        <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
+                                    <h4 class="org_title">
+                                        <!--span class="pl-0 category_badge subtitle"><b>Types of Services:</b-->
+                                        <span class="subtitle">Types of Services:</span>
+                                        <span class="pl-0 category_badge subtitle">                                        
                                             @if($service->service_taxonomy != null)
                                                 @php $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
                                                 @endphp

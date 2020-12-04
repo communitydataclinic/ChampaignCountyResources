@@ -94,6 +94,9 @@
 						<a class="nav-link" href="/login">Login</a>
 					</li>
 					@endif
+					<li class="nav-item">
+						<a class="btn btn-danger mr-20" href="/register">Register</a>
+					</li>
 				</ul>
 			</div>
 		</div>

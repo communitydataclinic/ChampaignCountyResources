@@ -172,7 +172,7 @@ Home
     <div class="page-content">
         <div class="container">
             <div class="text-center">
-                <h3>Browse by Category</h3>
+                <h3>What are you looking for?</h3>
             </div>
                 {{-- <div class="col-lg-2 col-md-2">
                     <a href="#">

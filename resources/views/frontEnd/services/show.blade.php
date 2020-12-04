@@ -148,7 +148,8 @@ use Carbon\Carbon;
                                 for($i = 0; $i < count($time_list); $i++){
                                     $time_work[$i] = new Carbon($time_list[$i]);
                                     $diff[$i] = $time_work[$i]->diffInSeconds($now);
-                                    if($diff[$i] >= 86400){
+                                    //86400
+                                    if($diff[$i] >= 1){
                                         $count++;
                                     }
                                 }
@@ -166,14 +167,17 @@ use Carbon\Carbon;
                                             for($i = 0; $i < count($time_list); $i++){
                                                 $time_work[$i] = new Carbon($time_list[$i]);
                                                 $diff[$i] = $time_work[$i]->diffInSeconds($now);
-                                                if($diff[$i] >= 86400){
+                                                //86400
+                                                if($diff[$i] >= 1){
                                                     $count++;
                                                 }
                                             }
-                                            echo $count;
-                                            
-                                        ?>
-                                            user(s) reported the information to be inaccurate
+                                            if ($count > 1)
+                                                echo $count . " users ";
+                                            else
+                                                echo $count . " user ";                                                
+                                    ?>
+                                        reported the information to be inaccurate
                                     </h4>
                             <?php endif; ?>
                             <h4 class="card-title">

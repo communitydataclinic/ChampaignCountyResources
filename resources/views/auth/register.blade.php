@@ -29,6 +29,8 @@
 		{{ Form::open(array('route' => 'register', 'class' => 'form-horizontal form-signin register_form','files' => true)) }}
 			{!! csrf_field() !!}
 			<h3 class="form-signin-heading">Register</h3>
+			<p>Please register to manage the information of your organization. You will receive an email confirmation when your user is active.</p>
+			<p></p>
 			<div class="col-md-6">
 				<div class="form-group  {{ $errors->has('first_name') ? 'has-error' : ''}}">
 					<label for="first_name">First Name</label>
