@@ -1,3 +1,7 @@
+<?php
+
+use App\Model\Event;
+?>
 @extends('layouts.app')
 @section('title')
 Home
@@ -30,6 +34,10 @@ Home
         border-radius: 50%;
         background-color: orange;
         color: white;
+    }
+    .event_container{
+        margin-left: 10%;
+        margin-right:10%;
     }
 </style>
 
@@ -496,7 +504,59 @@ Home
     </div>
 </div>
 @endif
+<div class="home_page_content text-center">
+    <div class="panel-heading text-center">
+        <h3 class="panel-title" style="font-size: 32px; font-weight:500;">Highlighted Events</h3>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class = "first_event col-sm-3"><img src="/frontend/assets/images/test1.png" alt="" title="" class="" style="width:75%; height:auto;">
+            <h4 style="overflow-wrap: break-word;">
+            <?php
 
+                $events = App\Model\Event::all();
+
+                foreach ($events as $event) {
+                    if($event->event_recordid == 1){
+                        echo $event->event_title;
+                    }
+                }
+            ?>
+            </h4>
+        </div>
+        <div class = "second_event col-sm-3"><img src="/frontend/assets/images/test2.png" alt="" title="" class="" style="width:75%; height:auto;">
+        <h4 style="overflow-wrap: break-word;">
+        <?php
+
+            $events = App\Model\Event::all();
+
+            foreach ($events as $event) {
+                if($event->event_recordid == 2){
+                    echo $event->event_title;
+                }
+            }
+        ?>
+        </h4>
+        </div>
+        <div class = "third_event col-sm-3"><img src="/frontend/assets/images/test3.png" alt="" title="" class="" style="width:75%; height:auto;">
+        <h4 style="overflow-wrap: break-word;">
+        <?php
+
+            $events = App\Model\Event::all();
+
+            foreach ($events as $event) {
+                if($event->event_recordid == 3){
+                    echo $event->event_title;
+                }
+            }
+        ?>
+        </h4>
+        </div>
+        <div class = "see_more col-sm-2" style="padding-top:5em;"><h4 style="text-decoration: underline;">>>See More</h4></div>
+        </div>
+        </div>
+</div>
 <!-- end below after serching div -->
 {{-- <div id="content" class="container m-0" style="width: 100%;">
         <div class=" pt-20 pl-15" style="margin-right: 0">

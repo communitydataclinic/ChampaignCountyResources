@@ -137,6 +137,9 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::resource('/suggest', 'frontEnd\SuggestController');
     Route::get('/add_new_suggestion', 'frontEnd\SuggestController@add_new_suggestion');
 
+    //event
+    Route::resource('/events', 'frontEnd\EventController');
+
     //error reporting
     Route::resource('/error', 'frontEnd\ErrorReportController');
     Route::get('/add_new_error', 'frontEnd\ErrorReportController@add_new_error');

@@ -62,7 +62,7 @@
 					</li>
 					@endif
 					<li class="nav-item">
-                        <a class="nav-link" href="{{ route('suggest.create') }}">Events</a>
+					<a class="nav-link" href="/events">Events</a>
 					</li>
 					<li class="nav-item">
 						<a id="google_translate_element" class="nav-link"></a>
