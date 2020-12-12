@@ -236,7 +236,7 @@ use Carbon\Carbon;
                             <div>
                                 <div class="grid-container">
                                     <div>Created at: {{$error->created_at}}</div>
-                                    <div><button class = "myBtn" id="myBtn" onclick="ShowModal('myModal-{{$error->error_recordid}}')">See Details</button></div>
+                                    <div><button class = "myBtn" id="myBtn" onclick="ShowModal('myModal-{{$error->error_recordid}}')">See details</button></div>
                                     <div><button type="button" class="red_btn" id="delete-error-btn" value="{{$error->error_recordid}}" data-toggle="modal" data-target=".bs-delete-modal-lg" >Delete</button></div>
                                     
                                 </div>
@@ -246,12 +246,12 @@ use Carbon\Carbon;
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <button type="button" class="close" onclick="closeModal('myModal-{{$error->error_recordid}}')">&times;</button>
-                                                <h4 class="modal-title">Report Form</h4>
+                                                <h4 class="modal-title">Report details</h4>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="card all_form_field">
                                                         <div class="card-block">
-                                                            <div>Service Name: {{$error->error_service_name}}</div>
+                                                            <div>Service: {{$error->error_service_name}}</div>
                                                             <div>Reporting Content: {{$error->error_content}}</div>
                                                             <div>Reporter: {{$error->error_username}}</div>
                                                             <div>Contact Email: {{$error->error_user_email}}</div>
@@ -295,7 +295,10 @@ use Carbon\Carbon;
                 @endif
                 <!--Error changing design-->
                 <!-- comment area design -->
-                @if (Auth::user() && Auth::user()->roles)
+
+                <!-- comment area not used in this project. Hidden to users -->
+
+                @if (Auth::user() && Auth::user()->roles && false)
                     <div class="card">
                         <div class="card-block">
                             <h4 class="card_services_title">Comments</h4>

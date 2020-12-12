@@ -32,15 +32,15 @@
                 <li><a><i class="fa fa-windows"></i> Pages <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/home_edit">Home Page</a></li>
-                        <li><a href="/about_edit">About Page</a></li>
-                        <li><a href="/login_register_edit">Login/Register Page</a></li>
+                        <!--li><a href="/about_edit">About Page</a></li-->
+                        <!--li><a href="/login_register_edit">Login/Register Page</a></li-->
                     </ul>
                 </li>
                 <li><a><i class="fa fa-table"></i> Settings <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/layout_edit">Appearance</a></li>
                         <li><a href="/map">Map</a></li>
-                        <li><a href="/add_country">Add Country in Address</a></li>
+                        <!--li><a href="/add_country">Add Country in Address</a></li-->
                         <li><a href="/messagesSetting">APIs</a></li>
                         {{-- <li><a href="/sections">Sections</a></li>
                         --}}
@@ -50,8 +50,8 @@
                 </li>
                 <li><a><i class="fa fa-gears"></i> Tools <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="{{ route('All_Sessions.index') }}">Sessions</a></li>
-                        <li><a href="/meta_filter">Meta Filter</a></li>
+                        <!--li><a href="{{ route('All_Sessions.index') }}">Sessions</a></li-->
+                        <!--li><a href="/meta_filter">Meta Filter</a></li-->
                         <!-- <li><a href="/messagesSetting">Campaigns</a></li> -->
                         <li><a href="/analytics">Analytics</a></li>
                     </ul>
@@ -93,7 +93,7 @@
                         <li><a href="/tb_contact">Contact</a></li>
                         <li><a href="/tb_phones">Phones</a></li>
                         <li><a href="/tb_address">Address</a></li>
-                        <li><a href="/tb_schedule">Schedule</a></li>
+                        <!--li><a href="/tb_schedule">Schedule</a></li-->
                         <li><a href="/tb_taxonomy">Taxonomy</a></li>
                         @if ($source_data->active == 1)
                             <li><a href="/tb_details">Details</a></li>
@@ -129,12 +129,16 @@
                     </li>
                     {{--
                 @endif --}}
+                <!-- Log viewer is not required for CHRES project: Start -->
+                <!--
                 <li><a><i class="fa fa-list"></i> Log Viewer <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li><a href="/log-viewer"> Dashboard</a></li>
                         <li><a href="/log-viewer/logs"> Logs</a></li>
                     </ul>
                 </li>
+                -->
+                <!-- Log viewer is not required for CHRES project: End -->
                 <li><a href="/logout"><i class="fa fa-sign-out "></i> Logout</a></li>
                 <!-- <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">

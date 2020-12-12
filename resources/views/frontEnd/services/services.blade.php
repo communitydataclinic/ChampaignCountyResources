@@ -302,7 +302,7 @@ Services
                 if(value.organization){
 
                 content += '<div class="iw-content">' +
-                            '<div class="iw-subTitle">Organization Name</div>' +
+                            '<div class="iw-subTitle">Organization</div>' +
                             '<a href="/organizations/' + value.organization.organization_recordid + '">' + value.organization.organization_name +'</a>';
                 }
                 if(value.address){

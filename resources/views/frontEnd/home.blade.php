@@ -461,49 +461,7 @@ Home
         </div>
     </div>
 </div>
-
-@if ($home->home_page_style == 'Services (ex. larable-dev.sarapisorg)')
-<div class="home_page_content text-center" id="home_page_content">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-5 col-sm-12 col-md-5">
-                {{-- <img src="/frontend/assets/images/circle_images.png" alt="" title="" class=""> --}}
-                <img src="{{ $home->part_1_image }}" alt="" title="" class="">
-            </div>
-            <div class="col-lg-7 col-sm-12 col-md-7">
-                <div class="row m-0">
-                    {{-- <div class="col-md-2">
-                        <img src="{{$home->part_1_image}}" alt="" title="" class="">
-                    </div> --}}
-                    <div class="col-md-12 col-lg-8 text-left p-0">
-                       <!--  <p>The purpose of this system is to provide a searchable and filterable directory of organizations, contacts and facilities to signed in users. Users can export any data about those three elements from the directory.</p> -->
-                       {!! $home->sidebar_content !!}
-                    </div>
-                </div>
-                {{-- <div class="row m-0">
-                    <div class="col-md-2">
-                        <img src="{{$home->part_2_image}}" alt="" title="" class="">
-                    </div>
-                    <div class="col-md-8 text-left p-0">
-                        <!-- <p>A special class of users can also send three types of messages to contacts in the directory: email messages, SMS and recorded voice messages.</p> -->
-                        {!! $home->sidebar_content_part_2 !!}
-                    </div>
-                </div>
-                <div class="row m-0">
-                    <div class="col-md-2">
-                        <img src="{{$home->part_3_image}}" alt="" title="" class="">
-                    </div>
-                    <div class="col-md-8 text-left p-0">
-                        <!-- <p>Contacts can be organized into groups, and these messages can be sent to multiple groups of contacts at a single time. Replies to email, SMS and voice messages are recorded and attached to the message report for analysis.</p> -->
-                        {!! $home->sidebar_content_part_3 !!}
-                    </div>
-                </div> --}}
-                {{-- {!! $home->sidebar_content !!} --}}
-            </div>
-        </div>
-    </div>
-</div>
-@endif
+<!-- Highlighted events section start -->
 <div class="home_page_content text-center" style="padding-bottom:20px;">
     <div class="panel-heading text-center">
         <h3 class="panel-title" style="font-size: 32px; font-weight:500;">Highlighted Events</h3>
@@ -558,6 +516,56 @@ Home
         </div>
 </div>
 <!-- end below after serching div -->
+<!-- Highlighted events section end -->
+
+<!-- About section start -->
+@if ($home->home_page_style == 'Services (ex. larable-dev.sarapisorg)')
+<div class="home_page_content text-center" id="home_page_content">
+    <div class="panel-heading text-center">
+        <h3 class="panel-title" style="font-size: 32px; font-weight:500;">About this project</h3>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 col-sm-12 col-md-5">
+                {{-- <img src="/frontend/assets/images/circle_images.png" alt="" title="" class=""> --}}
+                <img src="{{ $home->part_1_image }}" alt="" title="" class="">
+            </div>
+            <div class="col-lg-7 col-sm-12 col-md-7">
+                <div class="row m-0">
+                    {{-- <div class="col-md-2">
+                        <img src="{{$home->part_1_image}}" alt="" title="" class="">
+                    </div> --}}
+                    <div class="col-md-12 col-lg-8 text-left p-0">
+                       <!--  <p>The purpose of this system is to provide a searchable and filterable directory of organizations, contacts and facilities to signed in users. Users can export any data about those three elements from the directory.</p> -->
+                       {!! $home->sidebar_content !!}
+                    </div>
+                </div>
+                {{-- <div class="row m-0">
+                    <div class="col-md-2">
+                        <img src="{{$home->part_2_image}}" alt="" title="" class="">
+                    </div>
+                    <div class="col-md-8 text-left p-0">
+                        <!-- <p>A special class of users can also send three types of messages to contacts in the directory: email messages, SMS and recorded voice messages.</p> -->
+                        {!! $home->sidebar_content_part_2 !!}
+                    </div>
+                </div>
+                <div class="row m-0">
+                    <div class="col-md-2">
+                        <img src="{{$home->part_3_image}}" alt="" title="" class="">
+                    </div>
+                    <div class="col-md-8 text-left p-0">
+                        <!-- <p>Contacts can be organized into groups, and these messages can be sent to multiple groups of contacts at a single time. Replies to email, SMS and voice messages are recorded and attached to the message report for analysis.</p> -->
+                        {!! $home->sidebar_content_part_3 !!}
+                    </div>
+                </div> --}}
+                {{-- {!! $home->sidebar_content !!} --}}
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+<!-- About section end -->
+
 {{-- <div id="content" class="container m-0" style="width: 100%;">
         <div class=" pt-20 pl-15" style="margin-right: 0">
             <div class="col-xl-7 col-md-7">
