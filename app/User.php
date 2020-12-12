@@ -23,7 +23,7 @@ class User extends Authenticatable
         'first_name',
         'permissions',
         'remember_token',
-        'organization',
+        'user_organization',
         'role_id',
         'created_by',
         'status',

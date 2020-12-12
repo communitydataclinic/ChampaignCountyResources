@@ -219,7 +219,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        Session::flash('message', 'Success! User is deleted successfully.');
+        Session::flash('message', 'Success! User was deleted successfully.');
         Session::flash('status', 'success');
 
         return redirect()->route('user.index');
@@ -324,7 +324,7 @@ class UserController extends Controller
 
         $user->save();
 
-        Session::flash('message', 'Success! Permissions are stored successfully.');
+        Session::flash('message', 'Success! Permissions were stored successfully.');
         Session::flash('status', 'success');
 
         return redirect()->route('user.index');

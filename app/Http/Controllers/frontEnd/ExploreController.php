@@ -281,6 +281,7 @@ class ExploreController extends Controller
         $child_taxonomy = [];
 
         $chip_service = $request->input('find');
+        //$chip_service = str_replace(" ", "%", $chip_service);
 
         $chip_address = $request->input('search_address');
 

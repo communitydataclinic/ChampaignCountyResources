@@ -78,7 +78,7 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $layout = Layout::first();
-        $organization_info_list = Organization::select("organization_name", "organization_recordid")->distinct()->get();
+        $organization_info_list = Organization::select("organization_name", "organization_recordid")->distinct()->orderBy('organization_name', 'ASC')->get();
         return view('auth.register', compact('layout', 'organization_info_list'));
     }
     public function register(Request $request)
@@ -87,6 +87,7 @@ class RegisterController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'organization' => 'required',
             'password' => 'required|string|min:6|confirmed',
         ]);
         // dd($request);
@@ -96,19 +97,22 @@ class RegisterController extends Controller
                 'last_name' => $request->last_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'user_organization' =>  $request->organization,
-                // 'role_id' => '2'
+                'user_organization' => $request->organization,
+                'role_id' => '3', // Registered user always should be organization manager
             ]);
 
             if ($user) {
-                $user->user_organization = join(',', $request->organization);
+                //$user->user_organization = join(',', $request->organization);
                 $user->save();
+
+                // Add the user in the organization
                 $user->organizations()->sync($request->organization);
-                // $user->roles()->sync([2]); // 2 = client
-                Session::flash('message', 'Registration is completed');
+                //$user->roles()->sync([2]); // 2 = client
+
+                Session::flash('message', 'Your registration was completed. We will contact you to verify your information and activate your user.');
                 Session::flash('status', 'success');
             }
-            return redirect('/');
+            return redirect()->back();
         } catch (\Throwable $th) {
             dd($th);
             Session::flash('message', 'There was an error with the registration');
