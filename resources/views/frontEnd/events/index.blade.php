@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title')
-Organizations
+Events
 @stop
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <style>
@@ -14,7 +14,7 @@ Organizations
         }
 </style>
 @section('content')
-@include('layouts.filter_organization')
+@include('layouts.filter_event')
 @include('layouts.sidebar_organization')
 <div class="inner_services">
     <div id="content" class="container">
@@ -37,25 +37,13 @@ Organizations
                     <h5>
                         <a href="" class="notranslate title_org" >Service Name: {{$event->event_service_name}}</a>
                     </h5>
-                    
-                    @if($event->event_recordid == 1)
                     <div>
-                    <button style="background-color:red; color:white;">Covid-19</button>
-                    <button style="background-color:green; color:white;">Health</button>
-                    <button style="background-color:orange; color:white;">Volunteer</button>
+                    @foreach($taxonomy_list as $tax)
+                        @if($tax->event_recordid == $event->event_recordid)
+                            <button style="background-color:{{$tax->color}}; color:white;">{{$tax->taxonomy_name}}</button>
+                        @endif
+                    @endforeach
                     </div>
-                    @endif
-                    @if($event->event_recordid == 2)
-                    <div>
-                    <button style="background-color:orange; color:white;">Volunteer</button>
-                    <button style="background-color:blue; color:white;">Law Enforcement</button>
-                    </div>
-                    @endif
-                    @if($event->event_recordid == 3)
-                    <div>
-                    <button style="background-color:pink; color:white;">Food Resources</button>
-                    </div>
-                    @endif
                 </div>
             </div>
             @endforeach

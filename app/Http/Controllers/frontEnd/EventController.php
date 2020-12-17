@@ -12,6 +12,7 @@ use App\Model\Suggest;
 use App\Model\Email;
 use App\Model\Event;
 use App\Model\Layout;
+use App\Model\EventTaxonomy;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use SendGrid;
@@ -28,7 +29,10 @@ class EventController extends Controller
     {
         $events = Event::orderBy('event_recordid')->paginate(20);
         $map = Map::find(1);
-        return view('frontEnd.events.index', compact('events', 'map'));
+        $taxonomy_list = EventTaxonomy::get();
+
+        
+        return view('frontEnd.events.index', compact('events', 'map', 'taxonomy_list'));
     }
 
     /**
@@ -40,8 +44,9 @@ class EventController extends Controller
     {
         $map = Map::find(1);
         $events = Event::pluck('event_title', "event_recordid");
+        $taxonomy_list = EventTaxonomy::get();
 
-        return view('frontEnd.event.create', compact('map', 'events'));
+        return view('frontEnd.event.create', compact('map', 'events', 'taxonomy_list'));
     }
 
 

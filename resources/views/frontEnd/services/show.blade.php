@@ -189,7 +189,7 @@ use Carbon\Carbon;
                                 </a>
                                 @endif
                                 @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
-                                <a href="/services/{{$service->service_recordid}}/edit" class="float-right">
+                                <a href="/{{$service->service_recordid}}/edit" class="float-right">
                                     <i class="icon md-edit mr-0"></i>
                                 </a>
                                 @endif

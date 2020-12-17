@@ -80,6 +80,9 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::match(['get', 'post'], '/search_organization', [
         'uses' => 'frontEnd\ExploreController@filter_organization',
     ]);
+    Route::match(['get', 'post'], '/search_event', [
+        'uses' => 'frontEnd\ExploreController@filter_event',
+    ]);
 
     // organization route
     Route::resource('/organizations', 'frontEnd\OrganizationController');

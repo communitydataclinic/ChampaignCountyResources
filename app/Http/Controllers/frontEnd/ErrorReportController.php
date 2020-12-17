@@ -196,16 +196,19 @@ class ErrorReportController extends Controller
             if ($layout) {
                 $site_name = $layout->site_name;
             }
+            
             $email = new Mail();
             $email->setFrom($from, $name);
             $subject = 'An update was made for the error you reported at ' . $site_name;
             $email->setSubject($subject);
+            
             
             $body = 'Thank you for helping us improve! Check out the service page to see the new update.';
 
             $error_info = Error::where('error_recordid', '=', $request->error_recordid)->first();
             $service_info = Service::where('service_recordid', '=', $error_info->error_service)->first();
             $organization_info = Organization::where('organization_recordid', '=', $error_info->error_organization)->first();
+            $user_info = User::where('user_organization', '=', $request->error_organization)->get();
             $message = '<html><body>';
             $message .= '<h1 style="color:#424242;">Thanks for your suggestion!</h1>';
             $message .= '<p style="color:#424242;font-size:18px;">Errors are fixed at ' . $site_name . ' website.</p>';
@@ -224,8 +227,11 @@ class ErrorReportController extends Controller
             foreach ($contact_email_list as $key => $contact_email) {
                 $email->addTo($contact_email, $username);
             }
-            // $email->addTo($request->email, $username);
-            $email->addTo($service_info->service_email, $username);
+            if($user_info != NULL){
+                foreach ($user_info as $key => $user_info_list){
+                    $email->addTo($user_info_list->email, $username);
+                }
+            }
             $response = $sendgrid->send($email);
 
             Error::where('error_recordid', $request->error_recordid)->delete();

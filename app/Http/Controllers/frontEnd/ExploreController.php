@@ -19,6 +19,7 @@ use App\Model\ServiceOrganization;
 use App\Model\ServiceTaxonomy;
 use App\Model\Source_data;
 use App\Model\Taxonomy;
+use App\Model\Event;
 use Geocode;
 use Geolocation;
 use Illuminate\Http\Request;
@@ -949,6 +950,114 @@ class ExploreController extends Controller
         return view('frontEnd.organizations.index', compact('map', 'organizations', 'chip_organization', 'search_results', 'organization_tag_list', 'pagination', 'sort', 'organization_tags'));
     }
 
+
+    public function filter_event(Request $request)
+    {
+        $event_tag_list = Event::whereNotNull('event_recordid')->select('event_recordid')->pluck('event_recordid')->toArray();
+        $chip_event = $request->input('find');
+        $sort = $request->input('sort');
+        $event_tags = $request->get('event_tags');
+
+        $checked_taxonomies = $request->input('selected_taxonomies');
+        $events = Event::where('event_title', 'like', '%' . $chip_event . '%');
+
+        if ($event_tags) {
+            $event_tags = explode(',', $event_tags);
+            $events = $events->whereIn('event_tag', $event_tags);
+        }
+        $selected_taxonomies = [];
+        if ($checked_taxonomies != null) {
+            $assert_selected_taxonomies = explode(',', $checked_taxonomies);
+            for ($i = 0; $i < count($assert_selected_taxonomies); $i++) {
+                $assert_selected_taxonomy = explode('child_', $assert_selected_taxonomies[$i]);
+                if (count($assert_selected_taxonomy) > 1) {
+                    array_push($selected_taxonomies, $assert_selected_taxonomy[1]);
+                } else {
+                    array_push($selected_taxonomies, $assert_selected_taxonomy[0]);
+                }
+            }
+        }
+
+        $taxonomies = Taxonomy::whereIn('taxonomy_recordid', $selected_taxonomies)->get();
+        $eventsIds = [];
+        foreach ($taxonomies as $key => $taxonomy) {
+            $event_list = $taxonomy->service()->select('event_organization')->get();
+            foreach ($event_list as $key => $events_list) {
+                $eventsIds[] = $events_list->event_organization;
+            }
+        }
+
+
+        $search_results = $events->count();
+
+        $pagination = strval($request->input('paginate'));
+
+        if ($sort == 'Most Recently Updated') {
+            $events = $events->orderBy('updated_at', 'desc')->paginate($pagination);
+        } else if ($sort == 'Least Recently Updated') {
+            $events = $events->orderBy('updated_at')->paginate($pagination);
+        } else {
+            $events = $events->orderBy('updated_at', 'desc')->paginate($pagination);
+        }
+
+        foreach ($events as $key => $event) {
+            if (isset($event->services) && $event->services->count() > 0) {
+                foreach ($event->services as $key => $service) {
+                    $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
+
+                    foreach ($service_taxonomy_recordid_list as $key => $service_taxonomy_recordid) {
+
+                        $taxonomy = Taxonomy::where('taxonomy_recordid', '=', (int) ($service_taxonomy_recordid))->first();
+                        if (isset($taxonomy)) {
+                            $service_taxonomy_name = $taxonomy->taxonomy_name;
+                            $service_taxonomy_info_list[$service_taxonomy_recordid] = $service_taxonomy_name;
+                        }
+                    }
+                }
+            }
+        }
+
+        $map = Map::find(1);
+        if ($event_tags != '') {
+            $event_tags = implode(',', $event_tags);
+        }
+        if ($request->event_csv == 'csv') {
+            return Excel::download(new eventExport($request), 'event.csv');
+        }
+        if ($request->event_pdf == 'pdf') {
+            $layout = Layout::find(1);
+
+            $events = event::select('*');
+            if ($chip_event) {
+                $events = event::where('event_name', 'like', '%' . $chip_event . '%');
+            }
+            if ($event_tags) {
+                $event_tags = explode(',', $event_tags);
+                $events = $events->whereIn('event_tag', $event_tags);
+            }
+            if (strpos(url()->previous(), '/events/') !== false) {
+                $url = url()->previous();
+                $recordedId = explode('events/', $url);
+                if (count($recordedId) > 1) {
+                    $events = $events->where('event_recordid', $recordedId[1]);
+                }
+            }
+            if ($sort == 'Most Recently Updated') {
+                $events = $events->orderBy('updated_at', 'desc')->get();
+            } else if ($sort == 'Least Recently Updated') {
+                $events = $events->orderBy('updated_at')->get();
+            } else {
+                $events = $events->orderBy('updated_at', 'desc')->get();
+            }
+
+            $pdf = PDF::loadView('frontEnd.events.events_download', compact('events', 'layout'));
+
+            return $pdf->download('events.pdf');
+        }
+        return view('frontEnd.events.index', compact('map', 'events', 'chip_event', 'search_results', 'event_tag_list', 'pagination', 'sort', 'event_tags'));
+    }
+
+    
     /**
      * Show the form for editing the specified resource.
      *
