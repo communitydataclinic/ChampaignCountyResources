@@ -142,6 +142,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
 
     //event
     Route::resource('/events', 'frontEnd\EventController');
+    
 
     //error reporting
     Route::resource('/error', 'frontEnd\ErrorReportController');

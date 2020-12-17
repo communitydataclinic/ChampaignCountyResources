@@ -11,6 +11,10 @@ use App\Model\Error;
 use App\Model\Suggest;
 use App\Model\Email;
 use App\Model\Event;
+use App\Model\Location;
+use App\Model\LocationAddress;
+use App\Model\LocationPhone;
+
 use App\Model\Layout;
 use App\Model\EventTaxonomy;
 use Carbon\Carbon;
@@ -30,9 +34,10 @@ class EventController extends Controller
         $events = Event::orderBy('event_recordid')->paginate(20);
         $map = Map::find(1);
         $taxonomy_list = EventTaxonomy::get();
+        $service = Service::get();
 
         
-        return view('frontEnd.events.index', compact('events', 'map', 'taxonomy_list'));
+        return view('frontEnd.events.index', compact('events', 'map', 'taxonomy_list', 'service'));
     }
 
     /**
@@ -45,8 +50,9 @@ class EventController extends Controller
         $map = Map::find(1);
         $events = Event::pluck('event_title', "event_recordid");
         $taxonomy_list = EventTaxonomy::get();
+        $service = Service::get();
 
-        return view('frontEnd.event.create', compact('map', 'events', 'taxonomy_list'));
+        return view('frontEnd.events.create', compact('map', 'events', 'taxonomy_list', 'service'));
     }
 
 
@@ -70,6 +76,13 @@ class EventController extends Controller
     public function show($id)
     {
         //
+        $map = Map::find(1);
+        $events = Event::where('event_recordid', '=', $id)->first();
+        $taxonomy_list = EventTaxonomy::get();
+        $locations = Location::where('location_recordid', '=', $events->locations)->get();
+
+
+        return view('frontEnd.events.show', compact('map', 'events', 'taxonomy_list', 'locations'));
     }
 
     /**

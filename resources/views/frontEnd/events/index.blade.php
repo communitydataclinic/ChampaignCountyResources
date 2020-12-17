@@ -22,20 +22,12 @@ Events
             @foreach($events as $event)
             <div class="card" style="text-align:center;">
                 <div class="card-block">
-                    @if($event->event_recordid == 1)
-                    <img src="/frontend/assets/images/test1.png" alt="" title="" class="org_logo_img" style="width:75%; height:auto;">
-                    @endif
-                    @if($event->event_recordid == 2)
-                    <img src="/frontend/assets/images/test2.png" alt="" title="" class="org_logo_img" style="width:75%; height:auto;">
-                    @endif
-                    @if($event->event_recordid == 3)
-                    <img src="/frontend/assets/images/test3.png" alt="" title="" class="org_logo_img" style="width:75%; height:auto;">
-                    @endif
+                    <img src=".{{$event->logo}}" alt="" title="" class="org_logo_img" style="width:75%; height:auto;">
                     <h4 class="card-title">
-                        <a href="" class="notranslate title_org" >{{$event->event_title}}</a>
+                        <a href="/events/{{$event->event_recordid}}" class="notranslate title_org" >{{$event->event_title}}</a>
                     </h4>
                     <h5>
-                        <a href="" class="notranslate title_org" >Service Name: {{$event->event_service_name}}</a>
+                        <a href="/services/{{$event->event_service}}" class="notranslate title_org" >Service Name: {{$event->event_service_name}}</a>
                     </h5>
                     <div>
                     @foreach($taxonomy_list as $tax)
