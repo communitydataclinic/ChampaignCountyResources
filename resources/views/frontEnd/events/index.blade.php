@@ -16,6 +16,12 @@ Events
 @section('content')
 @include('layouts.filter_event')
 @include('layouts.sidebar_organization')
+<div class="top_services_filter">
+    <div class="container" style="text-align:right;">
+        <input type="checkbox" class="checkbox">
+        <span class="checkmark">Calendar</span>
+    </div>
+</div>
 <div class="inner_services">
     <div id="content" class="container">
     <div class="col-sm-12 p-0 card-columns">
