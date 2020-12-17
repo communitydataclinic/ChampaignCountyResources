@@ -235,7 +235,13 @@ Services
                 <div class="example col-md-12">
                     <div class="row">
                         <div class="col-md-6 pagination_text">
-                            <p>Showing {{ $services->currentPage() * Request::get('paginate') - intval(Request::get('paginate') - 1)  }}-{{ $services->currentPage() * Request::get('paginate')  }} of {{ $services->total() }} items  <span>Show {{ Request::get('paginate') }} per page</span></p>
+                        <?php
+                            // ServiceController defines default results per page using the $pagination parameter
+
+                            // Paginate parameter defines the selected number of results in the dropdownlist on this page
+                            if (Request::get("paginate") != null) $pagination = Request::get("paginate");
+                        ?>
+                            <p>Showing {{ $services->currentPage() * $pagination - intval($pagination - 1)  }}-{{ $services->currentPage() * $pagination  }} of {{ $services->total() }} items  <span>Showing {{ $pagination }} per page</span></p>
                         </div>
                         <div class="col-md-6 text-right">
                             {{ $services->appends(\Request::except('page'))->render() }}

@@ -31,13 +31,16 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::orderBy('event_recordid')->paginate(20);
+        // Set default number of events per page
+        $pagination = 10;
+        
+        $events = Event::orderBy('event_recordid')->paginate($pagination);
         $map = Map::find(1);
         $taxonomy_list = EventTaxonomy::get();
         $service = Service::get();
 
         
-        return view('frontEnd.events.index', compact('events', 'map', 'taxonomy_list', 'service'));
+        return view('frontEnd.events.index', compact('pagination', 'events', 'map', 'taxonomy_list', 'service'));
     }
 
     /**

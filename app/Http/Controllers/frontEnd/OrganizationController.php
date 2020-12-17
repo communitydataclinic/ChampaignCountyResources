@@ -268,7 +268,10 @@ class OrganizationController extends Controller
 
         // return view('backEnd.tables.tb_organization', compact('organizations', 'source_data'));
 
-        $organizations = Organization::orderBy('organization_name')->paginate(20);
+        // Set default number of organizations per page
+        $pagination = 10;
+
+        $organizations = Organization::orderBy('organization_name')->paginate($pagination);
         $organization_tag_list = Organization::whereNotNull('organization_tag')->select('organization_tag')->pluck('organization_tag')->toArray();
 
         $map = Map::find(1);
@@ -332,7 +335,7 @@ class OrganizationController extends Controller
             $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
         }
 
-        return view('frontEnd.organizations.index', compact('organizations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'organization_tag_list'));
+        return view('frontEnd.organizations.index', compact('pagination', 'organizations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'organization_tag_list'));
     }
     public function tb_organizations()
     {

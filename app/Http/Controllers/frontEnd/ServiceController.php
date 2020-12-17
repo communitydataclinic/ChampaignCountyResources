@@ -131,7 +131,11 @@ class ServiceController extends Controller
             $locations_ids = Servicelocation::whereIn('service_recordid', $services_ids)->pluck('location_recordid')->toArray();
             $locations = $locations->whereIn('location_recordid', $locations_ids);
         }
-        $services = $services->paginate(10);
+
+        // Set default number of services per page
+        $pagination = 10; 
+        
+        $services = $services->paginate($pagination);
 
         $service_taxonomy_info_list = [];
         foreach ($services as $key => $service) {
@@ -194,7 +198,7 @@ class ServiceController extends Controller
             $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
         }
 
-        return view('frontEnd.services.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list'))->with('taxonomy_tree', $taxonomy_tree);
+        return view('frontEnd.services.services', compact('pagination','services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list'))->with('taxonomy_tree', $taxonomy_tree);
     }
 
     public function tb_services()

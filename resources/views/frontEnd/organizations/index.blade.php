@@ -46,7 +46,13 @@ Organizations
         <div class="example col-md-12">
             <div class="row">
                 <div class="col-md-6 pagination_text">
-                    <p>Showing {{ $organizations->currentPage() * Request::get('paginate') - intval(Request::get('paginate') - 1)  }}-{{ $organizations->currentPage() * Request::get('paginate')  }} of {{ $organizations->total() }} items  <span>Show {{ Request::get('paginate') }} per page</span></p>
+                <?php
+                    // OrganizationController defines default results per page using the $pagination parameter
+
+                    // Paginate parameter defines the selected number of results in the dropdownlist on this page
+                    if (Request::get("paginate") != null) $pagination = Request::get("paginate");
+                ?>
+                    <p>Showing {{ $organizations->currentPage() * $pagination - intval($pagination - 1)  }}-{{ $organizations->currentPage() * $pagination  }} of {{ $organizations->total() }} items  <span>Showing {{ $pagination }} per page</span></p>                
                 </div>
                 <div class="col-md-6 text-right">
                     {{ $organizations->appends(\Request::except('page'))->render() }}
