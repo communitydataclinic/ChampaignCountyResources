@@ -8,6 +8,8 @@ use App\Model\Analytic;
 use App\Model\csv;
 use App\Model\Detail;
 use App\Model\Layout;
+
+use App\Model\EventTaxonomy;
 use App\Model\Location;
 use App\Model\Map;
 use App\Model\MetaFilter;
@@ -953,6 +955,7 @@ class ExploreController extends Controller
 
     public function filter_event(Request $request)
     {
+        $taxonomy_list = EventTaxonomy::get();
         $event_tag_list = Event::whereNotNull('event_recordid')->select('event_recordid')->pluck('event_recordid')->toArray();
         $chip_event = $request->input('find');
         $sort = $request->input('sort');
@@ -1054,7 +1057,7 @@ class ExploreController extends Controller
 
             return $pdf->download('events.pdf');
         }
-        return view('frontEnd.events.index', compact('map', 'events', 'chip_event', 'search_results', 'event_tag_list', 'pagination', 'sort', 'event_tags'));
+        return view('frontEnd.events.index', compact('map', 'events', 'chip_event', 'search_results', 'event_tag_list', 'pagination', 'sort', 'event_tags', 'taxonomy_list'));
     }
 
     
