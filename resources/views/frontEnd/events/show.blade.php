@@ -91,7 +91,15 @@ use Carbon\Carbon;
                                     @endif
                                 @endif
                             </h4>
-
+                            <h4 class="org_title"><span class="subtitle"><b>Location:</b></span>
+                                @if($events->locations!=0)
+                                    @foreach($locations as $location)
+                                        @if($location->location_recordid == $events->locations)
+                                            {{$location->location_name}}
+                                        @endif
+                                    @endforeach
+                                @endif
+                            </h4>
                             <h4 class="service-description" style="line-height: inherit;"> {!! nl2br($events->event_detail) !!}</h4>
 
                             
