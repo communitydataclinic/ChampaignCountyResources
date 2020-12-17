@@ -124,7 +124,7 @@ Home
                                     <div class="col-md-9 pl-0">
                                         <img src="/frontend/assets/images/location.png" alt="" title="" class="form_icon_img">
                                         {{-- <input type="text" class="form-control pr-50" id="location1" name="search_address" placeholder="Search Location..."> --}}
-                                        <a href="javascript:void(0)" class="input-search-btn" style="z-index: 100;" onclick="getLocation()" ><img src="/frontend/assets/examples/images/location.png" style="width: 20px;margin: 22px 0;"></a>
+                                        <!--a href="javascript:void(0)" class="input-search-btn" style="z-index: 100;" onclick="getLocation()" ><img src="/frontend/assets/examples/images/location.png" style="width: 20px;margin: 22px 0;"></a-->
                                         <input type="text" class="form-control pr-50" id="location1" name="search_address" placeholder="Search Location...">
                                     </div>
                                     <div class="col-md-3 p-0">
@@ -462,14 +462,15 @@ Home
     </div>
 </div>
 <!-- Highlighted events section start -->
-<div class="home_page_content text-center" style="padding-bottom:20px;">
-    <div class="panel-heading text-center">
-        <h3 class="panel-title" style="font-size: 32px; font-weight:500;">Highlighted Events</h3>
-    </div>
-    <div class="container">
-        <div class="row">
+<div class="browse_category" id="events">
+    <div class="page-content">
+        <div class="container">
+            <div class="text-center">
+                <h3>Highlighted events</h3>
+            </div>
+            <div class="row">
             <div class="col-sm-1"></div>
-            <div class = "first_event col-sm-3"><img src="/frontend/assets/images/test1.png" alt="" title="" class="" style="width:75%; height:auto;">
+            <div class = "first_event col-sm-3 text-center"><img src="/frontend/assets/images/test1.png" alt="" title="" class="" style="width:75%; height:auto;">
             <h4 style="overflow-wrap: break-word;">
             <?php
 
@@ -482,83 +483,86 @@ Home
                 }
             ?>
             </h4>
-        </div>
-        <div class = "second_event col-sm-3"><img src="/frontend/assets/images/test2.png" alt="" title="" class="" style="width:75%; height:auto;">
-        <h4 style="overflow-wrap: break-word;">
-        <?php
+            </div>
+            <div class = "second_event col-sm-3 text-center"><img src="/frontend/assets/images/test2.png" alt="" title="" class="" style="width:75%; height:auto;">
+            <h4 style="overflow-wrap: break-word;">
+            <?php
 
-            $events = App\Model\Event::all();
+                $events = App\Model\Event::all();
 
-            foreach ($events as $event) {
-                if($event->event_recordid == 2){
-                    echo $event->event_title;
+                foreach ($events as $event) {
+                    if($event->event_recordid == 2){
+                        echo $event->event_title;
+                    }
                 }
-            }
-        ?>
-        </h4>
-        </div>
-        <div class = "third_event col-sm-3"><img src="/frontend/assets/images/test3.png" alt="" title="" class="" style="width:75%; height:auto;">
-        <h4 style="overflow-wrap: break-word;">
-        <?php
+            ?>
+            </h4>
+            </div>
+            <div class = "third_event col-sm-3 text-center"><img src="/frontend/assets/images/test3.png" alt="" title="" class="" style="width:75%; height:auto;">
+            <h4 style="overflow-wrap: break-word;">
+            <?php
 
-            $events = App\Model\Event::all();
+                $events = App\Model\Event::all();
 
-            foreach ($events as $event) {
-                if($event->event_recordid == 3){
-                    echo $event->event_title;
+                foreach ($events as $event) {
+                    if($event->event_recordid == 3){
+                        echo $event->event_title;
+                    }
                 }
-            }
-        ?>
-        </h4>
-        </div>
+            ?>
+            </h4>
+            </div>
         <div class = "see_more col-sm-2" style="padding-top:5em;"><h4 style="text-decoration: underline;"><a href="/events">>>See More</a></h4></div>
         </div>
+    </div>
         </div>
+    </div>
 </div>
-<!-- end below after serching div -->
 <!-- Highlighted events section end -->
 
 <!-- About section start -->
 @if ($home->home_page_style == 'Services (ex. larable-dev.sarapisorg)')
-<div class="home_page_content text-center" id="home_page_content">
-    <div class="panel-heading text-center">
-        <h3 class="panel-title" style="font-size: 32px; font-weight:500;">About this project</h3>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-5 col-sm-12 col-md-5">
-                {{-- <img src="/frontend/assets/images/circle_images.png" alt="" title="" class=""> --}}
-                <img src="{{ $home->part_1_image }}" alt="" title="" class="">
+<div class="browse_category" id="home_page_content">
+    <div class="page-content">
+        <div class="container">
+            <div class="text-center">
+                <h3>About this project</h3>
             </div>
-            <div class="col-lg-7 col-sm-12 col-md-7">
-                <div class="row m-0">
-                    {{-- <div class="col-md-2">
-                        <img src="{{$home->part_1_image}}" alt="" title="" class="">
+            <div class="row">
+                <div class="col-lg-5 col-sm-12 col-md-5 text-center">
+                    {{-- <img src="/frontend/assets/images/circle_images.png" alt="" title="" class=""> --}}
+                    <img src="{{ $home->part_1_image }}" alt="" title="" class="">
+                </div>
+                <div class="col-lg-7 col-sm-12 col-md-7">
+                    <div class="row m-0">
+                        {{-- <div class="col-md-2">
+                            <img src="{{$home->part_1_image}}" alt="" title="" class="">
+                        </div> --}}
+                        <div class="col-md-12 col-lg-8 text-left p-0">
+                        <!--  <p>The purpose of this system is to provide a searchable and filterable directory of organizations, contacts and facilities to signed in users. Users can export any data about those three elements from the directory.</p> -->
+                        {!! $home->sidebar_content !!}
+                        </div>
+                    </div>
+                    {{-- <div class="row m-0">
+                        <div class="col-md-2">
+                            <img src="{{$home->part_2_image}}" alt="" title="" class="">
+                        </div>
+                        <div class="col-md-8 text-left p-0">
+                            <!-- <p>A special class of users can also send three types of messages to contacts in the directory: email messages, SMS and recorded voice messages.</p> -->
+                            {!! $home->sidebar_content_part_2 !!}
+                        </div>
+                    </div>
+                    <div class="row m-0">
+                        <div class="col-md-2">
+                            <img src="{{$home->part_3_image}}" alt="" title="" class="">
+                        </div>
+                        <div class="col-md-8 text-left p-0">
+                            <!-- <p>Contacts can be organized into groups, and these messages can be sent to multiple groups of contacts at a single time. Replies to email, SMS and voice messages are recorded and attached to the message report for analysis.</p> -->
+                            {!! $home->sidebar_content_part_3 !!}
+                        </div>
                     </div> --}}
-                    <div class="col-md-12 col-lg-8 text-left p-0">
-                       <!--  <p>The purpose of this system is to provide a searchable and filterable directory of organizations, contacts and facilities to signed in users. Users can export any data about those three elements from the directory.</p> -->
-                       {!! $home->sidebar_content !!}
-                    </div>
+                    {{-- {!! $home->sidebar_content !!} --}}
                 </div>
-                {{-- <div class="row m-0">
-                    <div class="col-md-2">
-                        <img src="{{$home->part_2_image}}" alt="" title="" class="">
-                    </div>
-                    <div class="col-md-8 text-left p-0">
-                        <!-- <p>A special class of users can also send three types of messages to contacts in the directory: email messages, SMS and recorded voice messages.</p> -->
-                        {!! $home->sidebar_content_part_2 !!}
-                    </div>
-                </div>
-                <div class="row m-0">
-                    <div class="col-md-2">
-                        <img src="{{$home->part_3_image}}" alt="" title="" class="">
-                    </div>
-                    <div class="col-md-8 text-left p-0">
-                        <!-- <p>Contacts can be organized into groups, and these messages can be sent to multiple groups of contacts at a single time. Replies to email, SMS and voice messages are recorded and attached to the message report for analysis.</p> -->
-                        {!! $home->sidebar_content_part_3 !!}
-                    </div>
-                </div> --}}
-                {{-- {!! $home->sidebar_content !!} --}}
             </div>
         </div>
     </div>

@@ -135,7 +135,7 @@ Organization Create
                                 </div>
                             </div>                            
                             <div class="col-md-12 text-center">
-                                <a href="/" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-organization-btn"> Close</a>
+                                <a href="/" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-organization-btn"> Cancel</a>
                                 <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-organization-btn"> Save</button>
                                 
                             </div>

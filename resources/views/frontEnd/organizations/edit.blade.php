@@ -181,7 +181,7 @@ Organization Edit
                                 @endif
                                 <div class="col-md-12 text-center">
 
-                                    <a href="/organizations/{{$organization->organization_recordid}}" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-organization-btn "> Close</a>
+                                    <a href="/organizations/{{$organization->organization_recordid}}" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-organization-btn "> Cancel</a>
                                     <button type="button" class="btn btn-danger btn-lg btn_delete waves-effect waves-classic waves-effect waves-classic delete-td red_btn" id="delete-organization-btn " value="{{$organization->organization_recordid}}" data-toggle="modal" data-target=".bs-delete-modal-lg"> Delete</button>
                                     <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-organization-btn"> Save</button>
                                 </div>

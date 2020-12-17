@@ -120,7 +120,7 @@
 }
 @media (max-width: 800px) {
   .page-content.home_slide_content {
-    padding: 140px 0px;
+    padding: 80px 0px;
   }
   .home_slide_content h3 {
     font-size: 30px;
@@ -181,7 +181,7 @@
     color: #ffffff;
   }
   .page-content.home_slide_content {
-    padding: 140px 0px 80px 0px;
+    padding: 80px 0px 0px 0px;
   }
   .page-register .home_serach_form .form-control,
   .home_serach_form.filter_serach .form-control {
@@ -440,7 +440,7 @@
     font-size: 25px;
   }
   .page-content.home_slide_content {
-    padding: 100px 0px 50px 0px;
+    padding: 80px 0px 0px 0px;
   }
   .category_icon .inner_category img {
     width: auto;
