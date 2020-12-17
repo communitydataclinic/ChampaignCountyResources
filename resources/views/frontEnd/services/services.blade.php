@@ -162,7 +162,7 @@ Services
                                         @endif
                                         <p style="float: right;">{{ isset($service->miles)  ? floatval(number_format($service->miles,2)) .' miles'  : '' }}</p>
                                     </h4>
-                                    <h4 class="org_title"><span class="subtitle"><b>Service:</b></span>
+                                    <h4 class="org_title"><!--span class="subtitle"><b>Service:</b></span-->
                                         <a class="panel-link" href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>                                        
                                     </h4>
                                     <h4  style="line-height: inherit;">{!! Str::limit(str_replace(array('\n', '/n', '*'), array(' ', ' ', ' '), $service->service_description), 200) !!}</h4>
@@ -189,7 +189,6 @@ Services
                                     </h4>
                                     <h4 class="org_title">
                                         <!--span class="pl-0 category_badge subtitle"><b>Types of Services:</b-->
-                                        <span class="subtitle">Types of Services:</span>
                                         <span class="pl-0 category_badge subtitle">                                        
                                             @if($service->service_taxonomy != null)
                                                 @php $service_taxonomy_recordid_list = explode(',', $service->service_taxonomy);
