@@ -296,8 +296,7 @@ use Carbon\Carbon;
                 <!--Error changing design-->
                 <!-- comment area design -->
 
-                <!-- comment area not used in this project. Hidden to users -->
-
+                <!-- Comment area not used in this project. Hidden to users -->
                 @if (Auth::user() && Auth::user()->roles && false)
                     <div class="card">
                         <div class="card-block">
@@ -364,7 +363,7 @@ use Carbon\Carbon;
                 </div>
                 @endif
 
-                @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin')
+                @if (false && Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin')
                 <div class="pt-10 pb-10 pl-0 btn-download">
                     {{-- <form method="GET" action="/organizations/{{$organization->organization_recordid}}/tagging"
                         id="organization_tagging"> --}}
@@ -551,7 +550,7 @@ use Carbon\Carbon;
                 <!-- Contact area design -->
 
                 <!-- Session area design -->
-                @if ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                @if (false && ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin'))
                     <div class="card">
                         <div class="card-block">
                             <h4 class="card_services_title mb-20">Session

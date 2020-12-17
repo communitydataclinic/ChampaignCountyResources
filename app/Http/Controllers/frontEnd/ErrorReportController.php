@@ -57,8 +57,7 @@ class ErrorReportController extends Controller
         $this->validate($request, [
             'error_organization' => 'required',
             'error_service' => 'required',
-            'error_name' => 'required',
-            'error_email' => 'required',
+            'error_name' => 'required',        
         ]);
         try {
             $layout = Layout::find(1);
@@ -89,7 +88,7 @@ class ErrorReportController extends Controller
 
             $email = new Mail();
             $email->setFrom($from, $name);
-            $subject = 'A Error Report was Submitted at ' . $site_name;
+            $subject = 'An Error Report was Submitted at ' . $site_name;
             $email->setSubject($subject);
 
             $body = $request->error_content;
@@ -119,7 +118,10 @@ class ErrorReportController extends Controller
             foreach ($contact_email_list as $key => $contact_email) {
                 $email->addTo($contact_email, $username);
             }
-            $email->addTo($request->error_email, $username);
+
+            if ($request->error_email) {
+                $email->addTo($request->error_email, $username);
+            }
 
             if($user_info != NULL){
                 foreach ($user_info as $key => $user_info_list){

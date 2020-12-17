@@ -332,8 +332,13 @@ use Carbon\Carbon;
                                 <span style="margin-bottom: 20px;display: inline-block;font-weight: 600;text-decoration: underline; color: #5051db;cursor: pointer;" id="hideHolidays"><a>Hide holidays</a></span> <br>
                             </div>                           
                             @endif
+
+                            @if($service->updated_at)
+                            <h4><span class="subtitle"><b>Last update: </b></span> {{date_format($service->updated_at, 'm/d/Y')}}</h4>
+                            @endif
+
                             <h4>
-                                <span class="pl-0 category_badge subtitle"><b>Types of Services:</b>
+                                <span class="pl-0 category_badge subtitle"><!--b>Types of Services:</b-->
                                     @if($service->service_taxonomy != null)
                                     @foreach($service_taxonomy_info_list as $key => $service_taxonomy_info)
                                     <a class="panel-link {{str_replace(' ', '_', $service_taxonomy_info->taxonomy_name)}}"
@@ -682,9 +687,12 @@ use Carbon\Carbon;
                                         {!! Form::select('error_service',Service::pluck('service_name', "service_recordid"),$service->service_recordid,['class'=> 'form-control selectpicker','id' => 'error_service','data-live-search' => 'true','data-size' => '5']) !!}
                                     </div>
                                     <div class="form-group">
-                                        <label>Category * </label>
-                                        <p>We are really sorry for the errors, tell us what it is about?</p>
-                                        {!! Form::text('error_content',null,['class' => 'form-control','id' => 'error_content']) !!}
+                                        <label>Error reported * </label>
+                                        <p>Sorry for the error. Please tell us the problem:</p>
+                                        <textarea id="error_content" name="error_content" class="selectpicker" rows="3"></textarea>                                
+                                        @error('error_content')
+                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -696,7 +704,7 @@ use Carbon\Carbon;
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label>Your Email * </label>
+                                        <label>Your Email </label>
                                         {!! Form::email('error_email',null,['class' => 'form-control','id' => 'error_email']) !!}
                                         
                                         @error('email')
