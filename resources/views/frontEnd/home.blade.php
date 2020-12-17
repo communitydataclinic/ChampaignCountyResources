@@ -470,48 +470,23 @@ Home
             </div>
             <div class="row">
             <div class="col-sm-1"></div>
-            <div class = "first_event col-sm-3 text-center"><img src="/frontend/assets/images/test1.png" alt="" title="" class="" style="width:75%; height:auto;">
-            <h4 style="overflow-wrap: break-word;">
             <?php
-
                 $events = App\Model\Event::all();
-
-                foreach ($events as $event) {
-                    if($event->event_recordid == 1){
-                        echo $event->event_title;
-                    }
-                }
-            ?>
-            </h4>
-            </div>
-            <div class = "second_event col-sm-3 text-center"><img src="/frontend/assets/images/test2.png" alt="" title="" class="" style="width:75%; height:auto;">
+                $highlighted = array();
+                $highlighted[0] = $events[0];
+                $highlighted[1] = $events[1];
+                $highlighted[2] = $events[2];        
+            ?>        
+            @foreach ($events as $event)   
+            <div class = "col-sm-3 text-center">
+                <a href="/events/{{$event->event_recordid}}"><img src="{{$event->logo}}" alt="" title="" class="" style="width:75%; height:auto;"></a>
             <h4 style="overflow-wrap: break-word;">
-            <?php
-
-                $events = App\Model\Event::all();
-
-                foreach ($events as $event) {
-                    if($event->event_recordid == 2){
-                        echo $event->event_title;
-                    }
-                }
-            ?>
+            <a href="/events/{{$event->event_recordid}}">{{$event->event_title}}</a>
             </h4>
+            <b>Date: </b> {{$event->event_time}}</br>
+            <b>Organized by: </b> {{$event->event_organization_name}}
             </div>
-            <div class = "third_event col-sm-3 text-center"><img src="/frontend/assets/images/test3.png" alt="" title="" class="" style="width:75%; height:auto;">
-            <h4 style="overflow-wrap: break-word;">
-            <?php
-
-                $events = App\Model\Event::all();
-
-                foreach ($events as $event) {
-                    if($event->event_recordid == 3){
-                        echo $event->event_title;
-                    }
-                }
-            ?>
-            </h4>
-            </div>
+            @endforeach
         <div class = "see_more col-sm-2" style="padding-top:5em;"><h4 style="text-decoration: underline;"><a href="/events">>>See More</a></h4></div>
         </div>
     </div>

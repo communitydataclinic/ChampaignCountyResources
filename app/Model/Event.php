@@ -14,4 +14,15 @@ class Event extends Model
     {
         return $this->belongsTo('App\Model\Organization', 'event_organization', 'organization_recordid');
     }
+
+    public function highlighted()
+    {
+        $events = $this->all();
+        $highlighted = array();
+        $highlighted[0] = $events[0];
+        $highlighted[1] = $events[1];
+        $highlighted[2] = $events[2];
+
+        return $highlighted;
+    }
 }
