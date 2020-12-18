@@ -14,29 +14,19 @@ Events
         font-size: 16px;
         }
     #calendar {
-    max-width: 500px;
+    max-width: 80%;
     margin: 0 auto;
-  }
-  .inner_services{
-      float:left;
-      width:70%;
-  }
-  .wrap{
-      float:right;
-      width:30%;
-      text-align:center;
   }
 </style>
 @section('content')
 @include('layouts.filter_event')
 @include('layouts.sidebar_organization')
-<!-- <div class="top_services_filter">
+<div class="top_services_filter">
     <div class="container" style="text-align:right;">
-        <input type="checkbox" class="checkbox" onclick="myFunction()" id="myCheck" checked="checked">
+        <input type="checkbox" class="checkbox" onclick="myFunction()" id="myCheck">
         <span class="checkmark">Calendar</span>
     </div>
-</div> -->
-<div style="padding-bottom:200px; background-color:#f4f7fb;" >
+</div>
 <div class="inner_services" id="inner_services">
     <div id="content" class="container">
     <div class="col-sm-12 p-0 card-columns">
@@ -48,7 +38,10 @@ Events
                         <a href="/events/{{$event->event_recordid}}" class="notranslate title_org" >{{$event->event_title}}</a>
                     </h4>
                     <h5>
-                        <a href="/services/{{$event->event_service}}" class="notranslate title_org" >Service Name: {{$event->event_service_name}}</a>
+                        <a href="/services/{{$event->event_service}}" class="notranslate title_org" >Date: {{$event->event_time}}</a>
+                    </h5>
+                    <h5>
+                        <a href="/services/{{$event->event_service}}" class="notranslate title_org" >Organized by: {{$event->event_service_name}}</a>
                     </h5>
                     <div>
                     @foreach($taxonomy_list as $tax)
@@ -74,109 +67,54 @@ Events
     </div>
 </div>
 <div id="wrap">
-    <h2 style="padding-top:3%; margin: 0 !important;"></h2>
-    <div id="calendar" class="calendar"></div>
-</div>
+    <div id="calendar" class="calendar" style="display:none;"></div>
 </div>
 <script>
-// function myFunction(){
-//     var checkBox = document.getElementById("myCheck");
-//     var listDisplay = document.getElementById("inner_services");
-//     var calendar = document.getElementById("calendar"); 
-//     if(checkBox.checked == true){
-//         calendar.style.display = "block";
-//     }else{
-//         calendar.style.display = "none";
-//     }
-// }
+function myFunction(){
+    var checkBox = document.getElementById("myCheck");
+    var listDisplay = document.getElementById("inner_services");
+    var calendar = document.getElementById("calendar"); 
+    if(checkBox.checked == true){
+        calendar.style.display = "block";
+        listDisplay.style.display = "none";
+        window.dispatchEvent(new Event('resize'));
+    }else{
+        calendar.style.display = "none";
+        listDisplay.style.display = "block";
+    }
+
+}
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var sets= {!! json_encode($events->toArray(), JSON_HEX_TAG) !!};
+    console.log(sets.data[0]);
+    var events_array = [];
+    sets.data.forEach(element => {
+        var value = {
+            title: element.event_title,
+            start: element.start.replace(' ', 'T'),
+            end: (element.end == '0000-00-00 00:00:00') ? '' : element.end.replace(' ', 'T')
+        }
+        events_array.push(value);
+    });
+    console.log(events_array);
     var calendar = new FullCalendar.Calendar(calendarEl, {
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
-      initialDate: '2020-09-12',
+      initialDate: date,
       navLinks: true, // can click day/week names to navigate views
       selectable: true,
       selectMirror: true,
-      select: function(arg) {
-        var title = prompt('Event Title:');
-        if (title) {
-          calendar.addEvent({
-            title: title,
-            start: arg.start,
-            end: arg.end,
-            allDay: arg.allDay
-          })
-        }
-        calendar.unselect()
-      },
-      eventClick: function(arg) {
-        if (confirm('Are you sure you want to delete this event?')) {
-          arg.event.remove()
-        }
-      },
       editable: true,
       dayMaxEvents: true, // allow "more" link when too many events
-      events: [
-        {
-          title: 'All Day Event',
-          start: '2020-09-01'
-        },
-        {
-          title: 'Long Event',
-          start: '2020-09-07',
-          end: '2020-09-10'
-        },
-        {
-          groupId: 999,
-          title: 'Repeating Event',
-          start: '2020-09-09T16:00:00'
-        },
-        {
-          groupId: 999,
-          title: 'Repeating Event',
-          start: '2020-09-16T16:00:00'
-        },
-        {
-          title: 'Conference',
-          start: '2020-09-11',
-          end: '2020-09-13'
-        },
-        {
-          title: 'Meeting',
-          start: '2020-09-12T10:30:00',
-          end: '2020-09-12T12:30:00'
-        },
-        {
-          title: 'Lunch',
-          start: '2020-09-12T12:00:00'
-        },
-        {
-          title: 'Meeting',
-          start: '2020-09-12T14:30:00'
-        },
-        {
-          title: 'Happy Hour',
-          start: '2020-09-12T17:30:00'
-        },
-        {
-          title: 'Dinner',
-          start: '2020-09-12T20:00:00'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2020-09-13T07:00:00'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2020-09-28'
-        }
-      ]
+      events: events_array
     });
+
     calendar.render();
   });
 </script>
