@@ -14,19 +14,29 @@ Events
         font-size: 16px;
         }
     #calendar {
-    max-width: 1100px;
+    max-width: 500px;
     margin: 0 auto;
+  }
+  .inner_services{
+      float:left;
+      width:70%;
+  }
+  .wrap{
+      float:right;
+      width:30%;
+      text-align:center;
   }
 </style>
 @section('content')
 @include('layouts.filter_event')
 @include('layouts.sidebar_organization')
-<div class="top_services_filter">
+<!-- <div class="top_services_filter">
     <div class="container" style="text-align:right;">
-        <input type="checkbox" class="checkbox" onclick="myFunction()" id="myCheck">
+        <input type="checkbox" class="checkbox" onclick="myFunction()" id="myCheck" checked="checked">
         <span class="checkmark">Calendar</span>
     </div>
-</div>
+</div> -->
+<div style="padding-bottom:200px; background-color:#f4f7fb;" >
 <div class="inner_services" id="inner_services">
     <div id="content" class="container">
     <div class="col-sm-12 p-0 card-columns">
@@ -63,23 +73,22 @@ Events
         </div>
     </div>
 </div>
-<div id="wrap" onload="test_resize()">
-    <div id="calendar" style="display:none;"></div>
+<div id="wrap">
+    <h2 style="padding-top:3%; margin: 0 !important;"></h2>
+    <div id="calendar" class="calendar"></div>
+</div>
 </div>
 <script>
-function myFunction(){
-    var checkBox = document.getElementById("myCheck");
-    var listDisplay = document.getElementById("inner_services");
-    var calendar = document.getElementById("calendar"); 
-    if(checkBox.checked == true){
-        listDisplay.style.display = "none";
-        calendar.style.display = "block";
-    }else{
-        listDisplay.style.display = "block";
-        calendar.style.display = "none";
-    }
-}
-
+// function myFunction(){
+//     var checkBox = document.getElementById("myCheck");
+//     var listDisplay = document.getElementById("inner_services");
+//     var calendar = document.getElementById("calendar"); 
+//     if(checkBox.checked == true){
+//         calendar.style.display = "block";
+//     }else{
+//         calendar.style.display = "none";
+//     }
+// }
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -168,11 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       ]
     });
-
     calendar.render();
   });
-
 </script>
 @endsection
-
-

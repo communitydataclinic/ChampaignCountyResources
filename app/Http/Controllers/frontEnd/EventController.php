@@ -43,6 +43,7 @@ class EventController extends Controller
         return view('frontEnd.events.index', compact('pagination', 'events', 'map', 'taxonomy_list', 'service'));
     }
 
+
     /**
      * Show the form for creating a new resource.
      *
@@ -54,8 +55,9 @@ class EventController extends Controller
         $events = Event::pluck('event_title', "event_recordid");
         $taxonomy_list = EventTaxonomy::get();
         $service = Service::get();
+        $locations = Location::where('location_recordid', '=', $events->locations)->get();
 
-        return view('frontEnd.events.create', compact('map', 'events', 'taxonomy_list', 'service'));
+        return view('frontEnd.events.create', compact('map', 'events', 'taxonomy_list', 'service', 'locations'));
     }
 
 
