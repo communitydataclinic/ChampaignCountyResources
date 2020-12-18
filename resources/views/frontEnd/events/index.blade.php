@@ -38,10 +38,10 @@ Events
                         <a href="/events/{{$event->event_recordid}}" class="notranslate title_org" >{{$event->event_title}}</a>
                     </h4>
                     <h5>
-                        <a href="/services/{{$event->event_service}}" class="notranslate title_org" >Date: {{$event->event_time}}</a>
+                        <a href="" class="notranslate title_org" >Date: {{$event->event_time}}</a>
                     </h5>
                     <h5>
-                        <a href="/services/{{$event->event_service}}" class="notranslate title_org" >Organized by: {{$event->event_service_name}}</a>
+                        <a href="/services/{{$event->event_service}}" class="notranslate title_org" >Organized by: {{$event->event_organization_name}}</a>
                     </h5>
                     <div>
                     @foreach($taxonomy_list as $tax)
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
     sets.data.forEach(element => {
         var value = {
             title: element.event_title,
-            start: element.start.replace(' ', 'T'),
+            start: (element.start == '0000-00-00 00:00:00') ? '' : element.start.replace(' ', 'T'),
             end: (element.end == '0000-00-00 00:00:00') ? '' : element.end.replace(' ', 'T')
         }
         events_array.push(value);

@@ -78,6 +78,7 @@
 								<a href="{{ route('contacts.create') }}">New Contact</a>
 								<a href="{{ route('services.create') }}">New Service</a>
 								<a href="{{ route('facilities.create') }}">New Facility</a>
+								<a href="{{ route('events.create') }}">New Event</a>
 							</div>
 						</div>
 					</li>

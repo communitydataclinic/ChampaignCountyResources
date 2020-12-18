@@ -68,20 +68,6 @@ use Carbon\Carbon;
                                 </button>
                                 <!--end share btn -->
                             </div>
-                            <h4 class="card-title">
-                                <a href="#">{{$events->event_title}}</a>
-                                @if (Auth::user() && Auth::user()->roles && $organization && Auth::user()->user_organization &&
-                                str_contains(Auth::user()->user_organization, $event_organization) && Auth::user()->roles->name == 'Organization Admin')
-                                <a href="/events/{{$events->event_recordid}}/edit" class="float-right">
-                                    <i class="icon md-edit mr-0"></i>
-                                </a>
-                                @endif
-                                @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
-                                <a href="/{{$events->event_recordid}}/edit" class="float-right">
-                                    <i class="icon md-edit mr-0"></i>
-                                </a>
-                                @endif
-                            </h4>
 
                             <h4 class="org_title"><span class="subtitle"><b>Organization:</b></span>
                                 @if($events->event_organization!=0)
