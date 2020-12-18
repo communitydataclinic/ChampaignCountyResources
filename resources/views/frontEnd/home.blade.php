@@ -473,11 +473,11 @@ Home
             <?php
                 $events = App\Model\Event::all();
                 $highlighted = array();
-                $highlighted[0] = $events[0];
-                $highlighted[1] = $events[1];
-                $highlighted[2] = $events[2];        
+                $highlighted[0] = $events[5];
+                $highlighted[1] = $events[4];
+                $highlighted[2] = $events[3];        
             ?>        
-            @foreach ($events as $event)   
+            @foreach ($highlighted as $event)   
             <div class = "col-sm-3 text-center">
                 <a href="/events/{{$event->event_recordid}}"><img src="{{$event->logo}}" alt="" title="" class="" style="width:75%; height:auto;"></a>
             <h4 style="overflow-wrap: break-word;">
