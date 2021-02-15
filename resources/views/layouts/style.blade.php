@@ -387,6 +387,7 @@ $(function () {
   .goog-te-gadget-simple {
     background-color: transparent !important;
     border: 0 !important;
+    padding: 0px !important;
   }
   .goog-te-gadget-simple .goog-te-menu-value span {
     color: white;
