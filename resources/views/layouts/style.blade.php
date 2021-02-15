@@ -390,11 +390,8 @@ $(function () {
   }
   .goog-te-gadget-simple .goog-te-menu-value span {
     color: white;
-    font-size: 14px;
-    font-weight: 500;
   }
   .goog-te-menu-value span{
-    font-family: 'Poppins', sans-serif !important;
   }
 
   .goog-te-menu-value span:nth-child(3){
@@ -404,31 +401,14 @@ $(function () {
     display: none;
   }
   .goog-te-menu-value span:nth-child(1){
-
   }
   .goog-te-gadget-simple .goog-te-menu-value span:nth-of-type(1) {
-    font-family: 'Font Awesome' !important;
-    font-weight: normal;
-    font-style: normal;
-    font-size: 22px !important;
-    position: relative;
-    display: inline-block;
-    -webkit-transform: translate(0, 0);
-    -ms-transform: translate(0, 0);
-    -o-transform: translate(0, 0);
-    transform: translate(0, 0);
-    text-rendering: auto;
-    speak: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     visibility: hidden;
   }
   .goog-te-gadget-simple .goog-te-menu-value span:before {
-    content: "Language ⏷";
+    content: "Language";
     visibility: visible;
-    font-family: "Neue Haas Grotesk Display Medium" !important;
-    font-weight: 500;
-    font-size: 16px;
+    font-weight: 600;
   }
   .goog-te-menu-value {
     max-width: 22px;
