@@ -409,7 +409,6 @@ $(function () {
   .goog-te-gadget-simple .goog-te-menu-value span:before {
     content: "Language";
     visibility: visible;
-    font-weight: 600;
   }
   .goog-te-menu-value {
     max-width: 22px;
