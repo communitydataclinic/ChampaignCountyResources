@@ -1,3 +1,11 @@
+<?php
+use App\Model\Organization;
+use App\Model\Service;
+use App\Model\Suggest;
+use App\Model\Error;
+use App\Model\Event;
+use Carbon\Carbon;
+?>
 @extends('layouts.app')
 @section('title')
 {{$organization->organization_name}}
@@ -7,6 +15,20 @@
 @section('content')
 @include('layouts.filter_organization')
 @include('layouts.sidebar_organization')
+<style type="text/css">
+    .grid-container {
+        display: grid;
+        grid-template-columns: 200px 100px 80px;
+        overflow: scroll;
+        margin-top: 5px;
+    }
+    /* Responsive layout - makes a one column layout instead of a two-column layout */
+    @media (max-width: 800px) {
+        .flex-container {
+            flex-direction: column;
+        }
+    }
+</style>
 <div class="breadcume_top">
     <div class="container">
         <div class="row">
@@ -39,13 +61,13 @@
                                     ({{$organization->organization_alternate_name}})
                                 @endif
                             </a>
-                            @if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
+                            @if (Auth::user() && Auth::user()->roles && Auth::user()->status == 0 && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
                             $organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')
                             <a href="/organizations/{{$organization->organization_recordid}}/edit" class="float-right">
                                 <i class="icon md-edit mr-0"></i>
                             </a>
                             @endif
-                            @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                            @if (Auth::user() && Auth::user()->roles && Auth::user()->status == 0 && Auth::user()->roles->name == 'System Admin')
                             <a href="/organizations/{{$organization->organization_recordid}}/edit" class="float-right">
                                 <i class="icon md-edit mr-0"></i>
                             </a>
@@ -96,13 +118,13 @@
                         <div class="organization_services">
                             <h4 class="card-title">
                                 <a href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>
-                                @if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
+                                @if (Auth::user() && Auth::user()->roles && Auth::user()->status == 0 && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
                                 $organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')
                                 <a href="/services/{{$service->service_recordid}}/edit" class="float-right">
                                     <i class="icon md-edit mr-0"></i>
                                 </a>
                                 @endif
-                                @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                                @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin' && Auth::user()->status == 0)
                                 <a href="/services/{{$service->service_recordid}}/edit" class="float-right">
                                     <i class="icon md-edit mr-0"></i>
                                 </a>
@@ -205,9 +227,112 @@
                 </div>
                 @endif
                 <!-- Services area design -->
+                <!-- Events area design -->
+                @if(Auth::user() && Auth::user()->roles && str_contains(Event::pluck('event_organization'), $organization->organization_recordid))
+                <div class="card">
+                    <div class="card-block">
+                        <h4 class="card_services_title">Events</h4>
+                        <h4 style="margin-top: 20px;">
+                            @foreach($event_list as $key => $event)
+                            <div class="organization_services">
+                                    <h4 class="card-title">
+                                        <a href="/events/{{$event->event_recordid}}">{{$event->event_title}}</a>
+                                        @if (Auth::user() && Auth::user()->roles && Auth::user()->status == 0 && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
+                                        $organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')
+                                        <a href="/events/{{$event->event_recordid}}/edit" class="float-right">
+                                            <i class="icon md-edit mr-0"></i>
+                                        </a>
+                                        @endif
+                                        @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin' && Auth::user()->status == 0)
+                                        <a href="/events/{{$event->event_recordid}}/edit" class="float-right">
+                                            <i class="icon md-edit mr-0"></i>
+                                        </a>
+                                        @endif
+                                    </h4>
+                                    <h4 style="line-height: inherit;">Service: {{$event->event_service_name}}</h4>
+                                    <h4 style="line-height: inherit;">Contact Name: {{$event->event_contact_name}}</h4>
+                                    <h4 style="line-height: inherit;">Contact Email: {{$event->event_contact_email}}</h4>
+                                    <h4 style="line-height: inherit;">Contact Number: {{$event->event_contact_phone}}</h4>
+                                
+                            </div>
+                            @endforeach
+                        </h4>
+                    </div>
+                </div>
+                @endif
+                <!-- Events area design -->
+                <!--Error changing design-->
+                @if(Auth::user() && Auth::user()->roles && str_contains(Error::pluck('error_organization'), $organization->organization_recordid))
+                <div class="card">
+                    <div class="card-block">
+                        <h4 class="card_services_title">Reported Errors</h4>
+                        <h4 style="margin-top: 20px;">
+                            @foreach($error_list as $key => $error)
+                            <div>
+                                <div class="grid-container">
+                                    <div>Created at: {{$error->created_at}}</div>
+                                    <div><button class = "myBtn" id="myBtn" onclick="ShowModal('myModal-{{$error->error_recordid}}')">See details</button></div>
+                                    <div><button type="button" class="red_btn" id="delete-error-btn" value="{{$error->error_recordid}}" data-toggle="modal" data-target=".bs-delete-modal-lg" >Delete</button></div>
+                                    
+                                </div>
+                                <div id="myModal-{{$error->error_recordid}}" class="modal" role="dialog">
+                                    <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" onclick="closeModal('myModal-{{$error->error_recordid}}')">&times;</button>
+                                                <h4 class="modal-title">Report details</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card all_form_field">
+                                                        <div class="card-block">
+                                                            <div>Service: {{$error->error_service_name}}</div>
+                                                            <div>Reporting Content: {{$error->error_content}}</div>
+                                                            <div>Reporter: {{$error->error_username}}</div>
+                                                            <div>Contact Email: {{$error->error_user_email}}</div>
+                                                            <div>Contact Phone: {{$error->error_user_divhone}}</div>
+                                                            <div>Created Time: {{$error->created_at}}</div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
+                                    </div>
+                                </div>
+                                <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form action="{{ route('delete_error') }}" method="POST" id="error_delete_filter">
+                                                {!! Form::token() !!}
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <h4 class="modal-title" id="myModalLabel">Delete service</h4>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <input type="hidden" id="error_recordid" name="error_recordid">
+                                                    <h4>Are you sure to delete this error?</h4>
+                                                    <div id="{{$error->error_service_name}}"></div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-raised btn-lg btn_danger waves-effect waves-classic waves-effect waves-classic">Delete</button>
+                                                    <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </h4>
+                    </div>
+                </div>
+                @endif
+                <!--Error changing design-->
                 <!-- comment area design -->
-                @if (Auth::user() && Auth::user()->roles)
+
+                <!-- Comment area not used in this project. Hidden to users -->
+                @if (Auth::user() && Auth::user()->roles && false)
                     <div class="card">
                         <div class="card-block">
                             <h4 class="card_services_title">Comments</h4>
@@ -257,7 +382,7 @@
             </div>
 
             <div class="col-md-4 property">
-                @if ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                @if ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization  && Auth::user()->status == 0 && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') )
                 <div style="display: flex;" class="mb-20">
                     <div class="dropdown add_new_btn" style="width: 100%; float: right;">
                         <button class="btn btn-primary dropdown-toggle btn-block" type="button" id="dropdownMenuButton-group"
@@ -265,15 +390,32 @@
                             <i class="fas fa-plus"></i> Add New
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton-new">
-                            <a href="/service_create/{{$organization->organization_recordid}}" id="add-new-services">Add New Service</a>
-                            <a href="/contact_create/{{$organization->organization_recordid}}" id="add-new-services">Add New Contact</a>
-                            <a href="/facility_create/{{$organization->organization_recordid}}" id="add-new-services">Add New Facility</a>
+                            <a href="{{ route('services.create') }}" id="add-new-services">Add New Service</a>
+                            <a href="{{ route('facilities.create') }}" id="add-new-services">Add New Facility</a>
+                            <a href="{{ route('events.create') }}" id="add-new-services">Add New Event</a>
                         </div>
                     </div>
                 </div>
                 @endif
-
-                @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin')
+                
+                @if(Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin' && Auth::user()->status == 0 )
+                <div style="display: flex;" class="mb-20">
+                    <div class="dropdown add_new_btn" style="width: 100%; float: right;">
+                        <button class="btn btn-primary dropdown-toggle btn-block" type="button" id="dropdownMenuButton-group"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-plus"></i> Add New
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton-new">
+                        <a href="{{ route('organizations.create') }}" id="add-new-services">Add New Organization</a>
+                            <a href="{{ route('services.create') }}" id="add-new-services">Add New Service</a>
+                            <a href="{{ route('facilities.create') }}" id="add-new-services">Add New Facility</a>
+                            <a href="{{ route('contacts.create') }}" id="add-new-services">Add New Contact</a>
+                            <a href="{{ route('events.create') }}" id="add-new-services">Add New Event</a>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                @if (false && Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin')
                 <div class="pt-10 pb-10 pl-0 btn-download">
                     {{-- <form method="GET" action="/organizations/{{$organization->organization_recordid}}/tagging"
                         id="organization_tagging"> --}}
@@ -302,7 +444,7 @@
                         <div class="p-25">
                             <h4 class="card_services_title">
                                 <b>Locations</b>
-                                @if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
+                                @if (Auth::user() && Auth::user()->roles && isset($service) && Auth::user()->status == 0 && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
                                 $organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')
                                 <a href="/facilities/{{$service->service_locations}}/edit" class="float-right">
                                     <i class="icon md-edit mr-0"></i>
@@ -460,7 +602,7 @@
                 <!-- Contact area design -->
 
                 <!-- Session area design -->
-                @if ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                @if (false && ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin'))
                     <div class="card">
                         <div class="card-block">
                             <h4 class="card_services_title mb-20">Session
@@ -505,7 +647,30 @@
             </div>
         </div>
     </div>
+    <!-- <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('delete_error') }}" method="POST" id="error_delete_filter">
+                    {!! Form::token() !!}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Delete service</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <input type="hidden" id="error_recordid" name="error_recordid">
+                        <h4>Are you sure to delete this error?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-raised btn-lg btn_danger waves-effect waves-classic waves-effect waves-classic">Delete</button>
+                        <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> -->
 </div>
+
 
 <script type="text/javascript" src="http://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js">
 </script>
@@ -513,8 +678,8 @@
     src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
 
 <script>
-    var tag_source = <?php print_r(json_encode($existing_tags)) ?>;
 
+    var tag_source = <?php print_r(json_encode($existing_tags)) ?>;
   $(document).ready(function() {
       $('#tokenfield').tokenfield({
       autocomplete: {
@@ -524,19 +689,15 @@
       showAutocompleteOnFocus: true
       });
   });
-
   $(document).ready(function() {
       $('.comment-reply').hide();
       $('#reply_content').val('');
   });
-
   $(document).ready(function(){
-
       var locations = <?php print_r(json_encode($locations)) ?>;
       var organization = <?php print_r(json_encode($organization->organization_name)) ?>;
       var maplocation = <?php print_r(json_encode($map)) ?>;
     //   console.log(locations);
-
       if(maplocation.active == 1){
         avglat = maplocation.lat;
         avglng = maplocation.long;
@@ -548,20 +709,16 @@
           avglng = -73.998107;
           zoom = 12;
       }
-
       latitude = locations[0].location_latitude;
       longitude = locations[0].location_longitude;
-
       if(latitude == null){
         latitude = avglat;
         longitude = avglng;
       }
-
       var map = new google.maps.Map(document.getElementById('map'), {
           zoom: zoom,
           center: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
       });
-
       var latlongbounds = new google.maps.LatLngBounds();
       var markers = locations.map(function(location, i) {
           var position = {
@@ -570,7 +727,6 @@
           }
           var latlong = new google.maps.LatLng(position.lat, position.lng);
           latlongbounds.extend(latlong);
-
            var content = '<div id="iw-container">';
                    for(i = 0; i < location.services.length; i ++){
                             content +=  '<div class="iw-title"> <a href="/services/'+location.services[i].service_recordid+'">'+location.services[i].service_name+'</a></div>';
@@ -584,11 +740,9 @@
                         '</div>' +
                         '<div class="iw-bottom-gradient"></div>' +
                         '</div>';
-
             var infowindow = new google.maps.InfoWindow({
                 content: content
             });
-
           var marker = new google.maps.Marker({
               position: position,
               map: map,
@@ -599,13 +753,10 @@
             });
           return marker;
       });
-
       if (locations.length > 1) {
           map.fitBounds(latlongbounds);
       }
-
   });
-
   $(document).ready(function() {
     var showChar = 250;
     var ellipsestext = "...";
@@ -613,19 +764,13 @@
     var lesstext = "Less";
     $('.more').each(function() {
       var content = $(this).html();
-
       if(content.length > showChar) {
-
         var c = content.substr(0, showChar);
         var h = content.substr(showChar, content.length - showChar);
-
         var html = c + '<span class="moreelipses">'+ellipsestext+'</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">'+moretext+'</a></span>';
-
         $(this).html(html);
       }
-
     });
-
     $(".morelink").click(function(){
       if($(this).hasClass("less")) {
         $(this).removeClass("less");
@@ -638,7 +783,6 @@
       $(this).prev().toggle();
       return false;
     });
-
     $('.panel-link').on('click', function(e){
           if($(this).hasClass('target-population-link') || $(this).hasClass('target-population-child'))
               return;
@@ -648,21 +792,16 @@
           $("#checked_" +  id).prop( "checked", true );
           $("#filter").submit();
       });
-
       $('.panel-link.target-population-link').on('click', function(e){
           $("#target_all").val("all");
           $("#filter").submit();
       });
-
       $('.panel-link.target-population-child').on('click', function(e){
           var id = $(this).attr('at');
           $("#target_multiple").val(id);
           $("#filter").submit();
-
       });
   });
-
-
   $("#reply-btn").on('click', function(e) {
       e.preventDefault();
       $('.comment-reply').show();
@@ -671,6 +810,19 @@
       e.preventDefault();
       $('.comment-reply').hide();
   });
-
+  $('button#delete-error-btn').on('click', function() {
+        var value = $(this).val();
+        $('input#error_recordid').val(value);
+    });
+  function ShowModal(id)
+{
+  var modal = document.getElementById(id);
+  modal.style.display = "block";
+}
+function closeModal(id)
+{
+  var modal = document.getElementById(id);
+  modal.style.display = "none";
+}
 </script>
 @endsection

@@ -17,6 +17,7 @@ class CreateSuggestsTable extends Migration
             $table->id();
             $table->bigInteger('suggest_recordid')->nullable();
             $table->string('suggest_organization')->nullable();
+            $table->string('suggest_service')->nullable();
             $table->text('suggest_content')->nullable();
             $table->string('suggest_username')->nullable();
             $table->string('suggest_user_email')->nullable();

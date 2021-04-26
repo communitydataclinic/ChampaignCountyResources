@@ -11,7 +11,7 @@ Login
 		</div>
 		@endif 
 		{{ Form::open(array('url' => route('login'), 'class' => 'form-horizontal form-signin','files' => true)) }}    
-			<h3 class="form-signin-heading">Welcome to {{$layout->site_name}}! <br>Please Sign In</h3>
+			<h3 class="form-signin-heading">Welcome back to {{$layout->site_name}}!</h3>
 			{!! csrf_field() !!}
 			<div class="form-group {{ $errors->has('email') ? 'has-error' : ''}}">
 				<div class="col-sm-12">
@@ -25,10 +25,10 @@ Login
 					{!! $errors->first('password', '<p class="help-block">:message</p>') !!}
 				</div>
 			</div>      
-			<a class="forget_password pull-right " href="{{url('password/reset')}}">Forget Password</a>
+			<a class="forget_password pull-right " href="{{url('password/reset')}}">Forgot Password</a>
 			<button class="btn btn-lg btn-primary btn-block"  name="Submit" value="Login" type="Submit">Login</button>
 
-			<a class="forget_password" style="margin-top: 15px;display: inline-block;margin-bottom: 0;" href="{{url('register')}}">Register</a>					
+			<a class="forget_password" style="margin-top: 15px;display: inline-block;margin-bottom: 0;" href="{{url('register')}}">First time? Register to manage your organization</a>					
 			@if ($errors->has('global'))
 			<span class="help-block danger">
 				<strong style="color:red" >{{ $errors->first('global') }}</strong>

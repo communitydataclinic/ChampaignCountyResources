@@ -1036,7 +1036,7 @@ footer {
   font-size: 14px;
   font-weight: 500;
   font-family: "Neue Haas Grotesk Display Roman";
-  color: #9195a2;
+  color: #424242;
   float: left;
   width: 100%;
   margin-top: 0px;
@@ -1376,7 +1376,7 @@ footer {
 }
 
 .home_slide_content {
-  padding: 40% 0 15%;
+  padding: 20% 0 15%;
   text-align: left;
 }
 .home_slide_content h1 {
@@ -1449,7 +1449,6 @@ footer {
   background: #f4f7fb;
 }
 .home_page_content {
-  padding-bottom: 100px;
   background: #f4f7fb;
 }
 .home_page_content p {

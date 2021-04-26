@@ -12,7 +12,7 @@
 					<div class="form-group text-left form-material m-0" data-plugin="formMaterial">
 						<img src="/frontend/assets/images/location.png" alt="" title="" class="form_icon_img">
 						<input type="text" class="form-control pr-50" id="searchAddress" name="search_address" placeholder="Search Location..." value="{{ isset($chip_address) ? $chip_address : '' }}">
-						<a href="javascript:void(0)" class="input-search-btn" style="z-index: 100;" onclick="getLocation()" ><img src="/frontend/assets/examples/images/location.png" style="width: 20px;margin: 22px 0;"></a>
+						<!--a href="javascript:void(0)" class="input-search-btn" style="z-index: 100;" onclick="getLocation()" ><img src="/frontend/assets/examples/images/location.png" style="width: 20px;margin: 22px 0;"></a-->
 						<input type="hidden" name="lat" id="lat">
 						<input type="hidden" name="long" id="long">
 					</div>

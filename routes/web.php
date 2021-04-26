@@ -80,6 +80,9 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::match(['get', 'post'], '/search_organization', [
         'uses' => 'frontEnd\ExploreController@filter_organization',
     ]);
+    Route::match(['get', 'post'], '/search_event', [
+        'uses' => 'frontEnd\ExploreController@filter_event',
+    ]);
 
     // organization route
     Route::resource('/organizations', 'frontEnd\OrganizationController');
@@ -136,6 +139,16 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     // suggestion
     Route::resource('/suggest', 'frontEnd\SuggestController');
     Route::get('/add_new_suggestion', 'frontEnd\SuggestController@add_new_suggestion');
+
+    //event
+    Route::resource('/events', 'frontEnd\EventController');
+    
+
+    //error reporting
+    Route::resource('/error', 'frontEnd\ErrorReportController');
+    Route::get('/add_new_error', 'frontEnd\ErrorReportController@add_new_error');
+    Route::post('/delete_error', 'frontEnd\ErrorReportController@delete_error')->name('delete_error');
+
 
     // message
     Route::get('messagesSetting', 'frontEnd\MessageController@messagesSetting')->name('messagesSetting');

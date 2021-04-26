@@ -36,7 +36,7 @@ Edit Service
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Service Alternate Name: </label>
+                                    <label>Program Name: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_alternate_name" name="service_alternate_name" value="{{$service->service_alternate_name}}">
                                 </div>
                             </div>
@@ -107,7 +107,7 @@ Edit Service
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Wait Time: </label>
+                                    <label>Eligibility: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_wait_time" name="service_wait_time" value="{{$service->service_wait_time}}">
                                 </div>
                             </div>
@@ -119,13 +119,13 @@ Edit Service
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Accreditations: </label>
+                                    <label>Documents needed: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_accreditations" name="service_accreditations" value="{{$service->service_accreditations}}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Licenses: </label>
+                                    <label>Area served: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_licenses" name="service_licenses" value="{{$service->service_licenses}}">
                                 </div>
                             </div>
@@ -405,7 +405,7 @@ Edit Service
                             </div> -->
                             <div class="col-md-12 text-center">
 
-                                <a href="/services/{{$service->service_recordid}}" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-service-btn"> Close</a>
+                                <a href="/services/{{$service->service_recordid}}" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="view-service-btn"> Cancel</a>
                                 <button type="button" class="btn btn-danger btn-lg btn_delete waves-effect waves-classic waves-effect waves-classic delete-td red_btn" id="delete-service-btn" value="{{$service->service_recordid}}" data-toggle="modal" data-target=".bs-delete-modal-lg"> Delete</button>
                                 <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic green_btn" id="save-service-btn"> Save</button>
                             </div>

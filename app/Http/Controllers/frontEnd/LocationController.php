@@ -49,10 +49,14 @@ class LocationController extends Controller
         $airtable_key_info->base_url = $base_url;
         $airtable_key_info->save();
 
+        //Allow adding new records by not truncating the table when importing
+        /*        
         Location::truncate();
         LocationAddress::truncate();
         LocationPhone::truncate();
         LocationSchedule::truncate();
+        */
+
 
         // $airtable = new Airtable(array(
         //     'api_key'   => env('AIRTABLE_API_KEY'),
@@ -547,8 +551,9 @@ class LocationController extends Controller
             $address_city_list = array_merge($address_city_list, $cities);
         }
         $address_city_list = array_unique($address_city_list);
+        $facility_info_list = Location::select('location_recordid', 'location_name')->orderBy('location_recordid')->distinct()->get();
 
-        return view('frontEnd.locations.create', compact('map', 'organization_name_list', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list'));
+        return view('frontEnd.locations.create', compact('map', 'organization_name_list', 'service_info_list', 'schedule_info_list', 'address_info_list', 'detail_info_list', 'address_states_list', 'address_city_list', 'facility_info_list'));
     }
     public function add_new_facility_in_organization(Request $request)
     {

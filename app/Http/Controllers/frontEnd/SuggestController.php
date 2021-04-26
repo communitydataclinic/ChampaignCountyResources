@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\Map;
 use App\Model\Organization;
+use App\Model\Service;
 use App\Model\Suggest;
 use App\Model\Email;
 use App\Model\Layout;
+use App\Model\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use SendGrid;
@@ -53,6 +55,7 @@ class SuggestController extends Controller
     {
         $this->validate($request, [
             'suggest_organization' => 'required',
+            'suggest_service' => 'required',
             'name' => 'required',
             'email' => 'required',
         ]);
@@ -69,6 +72,9 @@ class SuggestController extends Controller
             $suggest->suggest_recordid = $new_recordid;
             $suggest->suggest_organization = $request->suggest_organization;
             $organization_info = Organization::where('organization_recordid', '=', $request->suggest_organization)->first();
+            $user_info = User::where('user_organization', '=', $request->suggest_organization)->get();
+            $suggest->suggest_service = $request->suggest_service;
+            $service_info = Service::where('service_recordid', '=', $request->suggest_service)->first();
             $suggest->suggest_content = $request->suggest_content;
             $suggest->suggest_username = $request->name;
             $suggest->suggest_user_email = $request->email;
@@ -92,6 +98,7 @@ class SuggestController extends Controller
             $message .= '<p style="color:#424242;font-size:12px;">ID: ' . $new_recordid . '</p>';
             $message .= '<p style="color:#424242;font-size:12px;">Timestamp: ' . Carbon::now() . '</p>';
             $message .= '<p style="color:#424242;font-size:12px;">Organization: ' . $organization_info->organization_name . '</p>';
+            $message .= '<p style="color:#424242;font-size:12px;">Service: ' . $service_info->service_name . '</p>';
             $message .= '<p style="color:#424242;font-size:12px;">Body: ' . $body . '</p>';
             $message .= '<p style="color:#424242;font-size:12px;">From: ' . $request->name . '</p>';
             $message .= '<p style="color:#424242;font-size:12px;">Email: ' . $request->email . '</p>';
@@ -104,12 +111,18 @@ class SuggestController extends Controller
 
             $error = '';
 
-            $username = 'Larable Team';
+            $username = 'Champaign County 211 Resource Team';
             $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
 
             foreach ($contact_email_list as $key => $contact_email) {
                 $email->addTo($contact_email, $username);
             }
+            if($user_info != NULL){
+                foreach ($user_info as $key => $user_info_list){
+                    $email->addTo($user_info_list->email, $username);
+                }
+            }
+            $email->addTo($request->email, $username);
             $response = $sendgrid->send($email);
             if ($response->statusCode() == 401) {
                 $error = json_decode($response->body());
@@ -117,7 +130,7 @@ class SuggestController extends Controller
             $suggest->save();
             Session::flash('message', 'Your suggestion has been received.');
             Session::flash('status', 'success');
-            return redirect('suggest/create');
+            return redirect()->back();
         } catch (\Throwable $th) {
 
             Session::flash('message', $th->getMessage());

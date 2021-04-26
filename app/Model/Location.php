@@ -22,6 +22,11 @@ class Location extends Model
         return $this->belongsToMany('App\Model\Service', 'service_locations', 'location_recordid', 'service_recordid');
     }
 
+    public function events()
+    {
+        return $this->belongsToMany('App\Model\Events', 'event_locations', 'location_recordid', 'events_recordid');
+    }
+
     public function phones()
     {
 

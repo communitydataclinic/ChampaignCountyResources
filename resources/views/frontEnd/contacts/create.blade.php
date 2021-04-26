@@ -1,39 +1,39 @@
 @extends('layouts.app')
 @section('title')
-Contact Create
+    Contact Create
 @stop
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 <style type="text/css">
-   button[data-id="contact_organization_name"],button[data-id="contact_service"] {
+    button[data-id="contact_organization_name"],button[data-id="contact_service"] {
         height: 100%;
         border: 1px solid #ddd;
     }
 </style>
 
 @section('content')
-<div class="top_header_blank"></div>
-<div class="inner_services">
-    <div id="contacts-content" class="container">
-        <div class="row">
-            <!-- <div class="col-md-12">
-                <input type="hidden" id="checked_terms" name="checked_terms">
-            </div> -->
-            <div class="col-md-12">
-                <div class="card all_form_field">
-                    <div class="card-block">
-                        <h4 class="card-title mb-30 ">
-                            <p>Create New Contact</p>
-                        </h4>
-                        {{-- <form action="/add_new_contact" method="GET"> --}}
+    <div class="top_header_blank"></div>
+    <div class="inner_services">
+        <div id="contacts-content" class="container">
+            <div class="row">
+                <!-- <div class="col-md-12">
+                    <input type="hidden" id="checked_terms" name="checked_terms">
+                </div> -->
+                <div class="col-md-12">
+                    <div class="card all_form_field">
+                        <div class="card-block">
+                            <h4 class="card-title mb-30 ">
+                                <p>Create New Contact</p>
+                            </h4>
+                            {{-- <form action="/add_new_contact" method="GET"> --}}
                             {!! Form::open(['route' => 'contacts.store']) !!}
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Contact Name: </label>
-                                        <input class="form-control selectpicker" type="text" id="contact_name" name="contact_name" value="">
+                                        <input class="form-control selectpicker" type="text" id="contact_name" name="contact_name" value="{{ old('contact_name') }}">
                                         @error('contact_name')
-                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
                                     </div>
                                 </div>
@@ -41,13 +41,13 @@ Contact Create
                                     <div class="form-group">
                                         <label>Organization: </label>
                                         <select class="form-control selectpicker" data-live-search="true" id="contact_organization_name"
-                                            name="contact_organization_name" data-size="5" >
+                                                name="contact_organization_name" {{old('contact_organization_name')}} data-size="5" >
                                             @foreach($organization_name_list as $key => $org_name)
-                                            <option value="{{$org_name}}">{{$org_name}}</option>
+                                                <option {{ (old("contact_organization_name") == $org_name ? "selected":"") }} value="{{$org_name}}">{{$org_name}}</option>
                                             @endforeach
                                         </select>
                                         @error('contact_organization_name')
-                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
                                     </div>
                                 </div>
@@ -55,32 +55,32 @@ Contact Create
                                     <div class="form-group">
                                         <label>Service: </label>
                                         <select class="form-control selectpicker" multiple data-live-search="true" id="contact_service"
-                                            name="contact_service[]" data-size="8">
+                                                name="contact_service[]" data-size="8">
                                             @foreach($service_info_list as $key => $service_info)
-                                            <option value="{{$service_info->service_recordid}}">{{$service_info->service_name}}</option>
+                                                <option {{ (old("contact_service") && in_array($service_info->service_recordid, old("contact_service")) ? "selected":"") }} value="{{$service_info->service_recordid}}">{{$service_info->service_name}}</option>
                                             @endforeach
                                         </select>
                                         @error('contact_service')
-                                            <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        <span class="error-message"><strong>{{ $message }}</strong></span>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Contact Title: </label>
-                                        <input class="form-control selectpicker" type="text" id="contact_title" name="contact_title" value="">
+                                        <input class="form-control selectpicker" type="text" id="contact_title" name="contact_title" value="{{ old('contact_title') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Contact Department: </label>
-                                        <input class="form-control selectpicker" type="text" id="contact_department" name="contact_department" value="">
+                                        <input class="form-control selectpicker" type="text" id="contact_department" name="contact_department" value="{{ old('contact_department') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Contact Email: </label>
-                                        <input class="form-control selectpicker" type="text" id="contact_email" name="contact_email" value="">
+                                        <input class="form-control selectpicker" type="text" id="contact_email" name="contact_email" value="{{ old('contact_email') }}">
                                     </div>
                                 </div>
                                 <!-- <div class="form-group">
@@ -119,45 +119,47 @@ Contact Create
                                 </div>
                             </div>
                             {!! Form::close() !!}
-                        {{-- </form> --}}
+                            {{-- </form> --}}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<script>
-    $('#back-contact-btn').click(function() {
-        history.go(-1);
-        return false;
-    });
-    $(document).ready(function() {
-        $('select#contact_organization_name').val([]).change();
-        $('select#contact_service').val([]).change();
-    });
+    <script>
 
-    // $(document).ready(function(){
-    //     $('#error_cell_phone').hide();
-    //     $("#contacts-create-content").submit(function(event){
-    //         // var mob = /^((\+)?[1-9]{1,2})?([-\s\.])?((\(\d{1,4}\))|\d{1,4})(([-\s\.])?[0-9]{1,12})$/;
-    //         var mob = /^(?!.*([\(\)\-\/]{2,}|\([^\)]+$|^[^\(]+\)|\([^\)]+\(|\s{2,}).*)\+?([\-\s\(\)\/]*\d){9,15}[\s\(\)]*$/;
-    //         var contact_cell_phones_value = $("#contact_cell_phones").val();
-    //         if (contact_cell_phones_value != ''){
-    //             if(mob.test(contact_cell_phones_value) == false && contact_cell_phones_value != 10){
-    //                 $('#error_cell_phone').show();
-    //                 event.preventDefault();
-    //             }
-    //         }
+        $('#back-contact-btn').click(function() {
+            history.go(-1);
+            return false;
+        });
+        $(document).ready(function() {
 
-    //     });
-    // });
+            /*$('select#contact_organization_name').val([]).change();
+            $('select#contact_service').val([]).change();*/
+        });
 
-    $("#add-phone-input").click(function(){
-        $("ol#phones-ul").append(
-            "<li class='service-phones-li mb-2 col-md-4'>"
-          + "<input class='form-control selectpicker contact_phones'  type='text' name='contact_phones[]'>"
-          + "</li>" );
-    });
+        // $(document).ready(function(){
+        //     $('#error_cell_phone').hide();
+        //     $("#contacts-create-content").submit(function(event){
+        //         // var mob = /^((\+)?[1-9]{1,2})?([-\s\.])?((\(\d{1,4}\))|\d{1,4})(([-\s\.])?[0-9]{1,12})$/;
+        //         var mob = /^(?!.*([\(\)\-\/]{2,}|\([^\)]+$|^[^\(]+\)|\([^\)]+\(|\s{2,}).*)\+?([\-\s\(\)\/]*\d){9,15}[\s\(\)]*$/;
+        //         var contact_cell_phones_value = $("#contact_cell_phones").val();
+        //         if (contact_cell_phones_value != ''){
+        //             if(mob.test(contact_cell_phones_value) == false && contact_cell_phones_value != 10){
+        //                 $('#error_cell_phone').show();
+        //                 event.preventDefault();
+        //             }
+        //         }
 
-</script>
+        //     });
+        // });
+
+        $("#add-phone-input").click(function(){
+            $("ol#phones-ul").append(
+                "<li class='service-phones-li mb-2 col-md-4'>"
+                + "<input class='form-control selectpicker contact_phones'  type='text' name='contact_phones[]'>"
+                + "</li>" );
+        });
+
+    </script>
 @endsection

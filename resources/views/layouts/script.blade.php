@@ -64,12 +64,14 @@ $('#widget').draggable();
   {{-- <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f55fb3cd449570011d2b2dd&product=inline-share-buttons' async='async'></script> --}}
   <script type="text/javascript">
     function googleTranslateElementInit() {
-      new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,es,ht', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true}, 'google_translate_element');
+      new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,fr,es', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true}, 'google_translate_element');
     }
     setInterval(function(){
     var iframe = $('.goog-te-menu-frame');
     // $('table a .text', iframe.contents()).eq(1).text('中文');
-    $('table a .text', iframe.contents()).eq(1).text('Creole');
+    //$('table a .text', iframe.contents()).eq(0).text('English');
+    //$('table a .text', iframe.contents()).eq(1).text('Français');
+    //$('table a .text', iframe.contents()).eq(2).text('Español');
     // $('table a .text', iframe.contents()).eq(3).text('Pусский');
     // $('table a .text', iframe.contents()).eq(4).text('Español');
     $('.st-btn[data-network="buffer"]').hide();

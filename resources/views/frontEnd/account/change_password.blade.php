@@ -22,7 +22,7 @@ Edit Service
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>New Password: </label>
+                                    <label>New Password (8 characters min): </label>
                                     {!! Form::password('password',['class' =>'form-control']) !!}
                                     @error('password')
                                     <span class="error-message"><strong>{{ $message }}</strong></span>
@@ -40,7 +40,7 @@ Edit Service
                             </div> --}}
                             <div class="col-md-12 text-center">
                                 <button type="submit" class="btn btn-primary btn-lg btn_padding waves-effect waves-classic waves-effect waves-classic" id="update-password-btn"> Save</button>
-                                <a href="/account/{{$user_info->id}}" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" id="view-service-btn"> Close</a>
+                                <a href="/account/{{$user_info->id}}" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" id="view-service-btn"> Cancel</a>
                             </div>
                         </div>
                         {!! Form::close() !!}

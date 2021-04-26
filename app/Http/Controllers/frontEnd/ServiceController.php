@@ -32,6 +32,7 @@ use App\Model\ServiceSchedule;
 use App\Model\ServiceTaxonomy;
 use App\Model\Source_data;
 use App\Model\Taxonomy;
+use App\Model\User;
 use App\Services\Stringtoint;
 use Carbon\Carbon;
 use App\Model\csv;
@@ -50,7 +51,6 @@ class ServiceController extends Controller
      */
     public function index()
     {
-
         // $service_state_filter = 'Verified';
         // $services = Service::with('locations')->orderBy('service_name')->where('service_status', '=', $service_state_filter);
         $services = Service::with('locations')->orderBy('service_name');
@@ -131,7 +131,11 @@ class ServiceController extends Controller
             $locations_ids = Servicelocation::whereIn('service_recordid', $services_ids)->pluck('location_recordid')->toArray();
             $locations = $locations->whereIn('location_recordid', $locations_ids);
         }
-        $services = $services->paginate(10);
+
+        // Set default number of services per page
+        $pagination = 10;
+
+        $services = $services->paginate($pagination);
 
         $service_taxonomy_info_list = [];
         foreach ($services as $key => $service) {
@@ -193,8 +197,9 @@ class ServiceController extends Controller
             // }
             $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
         }
+        $user_orgs = array_column(User::groupBy('user_organization')->get(['user_organization'])->toArray(),'user_organization');
 
-        return view('frontEnd.services.services', compact('services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list'))->with('taxonomy_tree', $taxonomy_tree);
+        return view('frontEnd.services.services', compact('user_orgs','pagination','services', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'meta_status', 'grandparent_taxonomies', 'sort_by_distance_clickable', 'service_taxonomy_info_list'))->with('taxonomy_tree', $taxonomy_tree);
     }
 
     public function tb_services()
@@ -210,10 +215,9 @@ class ServiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $map = Map::find(1);
-
         if (Auth::user() && Auth::user()->user_organization && Auth::user()->roles->name == 'Organization Admin') {
             $organization_recordid = Auth::user()->organizations ? Auth::user()->organizations->pluck('organization_recordid') : [];
             $organization_names = Organization::select("organization_name")->whereIn('organization_recordid', $organization_recordid)->distinct()->get();
@@ -251,7 +255,9 @@ class ServiceController extends Controller
     {
         $this->validate($request, [
             'service_name' => 'required',
-            'service_organization' => 'required'
+            'service_organization' => 'required',
+            'service_description' => 'required',
+            'service_email' => 'required',
         ]);
 
         try {
@@ -273,7 +279,7 @@ class ServiceController extends Controller
 
             $service->service_name = $request->service_name;
             $service->service_alternate_name = $request->service_alternate_name;
-            $service->service_url = $request->service_url;
+            $service->service_url = 'https://' . strtr(trim($request->service_url), ['http://' => '', 'https://' => '']);
             $service->service_program = $request->service_program;
             $service->service_email = $request->service_email;
             $service->service_status = '';
@@ -345,6 +351,75 @@ class ServiceController extends Controller
             // $service_phone_info_list = array_unique($service_phone_info_list);
             // $service->phone()->sync($service_phone_info_list);
 
+            $schedule_services = [];
+
+            if ($request->schedule_days_of_week) {
+                for ($i = 0; $i < 7; $i++) {
+                    $schedules = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_days_of_week', $request->schedule_days_of_week[$i])->first();
+                    if ($schedules) {
+                        $schedules->schedule_days_of_week = $request->schedule_days_of_week[$i];
+                        $schedules->schedule_opens_at = $request->schedule_opens_at[$i];
+                        $schedules->schedule_closes_at = $request->schedule_closes_at[$i];
+                        if ($request->schedule_closed && in_array(($i + 1), $request->schedule_closed)) {
+                            $schedules->schedule_closed = $i + 1;
+                        } else {
+                            $schedules->schedule_closed = null;
+                        }
+                        $schedules->save();
+                        $schedule_services[] = $schedules->schedule_recordid;
+                    } else {
+                        $schedule_recordid = Schedule::max('schedule_recordid') + 1;
+                        $schedules = new Schedule();
+                        $schedules->schedule_recordid = $schedule_recordid;
+                        $schedules->schedule_services = $service->service_recordid;
+                        $schedules->schedule_days_of_week = $request->schedule_days_of_week[$i];
+                        $schedules->schedule_opens_at = $request->schedule_opens_at[$i];
+                        $schedules->schedule_closes_at = $request->schedule_closes_at[$i];
+                        if ($request->schedule_closed && in_array(($i + 1), $request->schedule_closed)) {
+                            $schedules->schedule_closed = $i + 1;
+                        } else {
+                            $schedules->schedule_closed = null;
+                        }
+                        $schedules->save();
+                        $schedule_services[] = $schedule_recordid;
+                    }
+                }
+            }
+            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && (count($request->holiday_start_date) == 0 && $request->holiday_start_date[0] != null)) {
+                Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
+                for ($i = 0; $i < count($request->holiday_start_date); $i++) {
+                    // $schedules =
+                    // if($schedules){
+                    //     $schedules->schedule_start_date = $request->holiday_start_date[$i];
+                    //     $schedules->schedule_end_date = $request->holiday_end_date[$i];
+                    //     $schedules->schedule_opens_at = $request->holiday_open_at[$i];
+                    //     $schedules->schedule_closes_at = $request->schedule_closes_at[$i];
+                    //     if(in_array(($i+1),$request->schedule_closed)){
+                    //         $schedules->schedule_closed = $i+1;
+                    //     }
+                    //     $schedules->save();
+                    //     $schedule_services[] = $schedules->schedule_recordid;
+                    // }else{
+                    $schedule_recordid = Schedule::max('schedule_recordid') + 1;
+                    $schedules = new Schedule();
+                    $schedules->schedule_recordid = $schedule_recordid;
+                    $schedules->schedule_services = $service->service_recordid;
+                    $schedules->schedule_start_date = $request->holiday_start_date[$i];
+                    $schedules->schedule_end_date = $request->holiday_end_date[$i];
+                    $schedules->schedule_opens_at = $request->holiday_open_at[$i];
+                    $schedules->schedule_closes_at = $request->holiday_close_at[$i];
+                    if ($request->holiday_closed && in_array(($i + 1), $request->holiday_closed)) {
+                        $schedules->schedule_closed = $i + 1;
+                    }
+                    $schedules->schedule_holiday = '1';
+                    $schedules->save();
+                    $schedule_services[] = $schedule_recordid;
+                    // }
+                }
+            }
+            $service->schedules()->sync($schedule_services);
+
+
             $service->service_phones = '';
             $phone_recordid_list = [];
             if ($request->service_phones) {
@@ -367,12 +442,12 @@ class ServiceController extends Controller
             }
             $service->phone()->sync($phone_recordid_list);
 
-            if ($request->service_schedules) {
-                $service->service_schedule = join(',', $request->service_schedules);
-            } else {
-                $service->service_schedule = '';
-            }
-            $service->schedules()->sync($request->service_schedules);
+            // if ($request->service_schedules) {
+            //     $service->service_schedule = join(',', $request->service_schedules);
+            // } else {
+            //     $service->service_schedule = '';
+            // }
+            // $service->schedules()->sync($request->service_schedules);
 
             if ($request->service_contacts) {
                 $service->service_contacts = join(',', $request->service_contacts);
@@ -399,7 +474,19 @@ class ServiceController extends Controller
 
             Session::flash('message', 'Service created successfully');
             Session::flash('status', 'success');
-            return redirect('services');
+
+            if(isset(Auth::user()->role_id)) {
+                if(Auth::user()->role_id == 3) {
+                    return redirect('organizations/'.Auth::user()->user_organization);
+                } elseif(Auth::user()->role_id == 1) {
+                    return redirect('account/'.Auth::user()->id);
+                } else {
+                    return redirect('services');
+                }
+            } else {
+                return redirect('services');
+            }
+
         } catch (\Throwable $th) {
             dd($th);
             Session::flash('message', $th->getMessage());
@@ -545,7 +632,8 @@ class ServiceController extends Controller
                     // }
                     $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
                 }
-                return view('frontEnd.services.show', compact('service', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'service_taxonomy_info_list', 'contact_info_list', 'phone_number_info', 'organization'));
+                $user_orgs = array_column(User::groupBy('user_organization')->get(['user_organization'])->toArray(),'user_organization');
+                return view('frontEnd.services.show', compact('user_orgs','service', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'service_taxonomy_info_list', 'contact_info_list', 'phone_number_info', 'organization'));
             } else {
                 Session::flash('message', 'This record has been deleted.');
                 Session::flash('status', 'warning');
@@ -575,18 +663,18 @@ class ServiceController extends Controller
             $service_contacts_list = Contact::select('contact_recordid', 'contact_name')->get();
             $service_taxonomy_list = Taxonomy::select('taxonomy_recordid', 'taxonomy_name')->get();
             $service_details_list = Detail::select('detail_recordid', 'detail_value')->get();
-    
+
             $location_info_list = explode(',', $service->service_locations);
             $contact_info_list = explode(',', $service->service_contacts);
             $taxonomy_info_list = explode(',', $service->service_taxonomy);
-    
+
             $service_address_id = $service->service_address;
             $service_address_street = Address::where('address_recordid', '=', $service_address_id)->select('address_1')->first();
             $service_address_city = Address::where('address_recordid', '=', $service_address_id)->select('address_city')->first();
             $service_address_state = Address::where('address_recordid', '=', $service_address_id)->select('address_state_province')->first();
             $service_address_postal_code = Address::where('address_recordid', '=', $service_address_id)->select('address_postal_code')->first();
             $phone_recordids = $service->service_phones;
-    
+
             if (strpos($phone_recordids, ',') !== false) {
                 $phone_recordid_list = explode(',', $phone_recordids);
                 $phone1_recordid = $phone_recordid_list[0];
@@ -596,13 +684,13 @@ class ServiceController extends Controller
                 $phone2_recordid = '';
             }
             $ServiceSchedule = $service->service_schedule ? explode(',', $service->service_schedule) : [];
-    
+
             $ServiceDetails = $service->service_details ? explode(',', $service->service_details) : [];
-    
+
             $service_phone1 = Phone::where('phone_recordid', '=', $phone1_recordid)->select('phone_number')->first();
             $service_phone2 = Phone::where('phone_recordid', '=', $phone2_recordid)->select('phone_number')->first();
-    
-            // $schedule_info_list = Schedule::select('schedule_recordid', 'schedule_opens_at', 'schedule_closes_at')->whereNotNull('schedule_opens_at')->orderBy('schedule_opens_at')->distinct()->get();
+
+            $schedule_info_list = Schedule::select('schedule_recordid', 'schedule_opens_at', 'schedule_closes_at')->whereNotNull('schedule_opens_at')->orderBy('schedule_opens_at')->distinct()->get();
             $monday = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_days_of_week', 'monday')->first();
             $tuesday = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_days_of_week', 'tuesday')->first();
             $wednesday = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_days_of_week', 'wednesday')->first();
@@ -611,10 +699,10 @@ class ServiceController extends Controller
             $thursday = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_days_of_week', 'thursday')->first();
             $sunday = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_days_of_week', 'sunday')->first();
             $holiday_schedules = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->get();
-    
-    
+
+
             $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
-    
+
             return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules'));
         }else{
             Session::flash('message', 'This record has been deleted.');
@@ -638,7 +726,7 @@ class ServiceController extends Controller
             $service->service_name = $request->service_name;
             $service->service_alternate_name = $request->service_alternate_name;
             $service->service_description = $request->service_description;
-            $service->service_url = $request->service_url;
+            $service->service_url = 'https://' . strtr(trim($request->service_url), ['http://' => '', 'https://' => '']);
             $service->service_email = $request->service_email;
             $service->service_status = $request->service_status;
             $service->service_application_process = $request->service_application_process;
@@ -871,6 +959,8 @@ class ServiceController extends Controller
             $airtable_key_info->base_url = $base_url;
             $airtable_key_info->save();
 
+            //Allow adding new records by not truncating the tables when importing
+            /*
             Service::truncate();
             ServiceLocation::truncate();
             ServiceAddress::truncate();
@@ -880,6 +970,7 @@ class ServiceController extends Controller
             ServiceContact::truncate();
             ServiceTaxonomy::truncate();
             ServiceSchedule::truncate();
+            */
 
             // $airtable = new Airtable(array(
             //     'api_key'   => env('AIRTABLE_API_KEY'),
@@ -1731,7 +1822,17 @@ class ServiceController extends Controller
 
             Session::flash('message', 'Service deleted successfully!');
             Session::flash('status', 'success');
-            return redirect('/services');
+            if(isset(Auth::user()->role_id)) {
+                if(Auth::user()->role_id == 3) {
+                    return redirect('organizations/'.Auth::user()->user_organization);
+                } elseif(Auth::user()->role_id == 1) {
+                    return redirect('account/'.Auth::user()->id);
+                } else {
+                    return redirect('services');
+                }
+            } else {
+                return redirect('services');
+            }
         } catch (\Throwable $th) {
             dd($th);
         }
