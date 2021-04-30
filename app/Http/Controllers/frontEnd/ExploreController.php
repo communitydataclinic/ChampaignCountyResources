@@ -336,10 +336,9 @@ class ExploreController extends Controller
             ->pluck('service_recordid');
 
         //var_dump($service_organization);exit;
-        //var_dump($service_organization);exit;
 
-        $service_description = $service_description_all->merge($serviceids,$service_description_all,$service_organization);
-
+        //$service_description = $service_description_all->merge($serviceids,$service_description_all,$service_organization);
+        $service_description = new Collection(array_merge($serviceids->all(),$service_description_all->all(),$service_organization->all()));
         foreach ($service_description as $key => $ser){
             $serviceids->push($ser);
         }
