@@ -187,8 +187,8 @@ class UserController extends Controller
                 $user->email = $request->email;
             }
             if ($request->user_organizations) {
-              $user->user_organization = join(',', $request->user_organizations);
-              }
+                $user->user_organization = join(',', $request->user_organizations);
+            }
             if ($request->new_password && $request->new_password_confirmation) {
                 if ($request->new_password == $request->new_password_confirmation) {
                     $user->password = Hash::make($request->new_password);
@@ -202,7 +202,7 @@ class UserController extends Controller
                 $user->role_id = $request->role;
             }
             if ($request->user_organizations) {
-              $user->organizations()->sync($request->user_organizations);
+                $user->organizations()->sync($request->user_organizations);
             }
             $user->update();
             Session::flash('message', 'Success! User is updated successfully.');
@@ -354,7 +354,7 @@ class UserController extends Controller
         Session::flash('message', 'Success! The user is deactivated successfully.');
         Session::flash('status', 'success');
 
-        
+
         return redirect()->route('user.index');
     }
 
@@ -369,39 +369,38 @@ class UserController extends Controller
         Session::flash('message', 'Success! The user is activated successfully.');
         Session::flash('status', 'success');
 
-            $organization_info = Organization::where('organization_recordid', '=', $user->user_organization)->first();
-            $from = env('MAIL_FROM_ADDRESS');
-            $name = env('MAIL_FROM_NAME');
+        $organization_info = Organization::where('organization_recordid', '=', $user->user_organization)->first();
+        $from = env('MAIL_FROM_ADDRESS');
+        $name = env('MAIL_FROM_NAME');
 
-            $email = new Mail();
-            $email->setFrom($from, $name);
-            $subject = 'Your account has been activated at Champaign County Resources';
-            $email->setSubject($subject);
+        $email = new Mail();
+        $email->setFrom($from, $name);
+        $subject = 'Your account has been activated at Champaign County Resources';
+        $email->setSubject($subject);
 
-            $message = '<html><body>';
-            $message .= '<h1 style="color:#424242;">Your account has been activated at Champaign County Resources.</h1>';
-            $message .= '<p style="color:#424242;font-size:12px;">Timestamp: ' . Carbon::now() . '</p>';
-            $message .= '<p style="color:#424242;font-size:12px;">First Name: ' . $user->first_name . '</p>';
-            $message .= '<p style="color:#424242;font-size:12px;">Last Name: ' . $user->last_name . '</p>';
-            $message .= '<p style="color:#424242;font-size:12px;">Email: ' . $user->email . '</p>';
-            $message .= '</body></html>';
+        $message = '<html><body>';
+        $message .= '<h1 style="color:#424242;">Your account has been activated at Champaign County Resources.</h1>';
+        $message .= '<p style="color:#424242;font-size:12px;">Timestamp: ' . Carbon::now() . '</p>';
+        $message .= '<p style="color:#424242;font-size:12px;">First Name: ' . $user->first_name . '</p>';
+        $message .= '<p style="color:#424242;font-size:12px;">Last Name: ' . $user->last_name . '</p>';
+        $message .= '<p style="color:#424242;font-size:12px;">Email: ' . $user->email . '</p>';
+        $message .= '</body></html>';
 
-            $email->addContent("text/html", $message);
-            $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
+        $email->addContent("text/html", $message);
+        $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
 
-            // $error = '';
+        // $error = '';
 
-            $username = 'Champaign County 211 Resource Team';
+        $username = 'Champaign County 211 Resource Team';
 
-            if ($request->email) {
-                $email->addTo($user->email, $username);
-            }
-            
-            
-            $response = $sendgrid->send($email);
-            if ($response->statusCode() == 401) {
-                $error = json_decode($response->body());
-            }
+        if ($user->email) {
+            $email->addTo($user->email);
+        }
+
+        $response = $sendgrid->send($email);
+        if ($response->statusCode() == 401) {
+            $error = json_decode($response->body());
+        }
 
         return redirect()->route('user.index');
     }

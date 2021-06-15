@@ -231,7 +231,8 @@ use Carbon\Carbon;
                 @if(Auth::user() && Auth::user()->roles && str_contains(Event::pluck('event_organization'), $organization->organization_recordid))
                 <div class="card">
                     <div class="card-block">
-                        <h4 class="card_services_title">Events</h4>
+                        <h4 class="card_services_title">Events
+                        (@if(isset($event_list)){{$event_list->count()}}@else 0 @endif)</h4>
                         <h4 style="margin-top: 20px;">
                             @foreach($event_list as $key => $event)
                             <div class="organization_services">

@@ -69,7 +69,9 @@ class LoginController extends Controller
             $remember = ($request->get('remember') == 'on') ? true : false;
 
             if ($user = Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
-
+                $user = \App\User::where('email', $email)->first();
+                $user->last_login = date('Y-m-d H:s:i');
+                $user->save();
                 return redirect()->intended('home');
             }
 

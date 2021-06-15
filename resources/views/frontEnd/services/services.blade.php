@@ -161,9 +161,19 @@ use Carbon\Carbon;
                                                     <a class="notranslate" href="/organizations/{{$service->organizations()->first()->organization_recordid}}"> {{$service->organizations()->first()->organization_name}}</a>
                                                 @endif
                                                 @if(isset($service->service_organization) && in_array($service->service_organization, $user_orgs))
-                                                    <img src="images/registered.png" style="width:20px; height:20px;">
-                                                @else
-                                                    <img src="images/away.png" style="width:20px; height:20px;">
+                                                        <?php // get 24h login org admin
+                                                        $time = date('Y-m-d H:i:s', time() - 86400);
+                                                        $latest_login_org_admin = \App\User::where([
+                                                            'role_id' => 3,
+                                                            'user_organization' => $service->service_organization
+                                                        ])->orderBy('last_login', 'desc')->first();?>
+                                                    <img src="images/blue.png" data-toggle="popover" data-placement="top" data-content="This account is verified" style="width:20px; height:20px;">
+
+                                                    @if($latest_login_org_admin && $latest_login_org_admin->last_login > $time)
+                                                        <img src="images/registered.png" data-toggle="popover" data-placement="top" data-content="Online"  style="width:20px; height:20px;">
+                                                    @else
+                                                        <img src="images/away.png" @if(isset($latest_login_org_admin->last_login)) data-toggle="popover" data-placement="top" data-content="Last Updated: {{$latest_login_org_admin->last_login}}" @endif style="width:20px; height:20px;">
+                                                    @endif
                                                 @endif
                                                 <p style="float: right;">{{ isset($service->miles)  ? floatval(number_format($service->miles,2)) .' miles'  : '' }}</p>
                                             </h4>
@@ -264,6 +274,8 @@ use Carbon\Carbon;
     <script>
 
         $(document).ready(function(){
+
+            $("[data-toggle='popover']").popover();
 
             setTimeout(function(){
                 var locations = <?php print_r(json_encode($locations)) ?>;
