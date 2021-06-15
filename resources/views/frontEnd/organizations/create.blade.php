@@ -31,7 +31,7 @@ Organization Create
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label><b> Organization Name :</b> </label>
-                                    <input class="form-control selectpicker" type="text" id="organization_name" name="organization_name" value="">
+                                    <input class="form-control selectpicker" type="text" id="organization_name" name="organization_name" value="{{ old('organization_name') }}">
                                     @error('organization_name')
                                         <span class="error-message"><strong>{{ $message }}</strong></span>
                                     @enderror
@@ -40,13 +40,13 @@ Organization Create
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label><b> Alternate Name :</b> </label>
-                                    <input class="form-control selectpicker" type="text" id="organization_alternate_name" name="organization_alternate_name" value="">
+                                    <input class="form-control selectpicker" type="text" id="organization_alternate_name" name="organization_alternate_name" value="{{ old('organization_alternate_name') }}">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label><b> Description : </b> </label>
-                                    <textarea id="organization_description" name="organization_description" class="selectpicker" rows="5"></textarea>
+                                    <textarea id="organization_description" name="organization_description" class="selectpicker" rows="5">{{{old('organization_description')}}}</textarea>
                                     @error('organization_description')
                                         <span class="error-message"><strong>{{ $message }}</strong></span>
                                     @enderror
@@ -55,7 +55,7 @@ Organization Create
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label><b> Email :</b> </label>
-                                    <input class="form-control selectpicker" type="text" id="organization_email" name="organization_email" value="">
+                                    <input class="form-control selectpicker" type="text" id="organization_email" name="organization_email" value="{{ old('organization_email') }}">
                                     @error('organization_email')
                                         <span class="error-message"><strong>{{ $message }}</strong></span>
                                     @enderror
@@ -64,34 +64,34 @@ Organization Create
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label><b> URL :</b> </label>
-                                    <input class="form-control selectpicker" type="text"  id="organization_url" name="organization_url" value="">
+                                    <input class="form-control selectpicker" type="text"  id="organization_url" name="organization_url" value="{{ old('organization_url') }}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Legal Status: </label>
-                                    <input class="form-control selectpicker"  type="text" id="organization_legal_status"  name="organization_legal_status" value="">
+                                    <input class="form-control selectpicker"  type="text" id="organization_legal_status"  name="organization_legal_status" value="{{ old('organization_legal_status') }}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Tax Status: </label>
-                                    <input class="form-control selectpicker"  type="text" id="organization_tax_status" name="organization_tax_status" value="">
+                                    <input class="form-control selectpicker"  type="text" id="organization_tax_status" name="organization_tax_status" value="{{ old('organization_tax_status') }}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Tax ID: </label>
-                                    <input class="form-control selectpicker"  type="text" id="organization_tax_id" name="organization_tax_id" value="">
+                                    <input class="form-control selectpicker"  type="text" id="organization_tax_id" name="organization_tax_id" value="{{ old('organization_tax_id') }}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Year Incorporated: </label>
-                                    <input class="form-control selectpicker"  type="text" id="organization_year_incorporated" name="organization_year_incorporated" value="">
+                                    <input class="form-control selectpicker"  type="text" id="organization_year_incorporated" name="organization_year_incorporated" value="{{ old('organization_year_incorporated') }}">
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <!-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Services: </label>
                                     <select class="form-control selectpicker" multiple data-live-search="true" id="organization_services" data-size="5" name="organization_services[]">
@@ -100,8 +100,8 @@ Organization Create
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
+                            </div> -->
+                            <!-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Contacts: </label>
                                     <select class="form-control selectpicker" multiple data-live-search="true" data-size="5" id="organization_contacts" name="organization_contacts[]">
@@ -110,8 +110,8 @@ Organization Create
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            @if (Auth::user() && Auth::user()->roles->name == 'System Admin')
+                            </div> -->
+                            <!-- @if (Auth::user() && Auth::user()->roles->name == 'System Admin')
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Website Rating: </label>
@@ -123,13 +123,13 @@ Organization Create
                                     </select>
                                 </div>
                             </div>
-                            @endif
+                            @endif -->
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Phones: <a id="add-phone-input"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label>
                                     <ol id="phones-ul" class="row p-0 m-0" style="list-style: none;">
                                         <li class="organization-phones-li mb-2 col-md-4">
-                                            <input class="form-control selectpicker organization_phones"  type="text" name="organization_phones[]" value="">
+                                            <input class="form-control selectpicker organization_phones"  type="text" name="organization_phones[]" value="{{ old('organization_phones[]') }}">
                                         </li>
                                     </ol>
                                 </div>

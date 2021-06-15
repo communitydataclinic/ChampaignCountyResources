@@ -471,20 +471,40 @@ Home
             <div class="row">
             <div class="col-sm-1"></div>
             <?php
-                $events = App\Model\Event::all();
+                /*$events = App\Model\Event::all();
                 $highlighted = array();
                 $highlighted[0] = $events[5];
                 $highlighted[1] = $events[4];
-                $highlighted[2] = $events[3];        
-            ?>        
+                $highlighted[2] = $events[3];*/
+
+                $events = App\Model\Event::where('start', '>=', date('Y-m-d H:i:s'))->orderBy('start')->limit(3)->get();
+                if (count($events) < 3) {
+                    $events2 = App\Model\Event::where('start', '<', date('Y-m-d H:i:s'))->orderBy('start', 'desc')->limit(3 - count($events))->get();
+                    $events = $events->merge($events2);
+                }
+                /*$highlighted = array();
+                $highlighted[0] = $events[5];
+                $highlighted[1] = $events[4];
+                $highlighted[2] = $events[3];*/
+                $highlighted = $events;
+                ?>
             @foreach ($highlighted as $event)   
             <div class = "col-sm-3 text-center">
-                <a href="/events/{{$event->event_recordid}}"><img src="{{$event->logo}}" alt="" title="" class="" style="width:75%; height:auto;"></a>
+                <a href="/events/{{$event->event_recordid}}"><img src="{{$event->logo}}" alt="" title="" class="" style="width:auto; height:12em;"></a>
             <h4 style="overflow-wrap: break-word;">
             <a href="/events/{{$event->event_recordid}}">{{$event->event_title}}</a>
             </h4>
-            <b>Date: </b> {{$event->event_time}}</br>
-            <b>Organized by: </b> {{$event->event_organization_name}}
+            <b>Date: </b> {{$event->start}} - {{$event->end}}</br>
+            <b>Location: </b> 
+            @if($event->locations!=NULL)
+                @foreach($locations as $location)
+                    @if($location->location_recordid == $event->locations)
+                        {{$location->location_name}}
+                    @endif
+                @endforeach
+            @endif
+            </br>
+            <b>Organized by: </b> <a href="/organizations/{{$event->event_organization}}">{{$event->event_organization_name}}</a>
             </div>
             @endforeach
         <div class = "see_more col-sm-2" style="padding-top:5em;"><h4 style="text-decoration: underline;"><a href="/events">>>See More</a></h4></div>

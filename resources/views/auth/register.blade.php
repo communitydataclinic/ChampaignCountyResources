@@ -34,7 +34,7 @@
 			<div class="col-md-6">
 				<div class="form-group  {{ $errors->has('first_name') ? 'has-error' : ''}}">
 					<label for="first_name">First Name *</label>
-					{!! Form::text('first_name', null, ['class' => 'form-control','placeholder '=>'Enter your firtst name']) !!}
+					{!! Form::text('first_name', null, ['class' => 'form-control','placeholder '=>'Enter your first name']) !!}
 					{!! $errors->first('first_name', '<p class="help-block">:message</p>') !!}
 				</div>
 			</div>
@@ -63,10 +63,11 @@
 					</select>
 					{!! $errors->first('organization', '<p class="help-block">:message</p>') !!}
 				</div>
+				<a href="mailto:champaigncountyresources@gmail.com">Can't find your organization? Contact us to add it!</a>
 			</div>
 			<div class="col-md-6">
 				<div class="form-group  {{ $errors->has('password') ? 'has-error' : ''}}">
-					<label for="password">Password (6 characters min) *</label>
+					<label for="password">Password (8 characters min) *</label>
 					{!! Form::password('password', ['class' => 'form-control','rel'=>'gp' ,'data-size'=>'10' ,'data-character-set'=>'a-z,A-Z,0-9,#' ,'placeholder '=>'Enter your Password']) !!}
 					{!! $errors->first('password', '<p class="help-block">:message</p>') !!}
 				</div>

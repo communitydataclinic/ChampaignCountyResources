@@ -22,7 +22,7 @@ Edit Service
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>New Password: </label>
+                                    <label>New Password (8 characters min): </label>
                                     {!! Form::password('password',['class' =>'form-control']) !!}
                                     @error('password')
                                     <span class="error-message"><strong>{{ $message }}</strong></span>

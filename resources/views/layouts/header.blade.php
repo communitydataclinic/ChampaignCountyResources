@@ -67,15 +67,15 @@
 					<li class="nav-item">
 						<a id="google_translate_element" class="nav-link"></a>
                     </li>
-                    @if (Auth::user() && Auth::user()->roles)
+                    @if (Auth::user() && Auth::user()->roles && Auth::user()->status == 0 )
                     <li class="nav-item">
 						<div class="dropdown">
 							<button class="dropbtn" style="color: {{$layout->top_menu_link_color}}">New &#9207;</button>
 							<div class="dropdown-content">
 								@if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin' || Auth::user() && Auth::user()->roles &&  Auth::user()->roles->name == 'System Admin')
 								<a href="{{ route('organizations.create') }}">New Organization</a>
-								@endif
 								<a href="{{ route('contacts.create') }}">New Contact</a>
+								@endif
 								<a href="{{ route('services.create') }}">New Service</a>
 								<a href="{{ route('facilities.create') }}">New Facility</a>
 								<a href="{{ route('events.create') }}">New Event</a>

@@ -7,6 +7,7 @@ use App\Model\Layout;
 use App\Model\Map;
 use App\Model\Taxonomy;
 use Illuminate\Http\Request;
+use App\Model\Location;
 
 class HomeController extends Controller
 {
@@ -34,6 +35,7 @@ class HomeController extends Controller
         $home = Layout::find(1);
         $layout = Layout::find(1);
         $map = Map::find(1);
+        $locations = Location::get();
         // $taxonomies = \App\Taxonomy::whereNotNull('taxonomy_grandparent_name')->orderBy('taxonomy_name', 'asc')->get();
         // $grandparent_taxonomies = Taxonomy::whereNotNull('taxonomy_grandparent_name')->groupBy('taxonomy_grandparent_name')->pluck('taxonomy_grandparent_name')->toArray();
         // $parent_taxonomies = \App\Taxonomy::whereNotNull('taxonomy_grandparent_name')->groupBy('taxonomy_parent_name')->pluck('taxonomy_parent_name')->toArray();
@@ -83,7 +85,7 @@ class HomeController extends Controller
             $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
         }
 
-        return view('frontEnd.home', compact('home', 'map', 'grandparent_taxonomies', 'layout'))->with('taxonomy_tree', $taxonomy_tree);
+        return view('frontEnd.home', compact('home', 'map', 'grandparent_taxonomies', 'layout', 'locations'))->with('taxonomy_tree', $taxonomy_tree);
     }
     public function dashboard($value = '')
     {

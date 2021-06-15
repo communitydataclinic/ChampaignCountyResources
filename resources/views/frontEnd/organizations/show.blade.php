@@ -3,6 +3,7 @@ use App\Model\Organization;
 use App\Model\Service;
 use App\Model\Suggest;
 use App\Model\Error;
+use App\Model\Event;
 use Carbon\Carbon;
 ?>
 @extends('layouts.app')
@@ -60,13 +61,13 @@ use Carbon\Carbon;
                                     ({{$organization->organization_alternate_name}})
                                 @endif
                             </a>
-                            @if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
+                            @if (Auth::user() && Auth::user()->roles && Auth::user()->status == 0 && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
                             $organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')
                             <a href="/organizations/{{$organization->organization_recordid}}/edit" class="float-right">
                                 <i class="icon md-edit mr-0"></i>
                             </a>
                             @endif
-                            @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                            @if (Auth::user() && Auth::user()->roles && Auth::user()->status == 0 && Auth::user()->roles->name == 'System Admin')
                             <a href="/organizations/{{$organization->organization_recordid}}/edit" class="float-right">
                                 <i class="icon md-edit mr-0"></i>
                             </a>
@@ -117,13 +118,13 @@ use Carbon\Carbon;
                         <div class="organization_services">
                             <h4 class="card-title">
                                 <a href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>
-                                @if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
+                                @if (Auth::user() && Auth::user()->roles && Auth::user()->status == 0 && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
                                 $organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')
                                 <a href="/services/{{$service->service_recordid}}/edit" class="float-right">
                                     <i class="icon md-edit mr-0"></i>
                                 </a>
                                 @endif
-                                @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                                @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin' && Auth::user()->status == 0)
                                 <a href="/services/{{$service->service_recordid}}/edit" class="float-right">
                                     <i class="icon md-edit mr-0"></i>
                                 </a>
@@ -226,6 +227,40 @@ use Carbon\Carbon;
                 </div>
                 @endif
                 <!-- Services area design -->
+                <!-- Events area design -->
+                @if(Auth::user() && Auth::user()->roles && str_contains(Event::pluck('event_organization'), $organization->organization_recordid))
+                <div class="card">
+                    <div class="card-block">
+                        <h4 class="card_services_title">Events</h4>
+                        <h4 style="margin-top: 20px;">
+                            @foreach($event_list as $key => $event)
+                            <div class="organization_services">
+                                    <h4 class="card-title">
+                                        <a href="/events/{{$event->event_recordid}}">{{$event->event_title}}</a>
+                                        @if (Auth::user() && Auth::user()->roles && Auth::user()->status == 0 && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
+                                        $organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')
+                                        <a href="/events/{{$event->event_recordid}}/edit" class="float-right">
+                                            <i class="icon md-edit mr-0"></i>
+                                        </a>
+                                        @endif
+                                        @if (Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin' && Auth::user()->status == 0)
+                                        <a href="/events/{{$event->event_recordid}}/edit" class="float-right">
+                                            <i class="icon md-edit mr-0"></i>
+                                        </a>
+                                        @endif
+                                    </h4>
+                                    <h4 style="line-height: inherit;">Service: {{$event->event_service_name}}</h4>
+                                    <h4 style="line-height: inherit;">Contact Name: {{$event->event_contact_name}}</h4>
+                                    <h4 style="line-height: inherit;">Contact Email: {{$event->event_contact_email}}</h4>
+                                    <h4 style="line-height: inherit;">Contact Number: {{$event->event_contact_phone}}</h4>
+                                
+                            </div>
+                            @endforeach
+                        </h4>
+                    </div>
+                </div>
+                @endif
+                <!-- Events area design -->
                 <!--Error changing design-->
                 @if(Auth::user() && Auth::user()->roles && str_contains(Error::pluck('error_organization'), $organization->organization_recordid))
                 <div class="card">
@@ -347,7 +382,7 @@ use Carbon\Carbon;
             </div>
 
             <div class="col-md-4 property">
-                @if ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') || Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin')
+                @if ((Auth::user() && Auth::user()->roles && Auth::user()->user_organization  && Auth::user()->status == 0 && str_contains(Auth::user()->user_organization,$organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin') )
                 <div style="display: flex;" class="mb-20">
                     <div class="dropdown add_new_btn" style="width: 100%; float: right;">
                         <button class="btn btn-primary dropdown-toggle btn-block" type="button" id="dropdownMenuButton-group"
@@ -355,14 +390,31 @@ use Carbon\Carbon;
                             <i class="fas fa-plus"></i> Add New
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton-new">
-                            <a href="/service_create/{{$organization->organization_recordid}}" id="add-new-services">Add New Service</a>
-                            <a href="/contact_create/{{$organization->organization_recordid}}" id="add-new-services">Add New Contact</a>
-                            <a href="/facility_create/{{$organization->organization_recordid}}" id="add-new-services">Add New Facility</a>
+                            <a href="{{ route('services.create') }}" id="add-new-services">Add New Service</a>
+                            <a href="{{ route('facilities.create') }}" id="add-new-services">Add New Facility</a>
+                            <a href="{{ route('events.create') }}" id="add-new-services">Add New Event</a>
                         </div>
                     </div>
                 </div>
                 @endif
-
+                
+                @if(Auth::user() && Auth::user()->roles && Auth::user()->roles->name == 'System Admin' && Auth::user()->status == 0 )
+                <div style="display: flex;" class="mb-20">
+                    <div class="dropdown add_new_btn" style="width: 100%; float: right;">
+                        <button class="btn btn-primary dropdown-toggle btn-block" type="button" id="dropdownMenuButton-group"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-plus"></i> Add New
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton-new">
+                        <a href="{{ route('organizations.create') }}" id="add-new-services">Add New Organization</a>
+                            <a href="{{ route('services.create') }}" id="add-new-services">Add New Service</a>
+                            <a href="{{ route('facilities.create') }}" id="add-new-services">Add New Facility</a>
+                            <a href="{{ route('contacts.create') }}" id="add-new-services">Add New Contact</a>
+                            <a href="{{ route('events.create') }}" id="add-new-services">Add New Event</a>
+                        </div>
+                    </div>
+                </div>
+                @endif
                 @if (false && Auth::user() && Auth::user()->roles && Auth::user()->roles->name != 'Organization Admin')
                 <div class="pt-10 pb-10 pl-0 btn-download">
                     {{-- <form method="GET" action="/organizations/{{$organization->organization_recordid}}/tagging"
@@ -392,7 +444,7 @@ use Carbon\Carbon;
                         <div class="p-25">
                             <h4 class="card_services_title">
                                 <b>Locations</b>
-                                @if (Auth::user() && Auth::user()->roles && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
+                                @if (Auth::user() && Auth::user()->roles && isset($service) && Auth::user()->status == 0 && Auth::user()->user_organization && str_contains(Auth::user()->user_organization,
                                 $organization->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')
                                 <a href="/facilities/{{$service->service_locations}}/edit" class="float-right">
                                     <i class="icon md-edit mr-0"></i>

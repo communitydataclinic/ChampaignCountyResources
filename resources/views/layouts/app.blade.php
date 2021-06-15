@@ -12,7 +12,7 @@
             <strong> {{ session()->get('message') }} </strong>
         </div>
         @endif
-        @if (Auth::user() && Auth::user()->roles == null )
+        @if (Auth::user() && Auth::user()->status == 1 )
         <div class="alert alert-warning alert-dismissable custom-success-box"
         style="margin: 15px;">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>

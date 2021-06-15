@@ -56,12 +56,12 @@
   <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
   <link rel="stylesheet" href="../../../css/explorestyle.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
-  
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
   <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
-  
+
   <link rel="stylesheet" href="../../frontend/assets/examples/css/pages/register.css">
-  
+
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
   <link rel="stylesheet" href="../../../css/responsive.css">
  <script
@@ -375,8 +375,8 @@ $(function () {
     padding-left: 0;
   }
   #google_translate_element{
-    padding-top: 21px;
-    width: 112px;
+    padding-top: 22px;
+    width: 6em;
   }
   .goog-te-banner-frame.skiptranslate{
     display: none;
@@ -387,48 +387,23 @@ $(function () {
   .goog-te-gadget-simple {
     background-color: transparent !important;
     border: 0 !important;
+    padding: 0px !important;
   }
   .goog-te-gadget-simple .goog-te-menu-value span {
     color: white;
-    font-size: 14px;
-    font-weight: 500;
   }
-  .goog-te-menu-value span{
-    font-family: 'Poppins', sans-serif !important;
-  }
-
   .goog-te-menu-value span:nth-child(3){
     display: none;
   }
   .goog-te-menu-value span:nth-child(5){
     display: none;
   }
-  .goog-te-menu-value span:nth-child(1){
-
-  }
   .goog-te-gadget-simple .goog-te-menu-value span:nth-of-type(1) {
-    font-family: 'Font Awesome' !important;
-    font-weight: normal;
-    font-style: normal;
-    font-size: 22px !important;
-    position: relative;
-    display: inline-block;
-    -webkit-transform: translate(0, 0);
-    -ms-transform: translate(0, 0);
-    -o-transform: translate(0, 0);
-    transform: translate(0, 0);
-    text-rendering: auto;
-    speak: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     visibility: hidden;
   }
   .goog-te-gadget-simple .goog-te-menu-value span:before {
-    content: "Language ⏷";
+    content: "Language";
     visibility: visible;
-    font-family: "Neue Haas Grotesk Display Medium" !important;
-    font-weight: 500;
-    font-size: 16px;
   }
   .goog-te-menu-value {
     max-width: 22px;

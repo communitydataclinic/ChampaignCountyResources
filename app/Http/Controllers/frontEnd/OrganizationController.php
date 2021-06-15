@@ -15,6 +15,7 @@ use App\Model\Servicetaxonomy;
 use App\Model\Service;
 use App\Model\Contact;
 use App\Model\Error;
+use App\Model\Event;
 use App\Model\SessionData;
 use App\Model\Comment;
 use App\Model\Phone;
@@ -575,7 +576,7 @@ class OrganizationController extends Controller
             $organization->organization_alternate_name = $request->organization_alternate_name;
             $organization->organization_description = $request->organization_description;
             $organization->organization_email = $request->organization_email;
-            $organization->organization_url = $request->organization_url;
+            $organization->organization_url = 'https://' . strtr(trim($request->organization_url), ['http://' => '', 'https://' => '']);
             $organization->organization_legal_status = $request->organization_legal_status;
             $organization->organization_tax_status = $request->organization_tax_status;
             $organization->organization_tax_id = $request->organization_tax_id;
@@ -666,7 +667,7 @@ class OrganizationController extends Controller
                     return true;
                 });
             }
-            $organization_services = $organization->services() ? $organization->services()->orderBy('service_name')->paginate(10) : [];
+            $organization_services = $organization->services() ? $organization->services()->orderBy('service_name')->paginate(20) : [];
             if (count($organization->services) == 0) {
                 $organization_services = $organization->getServices()->orderBy('service_name')->paginate(10);
             }
@@ -744,9 +745,10 @@ class OrganizationController extends Controller
             }
             $comment_list = Comment::where('comments_organization', '=', $id)->get();
             $error_list = Error::where('error_organization', '=', $id)->get();
+            $event_list = Event::where('event_organization', '=', $id)->get();
             $session_list = SessionData::where('session_organization', '=', $id)->select('session_recordid', 'session_edits', 'session_performed_at', 'session_verification_status')->get();
 
-            return view('frontEnd.organizations.show', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'contact_info_list', 'organization_services', 'location_info_list', 'existing_tags', 'error_list', 'comment_list', 'session_list'));
+            return view('frontEnd.organizations.show', compact('organization', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'contact_info_list', 'organization_services', 'location_info_list', 'existing_tags', 'error_list', 'comment_list', 'session_list', 'event_list'));
         } else {
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');

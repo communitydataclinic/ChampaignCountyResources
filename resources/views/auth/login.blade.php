@@ -25,7 +25,7 @@ Login
 					{!! $errors->first('password', '<p class="help-block">:message</p>') !!}
 				</div>
 			</div>      
-			<!--a class="forget_password pull-right " href="{{url('password/reset')}}">Forget Password</a-->
+			<a class="forget_password pull-right " href="{{url('password/reset')}}">Forgot Password</a>
 			<button class="btn btn-lg btn-primary btn-block"  name="Submit" value="Login" type="Submit">Login</button>
 
 			<a class="forget_password" style="margin-top: 15px;display: inline-block;margin-bottom: 0;" href="{{url('register')}}">First time? Register to manage your organization</a>					

@@ -143,7 +143,7 @@ class AccountController extends Controller
     public function update_password(Request $request, $id)
     {
         $this->validate($request, [
-            'password' => 'required|confirmed|min:6',
+            'password' => 'required|confirmed|min:8',
         ]);
         try {
             $user = User::find($id);
