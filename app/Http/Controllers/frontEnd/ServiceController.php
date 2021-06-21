@@ -633,7 +633,10 @@ class ServiceController extends Controller
                     $taxonomy_tree['parent_taxonomies'] = $parent_taxonomies;
                 }
                 $user_orgs = array_column(User::groupBy('user_organization')->get(['user_organization'])->toArray(),'user_organization');
-                return view('frontEnd.services.show', compact('user_orgs','service', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'service_taxonomy_info_list', 'contact_info_list', 'phone_number_info', 'organization'));
+
+                $holiday_schedules = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->get();
+
+                return view('frontEnd.services.show', compact('user_orgs','service', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'service_taxonomy_info_list', 'contact_info_list', 'phone_number_info', 'organization', 'holiday_schedules'));
             } else {
                 Session::flash('message', 'This record has been deleted.');
                 Session::flash('status', 'warning');
