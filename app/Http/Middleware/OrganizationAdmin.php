@@ -22,18 +22,42 @@ class OrganizationAdmin
 
         $list = [
             'contacts.index',
+            'contacts.create',
+            'contacts.edit',
+            'contacts.update',
+            'contacts.store',
+            'contacts.destroy',
             'facilities.index',
-            'organizations.create',
             'facilities.create',
+            'facilities.edit',
+            'facilities.update',
+            'facilities.store',
+            'facilities.destroy',
+            'organizations.create',
+            'organizations.edit',
+            'organizations.update',
+            'organizations.store',
+            'organizations.destroy',
+            'services.create',
+            'services.edit',
+            'services.update',
+            'services.store',
+            'services.destroy',
+            'events.create',
+            'events.edit',
+            'events.update',
+            'events.store',
+            'events.destroy',
         ];
         if(in_array($routeName, $list) && (empty($user) || empty($user->roles) || ($user->roles->name != 'Organization Admin' && $user->roles->name != 'System Admin'))) {
             if (!empty($api)) {
                 return response()->json(['message' => 'you_dont_have_permission_to_use_this_route'], 403);
             } else {
 
-                Session::flash('message', 'Warning! Not enough permissions. Please contact Us for more');
+                Session::flash('message', 'Not enough permissions. Please contact Us for more');
                 Session::flash('status', 'warning');
-                return redirect()->back();
+                //return redirect()->back();
+                return redirect()->route('login');
             }
         } else {
             return $next($request);
