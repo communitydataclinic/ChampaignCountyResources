@@ -918,7 +918,7 @@ class ServiceController extends Controller
                 $organization->updated_at = date("Y-m-d H:i:s");
                 $organization->save();
             }
-            Session::flash('message', 'Service updated succesfully');
+            Session::flash('message', 'Service updated succesfully!');
             Session::flash('status', 'success');
             return redirect('services/' . $id);
         } catch (\Throwable $th) {
