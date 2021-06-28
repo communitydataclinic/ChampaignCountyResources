@@ -365,7 +365,7 @@
                                                 <th>Remove</th>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
+                                                <!-- <tr>
                                                     <td>
                                                         <input type="date" name="holiday_start_date[]" id="">
                                                     </td>
@@ -382,7 +382,7 @@
                                                         <input type="checkbox" name="holiday_closed[]" id="" value="1">
                                                     </td>
                                                     <td></td>
-                                                </tr>
+                                                </tr> -->
 
                                                 <tr id="addTr">
                                                     <td colspan="6" class="text-center">
