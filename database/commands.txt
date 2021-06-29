@@ -1,0 +1,5 @@
+Add a new migration
+php artisan make:migration location_accessibility --table=locations
+
+Apply the new migration
+php artisan migrate --path=/database/migrations/2021_06_28_035140_location_accessibility.php
