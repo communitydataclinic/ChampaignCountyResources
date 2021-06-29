@@ -316,11 +316,13 @@ Edit Service
                                                         <td>
                                                             <input type="checkbox" name="holiday_closed[]" id="" value="{{ $key + 1 }}" {{ $value->schedule_closed == ($key + 1) ? 'checked' : '' }}>
                                                         </td>
-                                                        <td></td>
+                                                        <td class="text-center">
+                                                            <a href="javascript:void(0)" class="removeData" style="color:red;"> <i class="fa fa-minus-circle" aria-hidden="true"></i> </a>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 @else
-                                                <tr>
+                                                <!-- <tr>
                                                     <td>
                                                         <input type="date" name="holiday_start_date[]" id="">
                                                     </td>
@@ -336,8 +338,10 @@ Edit Service
                                                     <td>
                                                         <input type="checkbox" name="holiday_closed[]" id="" value="1">
                                                     </td>
-                                                    <td></td>
-                                                </tr>
+                                                    <td class="text-center">
+                                                        <a href="javascript:void(0)" class="removeData" style="color:red;"> <i class="fa fa-minus-circle" aria-hidden="true"></i> </a>
+                                                    </td>
+                                                </tr> -->
                                                 @endif
 
                                                 <tr id="addTr">

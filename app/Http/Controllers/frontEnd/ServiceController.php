@@ -385,8 +385,8 @@ class ServiceController extends Controller
                     }
                 }
             }
-            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && (count($request->holiday_start_date) == 0 && $request->holiday_start_date[0] != null)) {
-                Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
+
+            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at) {
                 for ($i = 0; $i < count($request->holiday_start_date); $i++) {
                     // $schedules =
                     // if($schedules){
@@ -472,7 +472,8 @@ class ServiceController extends Controller
 
             $service->save();
 
-            Session::flash('message', 'Service created successfully');
+            Session::flash('message', 'Service created successfully!');
+
             Session::flash('status', 'success');
 
             if(isset(Auth::user()->role_id)) {
@@ -867,8 +868,9 @@ class ServiceController extends Controller
                     }
                 }
             }
-            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && (count($request->holiday_start_date) == 0 && $request->holiday_start_date[0] != null)) {
-                Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
+
+            Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
+            if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && ($request->holiday_start_date[0] != null)) {
                 for ($i = 0; $i < count($request->holiday_start_date); $i++) {
                     // $schedules = 
                     // if($schedules){
@@ -916,7 +918,7 @@ class ServiceController extends Controller
                 $organization->updated_at = date("Y-m-d H:i:s");
                 $organization->save();
             }
-            Session::flash('message', 'Service updated successfully!');
+            Session::flash('message', 'Service updated succesfully!');
             Session::flash('status', 'success');
             return redirect('services/' . $id);
         } catch (\Throwable $th) {

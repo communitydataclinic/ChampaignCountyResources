@@ -304,12 +304,13 @@ use Carbon\Carbon;
 
                                     @foreach($service->schedules as $schedule)
 
-                                        @if ($schedule->schedule_holiday)
+                                        <!-- @if ($schedule->schedule_holiday)
                                             @php
                                                 $holidayScheduleData[] = 1;
                                             @endphp
-                                        @endif
+                                        @endif -->
                                         @if ($schedule->schedule_days_of_week)
+
                                             <h4 style="color:{{ strtolower(\Carbon\Carbon::now()->format('l')) == $schedule->schedule_days_of_week ? 'blue' : '' }}">
                                                 <b style="font-weight: 600;color: #000; letter-spacing: 0.5px;">{{ ucfirst($schedule->schedule_days_of_week) }} :</b>
                                                 @if ($schedule->schedule_closed == null)
@@ -320,23 +321,20 @@ use Carbon\Carbon;
                                             </h4>
                                         @endif
                                     @endforeach
-                                    @if (isset($holidayScheduleData))
+                                    @if (count($holiday_schedules) > 0)
                                         <span style="margin-bottom: 20px;display: inline-block;font-weight: 600;text-decoration: underline; color: #5051db;cursor: pointer;" id="showHolidays"><a>Show holidays</a></span>
                                     @endif
                                     <div style="display: none;" id="holidays">
                                         <span class="subtitle"><b>Holidays</b></span><br />
-                                        @foreach($service->schedules as $schedule)
-                                            @if ($schedule->schedule_holiday)
-
+                                        @foreach($holiday_schedules as $schedule)
                                                 <h4 style="color: #000;" >
-                                                    {{ $schedule->schedule_start_date }} to {{ $schedule->schedule_start_date }}  :
+                                                    {{ $schedule->schedule_start_date }} to {{ $schedule->schedule_end_date }}  :
                                                     @if ($schedule->schedule_closed == null)
                                                         {{ $schedule->schedule_opens_at }} - {{ $schedule->schedule_closes_at }}
                                                     @else
                                                         Closed
                                                     @endif
                                                 </h4>
-                                            @endif
                                         @endforeach
                                         <span style="margin-bottom: 20px;display: inline-block;font-weight: 600;text-decoration: underline; color: #5051db;cursor: pointer;" id="hideHolidays"><a>Hide holidays</a></span> <br>
                                     </div>
