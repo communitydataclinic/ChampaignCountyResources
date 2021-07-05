@@ -93,7 +93,7 @@ Home
     </div>
 </div>
 @else
-<!-- JRA Start of search box panel. Previous if does not seem useful -->
+<!-- JRA Start of search box panel. Previous conditional does not seem useful -->
 <div class="page-register layout-full page-dark">
     <div class="page" data-animsition-in="fade-in" data-animsition-out="fade-out">
         <div class="container">
@@ -461,6 +461,43 @@ Home
         </div>
     </div>
 </div>
+
+<!-- Special directories section start -->
+<div class="browse_category" id="events">
+    <div class="page-content">
+        <div class="container">
+            <div class="text-center">
+                <h3>Special directories</h3>
+            </div>
+            <div class="row">
+                <div class="col-lg-2 col-md-2">
+                    <a class="child_node taxonomy-link" href="javascript:void(0);" value="child_789536700096192">
+                        <div class="category_icon">
+                            <div class="inner_category">
+                                <!--img src="{{$parent_taxonomy->category_logo}}" alt="" title="" class="hover_none">
+                                <img src="{{$parent_taxonomy->category_logo_white}}" alt="" title="" class="hover_display"-->
+                                <h3>Uniting Pride, LGBTQ+ resources</h3>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-2">
+                    <a class="child_node taxonomy-link" href="javascript:void(0);" value="child_{{$parent_taxonomy->taxonomy_recordid}}">
+                        <div class="category_icon">
+                            <div class="inner_category">
+                                <!--img src="{{$parent_taxonomy->category_logo}}" alt="" title="" class="hover_none">
+                                <img src="{{$parent_taxonomy->category_logo_white}}" alt="" title="" class="hover_display"-->
+                                <h3>YMCA, Immigration resources</h3>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Highlighted events section end -->
+
 <!-- Highlighted events section start -->
 <div class="browse_category" id="events">
     <div class="page-content">

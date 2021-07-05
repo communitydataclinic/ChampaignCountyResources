@@ -470,11 +470,26 @@ use Carbon\Carbon;
                                                             @endif
                                                             @if($location->location_transportation)
                                                                 <h4>
-                                                                <span><i class="icon fa-truck font-size-18 vertical-align-top "></i>
+                                                                <span><i class="icon fa-bus font-size-18 vertical-align-top "></i>
                                                                     {{$location->location_transportation}}
                                                                 </span>
                                                                 </h4>
                                                             @endif
+                                                            @if($location->location_accessibility)
+                                                                <h4>
+                                                                <span><i class="icon fa-wheelchair font-size-18 vertical-align-top "></i>
+                                                                    {{$location->location_accessibility}}
+                                                                </span>
+                                                                </h4>
+                                                            @endif
+                                                            @if($location->location_gender_equity)
+                                                                <h4>
+                                                                <span><i class="icon fa-transgender-alt font-size-18 vertical-align-top "></i>
+                                                                    {{$location->location_gender_equity}}
+                                                                </span>
+                                                                </h4>
+                                                            @endif                                                            
+
                                                             @if(isset($location->phones))
                                                                 @if($location->phones != null)
                                                                     @if(count($location->phones) > 0)
