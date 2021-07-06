@@ -797,11 +797,24 @@ class LocationController extends Controller
 
                 $response = $geocoder->getCoordinatesForAddress($full_address_info);
 
-                if ($response['lat']) {
-                    $latitude = $response['lat'];
-                    $longitude = $response['lng'];
-                    $facility->location_latitude = $latitude;
-                    $facility->location_longitude = $longitude;
+                if ($response['formatted_address'] != 'result_not_found') {
+
+                    // Check if the coordinates are in the polygon of Champaign County, IL
+                    // lat >= 39.88 && lat <= 40.39
+                    // lng <= -87.93 && lng >= -88.45
+                    if (($response['lat'] >= 39.88 && $response['lat'] <= 40.39) 
+                        && ($response['lng'] >= -88.45 && $response['lng'] <= -87.93)) {        
+                            
+                        $facility->location_latitude = $response['lat'];
+                        $facility->location_longitude = $response['lng'];        
+                        $facility->enrich_flag = 'GEOCODED';                                               
+                    }
+                    else {
+                        // Set a flag to avoid checking this address again
+                        $facility->location_latitude = null;
+                        $locatfacilityion_info->location_longitude = null;
+                        $facility->enrich_flag = 'OUT_CHMPGN';                            
+                    }                
                 } else {
                     Session::flash('message', 'Address info is not valid. We can not get longitude and latitude for this address');
                     Session::flash('status', 'error');

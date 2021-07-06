@@ -233,7 +233,7 @@ use Carbon\Carbon;
                                 <h4 style="line-height: inherit;">
                                 <span>
                                     <i class="icon md-globe font-size-18 vertical-align-top mr-0 pr-10"></i>
-                                    @if($service->service_url!=NULL)<a href="{!! $service->service_url !!}">{!!
+                                    @if($service->service_url!=NULL)<a href="{!! $service->service_url !!}" target="_blank">{!!
                                         $service->service_url !!}</a> @endif
                                 </span>
                                 </h4>
@@ -304,11 +304,6 @@ use Carbon\Carbon;
 
                                     @foreach($service->schedules as $schedule)
 
-                                        <!-- @if ($schedule->schedule_holiday)
-                                            @php
-                                                $holidayScheduleData[] = 1;
-                                            @endphp
-                                        @endif -->
                                         @if ($schedule->schedule_days_of_week)
 
                                             <h4 style="color:{{ strtolower(\Carbon\Carbon::now()->format('l')) == $schedule->schedule_days_of_week ? 'blue' : '' }}">

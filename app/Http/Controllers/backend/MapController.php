@@ -37,21 +37,22 @@ class MapController extends Controller
     public function index()
     {
         $layout = Layout::first();
+        
         $map = Map::find(1);
-
-        $ungeocoded_location_numbers = Location::whereNull('location_latitude')->count();
-        $invalid_location_info_count = Location::whereNull('location_name')->count();
-
-        $geocode_status_text = '';
+        $geocode_status_text = 'Not Started';
         $enrich_status_text = '';
-        if ($ungeocoded_location_numbers == $invalid_location_info_count) {
-            $geocode_status_text = 'All valid locations have already been geocoded.';
-        }
 
         $location_count = Location::whereNotNull('location_name')->count();
         $unenriched_location_count = Location::whereNotNull('location_name')->whereNull('enrich_flag')->count();
-        if ($unenriched_location_count == 0) {
-            $enrich_status_text = 'All valid locations have already been enriched before.';
+
+        $ungeocoded_location_numbers = Location::whereNull('enrich_flag')->count();
+        if ($ungeocoded_location_numbers == 0) {
+            $geocode_status_text = 'All valid locations in Champaign County have already been geocoded.';
+        }
+        
+        $invalid_location_info_count = Location::where('enrich_flag', '=', 'ADDRESS_ERR')->count();
+        if ($invalid_location_info_count > 0) {
+            $enrich_status_text = 'There are invalid locations in Champaign County for geocoding.';
         }
 
         return view('backEnd.pages.map', compact('map', 'ungeocoded_location_numbers', 'invalid_location_info_count', 'location_count', 'unenriched_location_count', 'geocode_status_text', 'enrich_status_text', 'layout'));
@@ -62,15 +63,18 @@ class MapController extends Controller
         $map = Map::find(1);
         $geocode_status_text = 'Not Started';
         $enrich_status_text = '';
-        $ungeocoded_location_numbers = Location::whereNull('location_latitude')->count();
-        $invalid_location_info_count = Location::whereNull('location_name')->count();
-        if ($ungeocoded_location_numbers == $invalid_location_info_count) {
-            $geocode_status_text = 'All valid locations have already been geocoded.';
-        }
+
         $location_count = Location::whereNotNull('location_name')->count();
         $unenriched_location_count = Location::whereNotNull('location_name')->whereNull('enrich_flag')->count();
-        if ($unenriched_location_count == 0) {
-            $enrich_status_text = 'All valid locations have already been enriched before.';
+
+        $ungeocoded_location_numbers = Location::whereNull('enrich_flag')->count();
+        if ($ungeocoded_location_numbers == 0) {
+            $geocode_status_text = 'All valid locations in Champaign County have already been geocoded.';
+        }
+        
+        $invalid_location_info_count = Location::where('enrich_flag', '=', 'ADDRESS_ERR')->count();
+        if ($invalid_location_info_count > 0) {
+            $enrich_status_text = 'There are invalid locations in Champaign County for geocoding.';
         }
 
         return view('backEnd.pages.map', compact('map', 'ungeocoded_location_numbers', 'invalid_location_info_count', 'geocode_status_text', 'location_count', 'unenriched_location_count', 'enrich_status_text'));
@@ -231,41 +235,67 @@ class MapController extends Controller
 
     public function apply_geocode(Request $request)
     {
+        $ungeocoded_location_info_list = Location::whereNull('location_latitude')->whereNull('enrich_flag')->get();
 
-        $ungeocoded_location_info_list = Location::whereNull('location_latitude')->get();
-        $badgeocoded_location_info_list = Location::where('location_latitude', '=', '')->get();
         $client = new \GuzzleHttp\Client();
         $geocoder = new Geocoder($client);
         $geocode_api_key = env('GEOCODE_GOOGLE_APIKEY');
         $geocoder->setApiKey($geocode_api_key);
 
         if ($ungeocoded_location_info_list) {
+            
             foreach ($ungeocoded_location_info_list as $key => $location_info) {
+                
+                if ($location_info->address) {  
+                    $address = $location_info->address->first();
+                    
+                    if (isset($address->address_1)) {                    
+                        $full_address_info = $address->address_1;
+                        if ($address->address_city)
+                            $full_address_info .= ', ' . $address->address_city;
+                        
+                        if ($address->address_state_province)
+                            $full_address_info .= ', ' . $address->address_state_province;
 
-                if ($location_info->address) {
-                    if (isset(($location_info->address)->address)) {
-                        $address_info = ($location_info->address)->address;
-                        // $response = $geocoder->getCoordinatesForAddress('30-61 87th Street, Queens, NY, 11369');
-                        $response = $geocoder->getCoordinatesForAddress($address_info);
-                        // if (($response['lat'] > 40.5) && ($response['lat'] < 42.0)) {
-                        //     $latitude = $response['lat'];
-                        //     $longitude = $response['lng'];
-                        // } else {
-                        //     $latitude = '';
-                        //     $longitude = '';
-                        // }
+                        if ($address->address_postal_code)
+                            $full_address_info .= ' ' . $address->address_postal_code;
 
-                        $latitude = $response['lat'];
-                        $longitude = $response['lng'];
+                        $response = $geocoder->getCoordinatesForAddress($full_address_info);
 
-                        $location_info->location_latitude = $latitude;
-                        $location_info->location_longitude = $longitude;
-                        $location_info->save();
+                        $location_info->location_latitude = null;
+                        $location_info->location_longitude = null;
+                        if ($response['formatted_address'] != 'result_not_found') {
+                            // Check if the coordinates are in the polygon of Champaign County, IL
+                            // lat >= 39.88 && lat <= 40.39
+                            // lng <= -87.93 && lng >= -88.45
+                            if (($response['lat'] >= 39.88 && $response['lat'] <= 40.39) 
+                                && ($response['lng'] >= -88.45 && $response['lng'] <= -87.93)) {        
+                                    
+                                $location_info->location_latitude = $response['lat'];
+                                $location_info->location_longitude = $response['lng'];        
+                                $location_info->enrich_flag = 'GEOCODED';                                               
+                            }
+                            else {
+                                // Set a flag to avoid checking this address again
+                                $location_info->enrich_flag = 'OUT_CHMPGN';                            
+                            }                    
+                        }
+                        else {
+                            // Set a flag to avoid checking this address again BUT indicate should be corrected
+                            $location_info->enrich_flag = 'ADDRESS_ERR';                            
+                        }    
+                        $location_info->save();                
                     }
                 }
             }
         }
 
+        /* 
+        Does not seem helpful because we always guarantee that latitute and longitude have a value, empty or null
+
+        */
+        /* 
+        $badgeocoded_location_info_list = Location::where('location_latitude', '=', '')->get();
         if ($badgeocoded_location_info_list) {
             foreach ($badgeocoded_location_info_list as $key => $location_info) {
                 if ($location_info->address) {
@@ -281,7 +311,8 @@ class MapController extends Controller
                     }
                 }
             }
-        }
+        } 
+        */
 
         return redirect('map');
     }

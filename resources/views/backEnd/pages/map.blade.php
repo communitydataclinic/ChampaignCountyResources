@@ -28,14 +28,14 @@ Map Settings
             {{ Form::open(array('url' => ['map', 1], 'class' => 'form-horizontal form-label-left', 'method' => 'put', 'enctype'=> 'multipart/form-data')) }}
             <div class="row">
             <div class="col-md-8">
-              <div class="form-group">
+              <!--div class="form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12">Apply Unique NYC Map Settings</label>
                 <div class="col-md-8 col-sm-8 col-xs-12">
                     <label>On&nbsp;&nbsp;
                       <input type="checkbox" class="js-switch" value="checked" name="active"  @if($map->active==1) checked @endif/>&nbsp;&nbsp;Off
                     </label>
                 </div>
-              </div>
+              </div-->
 
               <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Google Maps API Key
@@ -96,7 +96,7 @@ Map Settings
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2>Geocode</h2>
+            <h2>Geocode (Champaign County IL addresses only)</h2>
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>
@@ -107,7 +107,7 @@ Map Settings
           </div>
           <div class="x_content">
             <div class="row">
-              <div class="col-md-8">
+              <!--div class="col-md-8">
                 <div class="item form-group">
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Scan database to add NYC specific information to locations
                   </label>
@@ -115,32 +115,32 @@ Map Settings
                     <a class="btn btn-primary open-td" href="/scan_ungeocoded_location/" id="scan-btn" style="color: white;">Scan</a>
                   </div>
                 </div>
-              </div>
+              </div-->
 
               <div class="col-md-8">
                 <div class="item form-group">
-                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output number of records with addresses but without latitude/longitude:
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Locations without latitude/longitude:
                   </label>
                   <div class="col-md-4 col-sm-4 col-xs-12">
-                    <h5 id="invalid_location_numbers" style="color: blue; font-style: italic;">
-                      {{$invalid_location_info_count}} locations are invalid.
-                    </h5>
-                    @if ($invalid_location_info_count == $ungeocoded_location_numbers)
+                    @if ($ungeocoded_location_numbers == 0)
                     <h5 id="ungeocoded_location_numbers" style="color: blue; font-style: italic;">
-                      All valid locations have already been geocoded.
+                      All valid locations in Champaign County, IL are geocoded.
                     </h5>
                     @else
                     <h6 id="ungeocoded_location_numbers" style="color: blue; font-style: italic;">
-                      {{$ungeocoded_location_numbers}} locations have not been geocoded.
+                      {{$ungeocoded_location_numbers}} locations in Champaign County, IL have not been geocoded.
                     </h6>
                     @endif
+                    <h5 id="invalid_location_numbers" style="color: blue; font-style: italic;">
+                      {{$invalid_location_info_count}} locations are invalid for geocoding (e.g., invalid address).
+                    </h5>
                   </div>
                 </div>
               </div>
 
               <div class="col-md-8">
                 <div class="item form-group">
-                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Geocode
+                  <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">
                   </label>
                   <div class="col-md-4 col-sm-4 col-xs-12">
                     <a class="btn btn-danger open-td" href="/apply_geocode/" id="apply-btn" style="color: white;">Geocode</a>
@@ -148,7 +148,7 @@ Map Settings
                 </div>
               </div>
 
-              <div class="col-md-8">
+              <!--div class="col-md-8">
                 <div class="item form-group">
                   <label class="control-label col-md-6 col-sm-6 col-xs-12" for="email">Output Status of Geocoding
                   </label>
@@ -158,7 +158,7 @@ Map Settings
                     </h5>
                   </div>
                 </div>
-              </div>
+              </div-->
 
             </div>
           </div>
