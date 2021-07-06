@@ -1,0 +1,13 @@
+*** Replace the text in < > ***
+
+Add a new migration
+php artisan make:migration <migragion_name> --table=<table_name> 
+
+Apply all the new migrations
+php artisan migrate 
+
+Apply a the new migration
+php artisan migrate --path=/database/migrations/<migration_file_name>.php
+
+Check the current migration in this website
+php artisan migrate:status
