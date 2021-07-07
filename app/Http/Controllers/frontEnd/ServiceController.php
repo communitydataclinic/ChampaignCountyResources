@@ -38,6 +38,7 @@ use Carbon\Carbon;
 use App\Model\csv;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 use Auth;
@@ -306,6 +307,9 @@ class ServiceController extends Controller
                         'service_recordid' => $new_recordid,
                         'location_recordid' => $locationId
                     ]);
+                    $location = Location::where('location_recordid', $locationId)->first();
+                    $location->location_organization = $service_organization_id;
+                    $location->save();
                 }
                 $service->service_locations = join(',', $request->service_locations);
             } else {
@@ -388,18 +392,6 @@ class ServiceController extends Controller
 
             if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at) {
                 for ($i = 0; $i < count($request->holiday_start_date); $i++) {
-                    // $schedules =
-                    // if($schedules){
-                    //     $schedules->schedule_start_date = $request->holiday_start_date[$i];
-                    //     $schedules->schedule_end_date = $request->holiday_end_date[$i];
-                    //     $schedules->schedule_opens_at = $request->holiday_open_at[$i];
-                    //     $schedules->schedule_closes_at = $request->schedule_closes_at[$i];
-                    //     if(in_array(($i+1),$request->schedule_closed)){
-                    //         $schedules->schedule_closed = $i+1;
-                    //     }
-                    //     $schedules->save();
-                    //     $schedule_services[] = $schedules->schedule_recordid;
-                    // }else{
                     $schedule_recordid = Schedule::max('schedule_recordid') + 1;
                     $schedules = new Schedule();
                     $schedules->schedule_recordid = $schedule_recordid;
@@ -414,11 +406,9 @@ class ServiceController extends Controller
                     $schedules->schedule_holiday = '1';
                     $schedules->save();
                     $schedule_services[] = $schedule_recordid;
-                    // }
                 }
             }
             $service->schedules()->sync($schedule_services);
-
 
             $service->service_phones = '';
             $phone_recordid_list = [];
@@ -723,7 +713,6 @@ class ServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         try {
             $service = Service::where('service_recordid', $id)->first();
             $service->service_name = $request->service_name;
@@ -746,6 +735,10 @@ class ServiceController extends Controller
                         'service_recordid' => $id,
                         'location_recordid' => $locationId
                     ]);
+
+                    $location = Location::where('location_recordid', $locationId)->first();
+                    $location->location_organization = $request->service_organization;
+                    $location->save();
                 }
                 $service->service_locations = join(',', $request->service_locations);
             } else {
@@ -829,11 +822,6 @@ class ServiceController extends Controller
                 $service->service_address = $service_address_info;
             }
 
-            // if ($request->service_schedules) {
-            //     $service->service_schedule = join(',', $request->service_schedules);
-            // } else {
-            //     $service->service_schedule = '';
-            // }
             $schedule_services = [];
 
             if ($request->schedule_days_of_week) {
@@ -872,18 +860,6 @@ class ServiceController extends Controller
             Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
             if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && ($request->holiday_start_date[0] != null)) {
                 for ($i = 0; $i < count($request->holiday_start_date); $i++) {
-                    // $schedules = 
-                    // if($schedules){
-                    //     $schedules->schedule_start_date = $request->holiday_start_date[$i];
-                    //     $schedules->schedule_end_date = $request->holiday_end_date[$i];
-                    //     $schedules->schedule_opens_at = $request->holiday_open_at[$i];
-                    //     $schedules->schedule_closes_at = $request->schedule_closes_at[$i];
-                    //     if(in_array(($i+1),$request->schedule_closed)){
-                    //         $schedules->schedule_closed = $i+1;
-                    //     }
-                    //     $schedules->save();
-                    //     $schedule_services[] = $schedules->schedule_recordid;
-                    // }else{
                     $schedule_recordid = Schedule::max('schedule_recordid') + 1;
                     $schedules = new Schedule();
                     $schedules->schedule_recordid = $schedule_recordid;
@@ -898,7 +874,6 @@ class ServiceController extends Controller
                     $schedules->schedule_holiday = '1';
                     $schedules->save();
                     $schedule_services[] = $schedule_recordid;
-                    // }
                 }
             }
             $service->schedules()->sync($schedule_services);
@@ -1820,24 +1795,51 @@ class ServiceController extends Controller
     }
     public function delete_service(Request $request)
     {
-        try {
-            Service::where('service_recordid', $request->service_recordid)->delete();
+        try {                        
+            DB::beginTransaction();
 
-            Session::flash('message', 'Service deleted successfully!');
-            Session::flash('status', 'success');
-            if(isset(Auth::user()->role_id)) {
-                if(Auth::user()->role_id == 3) {
-                    return redirect('organizations/'.Auth::user()->user_organization);
-                } elseif(Auth::user()->role_id == 1) {
-                    return redirect('account/'.Auth::user()->id);
-                } else {
-                    return redirect('services');
-                }
+            $service = Service::where('service_recordid', $request->service_recordid)->first();
+            
+            // Delete schedules
+            Schedule::where('schedule_services', $service->service_recordid)->delete();
+
+            // Delete service locations
+            ServiceLocation::where('service_recordid', $service->service_recordid)->delete();
+
+            // Delete service phones and phones
+            $phones = $service->phone; 
+            ServicePhone::where('service_recordid', $service->service_recordid)->delete();
+
+            foreach($phones as $phone) {
+                Phone::where('phone_recordid', $phone->phone_recordid)->delete();
+            }
+
+            // Delete service taxonomies
+            ServiceTaxonomy::where('service_recordid', $service->service_recordid)->delete();
+
+            // Delete service            
+            $service->delete();
+
+            DB::commit();  
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
+        }
+
+        Session::flash('message', 'Service deleted successfully!');
+        Session::flash('status', 'success');
+        if(isset(Auth::user()->role_id)) {
+            if(Auth::user()->role_id == 3) {
+                return redirect('organizations/'.Auth::user()->user_organization);
+            } elseif(Auth::user()->role_id == 1) {
+                return redirect('account/'.Auth::user()->id);
             } else {
                 return redirect('services');
             }
-        } catch (\Throwable $th) {
-            dd($th);
+        } else {
+            return redirect('services');
         }
     }
 }

@@ -456,7 +456,7 @@ Edit Service
     $(document).on('click', '.removeData', function(){
             $(this).closest('tr').remove()
         });
-    let i = {{ count($holiday_schedules) > 0 ? (count($holiday_schedules) + 1) : 2 }};
+    let i = {{ count($holiday_schedules) > 0 ? (count($holiday_schedules) + 1) : 1 }};
     $('#addData').click(function(){
             $('#myTable tr:last').before('<tr><td><input type="date" name="holiday_start_date[]" id=""></td><td><input type="date" name="holiday_end_date[]" id=""></td><td><input type="time" name="holiday_open_at[]" id=""></td><td><input type="time" name="holiday_close_at[]" id=""></td><td><input type="checkbox" name="holiday_closed[]" id="" value="'+i+'" ></td><td class="text-center"><a href="javascript:void(0)" class="removeData" style="color:red;"> <i class="fa fa-minus-circle" aria-hidden="true"></i> </a></td></tr>');
             i++;
