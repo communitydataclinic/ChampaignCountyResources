@@ -673,63 +673,66 @@ use Carbon\Carbon;
 </div>
 
 
-<script type="text/javascript" src="http://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js">
+<script type="text/javascript" src="https://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js">
 </script>
 <script type="text/javascript"
-    src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
+    src="https://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
 
 <script>
+var tag_source = <?php print_r(json_encode($existing_tags)) ?>;
+$(document).ready(function() {
+    $('#tokenfield').tokenfield({
+    autocomplete: {
+        source: tag_source,
+        delay: 100
+    },
+    showAutocompleteOnFocus: true
+    });
+});
 
-    var tag_source = <?php print_r(json_encode($existing_tags)) ?>;
-  $(document).ready(function() {
-      $('#tokenfield').tokenfield({
-      autocomplete: {
-          source: tag_source,
-          delay: 100
-      },
-      showAutocompleteOnFocus: true
-      });
-  });
-  $(document).ready(function() {
-      $('.comment-reply').hide();
-      $('#reply_content').val('');
-  });
-  $(document).ready(function(){
-      var locations = <?php print_r(json_encode($locations)) ?>;
-      var organization = <?php print_r(json_encode($organization->organization_name)) ?>;
-      var maplocation = <?php print_r(json_encode($map)) ?>;
-    //   console.log(locations);
-      if(maplocation.active == 1){
+$(document).ready(function() {
+    $('.comment-reply').hide();
+    $('#reply_content').val('');
+});
+
+$(document).ready(function(){
+
+    setTimeout(function(){
+        var locations = <?php print_r(json_encode($locations)) ?>;
+        var organization = <?php print_r(json_encode($organization->organization_name)) ?>;
+        var maplocation = <?php print_r(json_encode($map)) ?>;
+        //   console.log(locations);
+        if(maplocation.active == 1){
         avglat = maplocation.lat;
         avglng = maplocation.long;
         zoom = maplocation.zoom_profile;
-      }
-      else
-      {
-          avglat = 40.730981;
-          avglng = -73.998107;
-          zoom = 12;
-      }
-      latitude = locations[0].location_latitude;
-      longitude = locations[0].location_longitude;
-      if(latitude == null){
+        }
+        else
+        {
+            avglat = 40.730981;
+            avglng = -73.998107;
+            zoom = 12;
+        }
+        latitude = locations[0].location_latitude;
+        longitude = locations[0].location_longitude;
+        if(latitude == null){
         latitude = avglat;
         longitude = avglng;
-      }
-      var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: zoom,
-          center: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
-      });
-      var latlongbounds = new google.maps.LatLngBounds();
-      var markers = locations.map(function(location, i) {
-          var position = {
-              lat: location.location_latitude,
-              lng: location.location_longitude
-          }
-          var latlong = new google.maps.LatLng(position.lat, position.lng);
-          latlongbounds.extend(latlong);
-           var content = '<div id="iw-container">';
-                   for(i = 0; i < location.services.length; i ++){
+        }
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: zoom,
+            center: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
+        });
+        var latlongbounds = new google.maps.LatLngBounds();
+        var markers = locations.map(function(location, i) {
+            var position = {
+                lat: location.location_latitude,
+                lng: location.location_longitude
+            }
+            var latlong = new google.maps.LatLng(position.lat, position.lng);
+            latlongbounds.extend(latlong);
+            var content = '<div id="iw-container">';
+                    for(i = 0; i < location.services.length; i ++){
                             content +=  '<div class="iw-title"> <a href="/services/'+location.services[i].service_recordid+'">'+location.services[i].service_name+'</a></div>';
                         }
                         // '<div class="iw-title"> <a href="/services/'+ location.service_recordid +'">' + location.service_name + '</a> </div>' +
@@ -744,21 +747,23 @@ use Carbon\Carbon;
             var infowindow = new google.maps.InfoWindow({
                 content: content
             });
-          var marker = new google.maps.Marker({
-              position: position,
-              map: map,
-              title: location.location_name,
-          });
-          marker.addListener('click', function() {
+            var marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: location.location_name,
+            });
+            marker.addListener('click', function() {
                 infowindow.open(map, marker);
             });
-          return marker;
-      });
-      if (locations.length > 1) {
-          map.fitBounds(latlongbounds);
-      }
-  });
-  $(document).ready(function() {
+            return marker;
+        });
+        if (locations.length > 1) {
+            map.fitBounds(latlongbounds);
+        }
+    }, 2000);
+});
+
+$(document).ready(function() {
     var showChar = 250;
     var ellipsestext = "...";
     var moretext = "More";
@@ -792,36 +797,38 @@ use Carbon\Carbon;
           $("#category_" +  id).prop( "checked", true );
           $("#checked_" +  id).prop( "checked", true );
           $("#filter").submit();
-      });
-      $('.panel-link.target-population-link').on('click', function(e){
+    });
+    
+    $('.panel-link.target-population-link').on('click', function(e){
           $("#target_all").val("all");
           $("#filter").submit();
-      });
-      $('.panel-link.target-population-child').on('click', function(e){
+    });
+    $('.panel-link.target-population-child').on('click', function(e){
           var id = $(this).attr('at');
           $("#target_multiple").val(id);
           $("#filter").submit();
-      });
-  });
-  $("#reply-btn").on('click', function(e) {
-      e.preventDefault();
-      $('.comment-reply').show();
-  });
-  $("#close-reply-window-btn").on('click', function(e) {
-      e.preventDefault();
-      $('.comment-reply').hide();
-  });
-  $('button#delete-error-btn').on('click', function() {
-        var value = $(this).val();
-        $('input#error_recordid').val(value);
     });
-  function ShowModal(id)
-{
+});
+
+$("#reply-btn").on('click', function(e) {
+    e.preventDefault();
+    $('.comment-reply').show();
+});
+$("#close-reply-window-btn").on('click', function(e) {
+    e.preventDefault();
+    $('.comment-reply').hide();
+});
+$('button#delete-error-btn').on('click', function() {
+    var value = $(this).val();
+    $('input#error_recordid').val(value);
+});
+
+function ShowModal(id) {
   var modal = document.getElementById(id);
   modal.style.display = "block";
 }
-function closeModal(id)
-{
+
+function closeModal(id) {
   var modal = document.getElementById(id);
   modal.style.display = "none";
 }
