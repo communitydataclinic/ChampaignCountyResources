@@ -726,6 +726,8 @@ class LocationController extends Controller
             $facility->location_name = $request->location_name;
             $facility->location_alternate_name = $request->location_alternate_name;
             $facility->location_transportation = $request->location_transporation;
+            $facility->location_accessibility = $request->location_accessibility;
+            $facility->location_gender_equity = $request->location_gender_equity;            
             $facility->location_description = $request->location_description;
             $facility->location_details = $request->location_details;
 
@@ -1004,6 +1006,8 @@ class LocationController extends Controller
             $facility->location_description = $request->location_description;
             $facility->location_alternate_name = $request->location_alternate_name;
             $facility->location_transportation = $request->location_transporation;
+            $facility->location_accessibility = $request->location_accessibility;
+            $facility->location_gender_equity = $request->location_gender_equity;            
             $facility->location_details = $request->location_details;
 
             if ($request->facility_service) {

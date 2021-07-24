@@ -116,7 +116,7 @@ Facility
                             {{$facility->location_longitude}}
                         </h4>
                         @endif
-                        @if(isset($facility->phones))
+                        @if(false && isset($facility->phones))
                         <h4>
 							<span class="subtitle"><b>Phones: </b></span>
 							@foreach($facility->phones as $key => $phone)
@@ -134,12 +134,12 @@ Facility
                             {{$facility->location_description}}
                         </h4>
                         <h4>
-                            <span class="subtitle"><b>Transportation: </b></span>
-                            {{$facility->location_transportation}}
+                            <span class="subtitle"><b>Accessibility: </b></span>
+                            {{$facility->location_accessibility}}
                         </h4>
                         <h4>
-                            <span class="subtitle"><b>Details: </b></span>
-                            {{$facility->location_details}}
+                            <span class="subtitle"><b>Gender equity practices: </b></span>
+                            {{$facility->location_gender_equity}}
                         </h4>
                     </div>
                 </div>
@@ -249,7 +249,7 @@ Facility
                 <!-- Services area design -->
 
                 <!-- commnet area design-->
-                @if (Auth::user())
+                @if (false && Auth::user())
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card_services_title">Comments</h4>

@@ -58,14 +58,7 @@
                                                name="location_alternate_name" value="{{ old('location_alternate_name') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Facility Transportation: </label>
-                                        <input class="form-control selectpicker" type="text" id="location_transporation"
-                                               name="location_transporation" value="{{ old('location_transporation') }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
+                                <!--div class="col-md-4">
                                     <div class="form-group">
                                         <label>Facility Service: </label>
                                         <select class="form-control selectpicker" multiple data-live-search="true" id="facility_service"
@@ -76,7 +69,6 @@
                                         </select>
                                     </div>
                                 </div>
-                                
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Facility Schedule: </label>
@@ -87,13 +79,13 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                </div>
-                                <div class="col-md-12">
+                                </div-->
+                                <!--div class="col-md-12">
                                     <div class="form-group">
                                         <label>Facility Description: </label>
                                         <textarea id="location_description" name="location_description" class="form-control selectpicker" rows="5" cols="30">{{{old('location_description')}}}</textarea>
                                     </div>
-                                </div>
+                                </div-->
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Street Address: </label>
@@ -129,7 +121,21 @@
                                         <input class="form-control selectpicker" type="text" id="facility_zip_code" name="facility_zip_code" value="{{ old('facility_zip_code') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Accessibility: </label>
+                                        <input class="form-control selectpicker" type="text" id="location_accessibility"
+                                               name="location_accessibility" value="{{ old('location_accessibility') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Gender Equity Practices: </label>
+                                        <input class="form-control selectpicker" type="text" id="location_gender_equity"
+                                               name="location_gender_equity" value="{{ old('location_gender_equity') }}">
+                                    </div>
+                                </div>                                                                
+                                <!--div class="col-md-4">
                                     <div class="form-group">
                                         <label>Facility Details: </label>
                                         <input class="form-control selectpicker" type="text" id="location_details" name="location_details" value="{{ old('location_details') }}">
@@ -144,7 +150,7 @@
                                             </li>
                                         </ol>
                                     </div>
-                                </div>
+                                </div-->
                                 <!-- <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Phone Number: </label>

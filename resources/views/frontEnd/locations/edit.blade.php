@@ -52,14 +52,7 @@ Facility Edit
                                             name="location_alternate_name" value="{{$facility->location_alternate_name}}">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Facility Transportation: </label>
-                                        <input class="form-control selectpicker" type="text" id="location_transporation"
-                                            name="location_transporation" value="{{$facility->location_transportation}}">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
+                                <!--div class="col-md-4">
                                     <div class="form-group">
                                         <label>Facility Service: </label>
                                         {!!
@@ -67,7 +60,7 @@ Facility Edit
                                         => 'form-control
                                         selectpicker','id' => 'facility_service', 'multiple' => 'true', 'data-live-search' => 'true', 'data-size' => '5']) !!}
                                     </div>
-                                </div>
+                                </div-->
                                 @php
                                 $facilitySchedule = [];
                                 if(isset($facility->schedules)){
@@ -76,7 +69,7 @@ Facility Edit
                                     }
                                 }
                                 @endphp
-                                <div class="col-md-4">
+                                <!--div class="col-md-4">
                                     <div class="form-group">
                                         <label>Facility Schedule: </label>
                                         <select class="form-control selectpicker" multiple data-live-search="true" id="facility_schedules"
@@ -86,7 +79,7 @@ Facility Edit
                                             @endforeach
                                         </select>
                                     </div>
-                                </div>
+                                </div-->
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Facility Description: </label>
@@ -149,14 +142,28 @@ Facility Edit
                                             name="facility_zip_code" value="{{$location_zip_code}}" required pattern="[0-9]{5}">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Facility Accessibility: </label>
+                                        <input class="form-control selectpicker" type="text" id="location_accessibility"
+                                            name="location_accessibility" value="{{$facility->location_accessibility}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Gender Equity Practices: </label>
+                                        <input class="form-control selectpicker" type="text" id="location_gender_equity"
+                                            name="location_gender_equity" value="{{$facility->location_gender_equity}}">
+                                    </div>
+                                </div>
+                                <!--div class="col-md-4">
                                     <div class="form-group">
                                         <label>Facility Details: </label>
                                         <input class="form-control selectpicker" type="text" id="location_details"
                                             name="location_details" value="{{$facility->location_details}}">
                                     </div>
-                                </div>
-                                <div class="col-md-12">
+                                </div-->
+                                <!--div class="col-md-12">
                                     <div class="form-group">
                                         <label>Phones: <a id="add-phone-input"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a></label>
                                         <ol id="phones-ul" class="row p-0 m-0" style="list-style: none;">
@@ -167,7 +174,7 @@ Facility Edit
                                         @endforeach
                                         </ol>
                                     </div>
-                                </div>
+                                </div-->
 
                                 <div class="col-md-12 text-center">
                                     <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic yellow_btn" id="back-facility-btn"> Back</button>

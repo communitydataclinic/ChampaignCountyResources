@@ -471,7 +471,7 @@ Home
             </div>
             <div class="row">
                 <div class="col-lg-2 col-md-2">
-                    <a class="child_node taxonomy-link" href="javascript:void(0);" value="child_789536700096192">
+                    <a class="child_node taxonomy-link" href="https://sites.google.com/unitingpride.org/unitingprideresources/champaign-countylocal-resources" target="_blank">
                         <div class="category_icon">
                             <div class="inner_category">
                                 <!--img src="{{$parent_taxonomy->category_logo}}" alt="" title="" class="hover_none">
