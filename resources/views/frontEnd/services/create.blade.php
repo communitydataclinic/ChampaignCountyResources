@@ -102,6 +102,9 @@
                                         <label>Service Email: </label>
                                         <input class="form-control selectpicker" type="email" id="service_email"
                                                name="service_email" value="{{ old('service_email') }}">
+                                        @error('service_email')
+                                        <span class="error-message"><strong>{{ $message }}</strong></span>
+                                        @enderror                                               
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -154,13 +157,61 @@
                                                name="service_accrediations" value="{{ old('service_accrediations') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Income guidelines: </label>
-                                        <input class="form-control selectpicker" type="text" id="service_licenses"
-                                               name="service_licenses" value="{{ old('service_licenses') }}">
-                                    </div>
+                                <div class="form-group col-md-4">
+                                    <label>Income Guidelines: </label>
+                                    <input class="form-control selectpicker" type="text" id="service_licenses"
+                                        name="service_licenses" value="{{ old('service_licenses') }}">
                                 </div>
+                                <div class="form-group col-auto"> 
+                                    <label>Insurance Accepted: </label>                                    
+                                    <div class="form-check"><input type="checkbox" id="chkMedicaid" name="service_insurance[]" value="Medicaid" class="form-check-input"><label for="chkMedicaid" class="form-check-label">Medicaid</label></div>
+                                    <div class="form-check"><input type="checkbox" id="chkMedicare" name="service_insurance[]" value="Medidcare" class="form-check-input"><label for="chkMedicare" class="form-check-label">Medicare</label></div>                                
+                                </div>
+                                <div class="form-group col-auto">
+                                <label>&nbsp;</label>
+                                    <div class="form-check"><input type="checkbox" id="chkVeteranBenefits" name="service_insurance[]" value="Veteran benefits" class="form-check-input"><label for="chkVeteranBenefits" class="form-check-label">Veteran benefits</label></div>
+                                    <div class="form-check"><input type="checkbox" id="chkPrivateInsurance" name="service_insurance[]" value="Private insurance" class="form-check-input"><label for="chkPrivateInsurance" class="form-check-label">Private insurance</label></div>
+                                </div>
+                                <div class="form-group col-auto">
+                                <label>&nbsp;</label>
+                                    <div class="form-check"><input type="checkbox" id="chkNotApplicable" name="service_insurance[]" value="Not applicable" onclick="manageNotApplicableInsurance()" class="form-check-input"><label for="chkNotApplicable" class="form-check-label">Not applicable</label></div>                                                                            
+                                    <div class="form-check"><input type="checkbox" id="chkOtherInsurance" name="service_insurance[]" value="Other" onclick="manageOtherInsurance()" class="form-check-input"><label for="chkOtherInsurance" class="form-check-label">Other</label>
+                                        <input type="text" id="txtOtherInsurance" name="service_insurance_other" value="{{ old('service_insurance_other') }}" style="visibility:hidden"></div>                                            
+                                    <script>
+                                    function manageNotApplicableInsurance() {
+                                        var disableAllInsurances = document.getElementById("chkNotApplicable").checked;
+                                        
+                                        document.getElementById("chkMedicaid").disabled = disableAllInsurances;
+                                        document.getElementById("chkMedicare").disabled = disableAllInsurances;
+                                        document.getElementById("chkVeteranBenefits").disabled = disableAllInsurances;
+                                        document.getElementById("chkPrivateInsurance").disabled = disableAllInsurances;
+                                        document.getElementById("chkOtherInsurance").disabled = disableAllInsurances;
+
+                                        if(disableAllInsurances)
+                                        {
+                                            document.getElementById("chkMedicaid").checked = false;
+                                            document.getElementById("chkMedicare").checked = false;
+                                            document.getElementById("chkVeteranBenefits").checked = false;
+                                            document.getElementById("chkPrivateInsurance").checked = false;
+                                            document.getElementById("chkOtherInsurance").checked = false;  
+
+                                            document.getElementById("txtOtherInsurance").value = '';
+                                            document.getElementById("txtOtherInsurance").style.visibility = 'hidden';
+                                        }                        
+                                    }
+
+                                    function manageOtherInsurance() {
+                                        var otherText = document.getElementById("txtOtherInsurance");
+                                        otherText.value = '';
+
+                                        if (document.getElementById("chkOtherInsurance").checked) {
+                                            otherText.style.visibility = 'visible';
+                                        } else {
+                                            otherText.style.visibility = 'hidden';
+                                        }
+                                    }
+                                    </script>                                           
+                                </div>                                
                                 <!-- <div class="form-group">
                                     <label>Service Phone: </label>
                                         <input class="form-control selectpicker" type="text" id="service_phones"
@@ -230,6 +281,7 @@
                                     </div>
                                 </div> -->
 
+                            
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Service Schedule: </label>
@@ -472,7 +524,7 @@
         $(document).on('click', '.removeData', function(){
             $(this).closest('tr').remove()
         });
-        let i = 1;
+        let i = 2;
         $('#addData').click(function(){
             $('#myTable tr:last').before('<tr><td><input type="date" name="holiday_start_date[]" id=""></td><td><input type="date" name="holiday_end_date[]" id=""></td><td><input type="time" name="holiday_open_at[]" id=""></td><td><input type="time" name="holiday_close_at[]" id=""></td><td><input type="checkbox" name="holiday_closed[]" id="" value="'+i+'" ></td><td class="text-center"><a href="javascript:void(0)" class="removeData" style="color:red;"> <i class="fa fa-minus-circle" aria-hidden="true"></i> </a></td></tr>');
             i++;

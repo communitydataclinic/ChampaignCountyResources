@@ -59,6 +59,17 @@ Edit Service
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
+                                    <label>Service Locations: </label>
+                                    <select class="form-control selectpicker" multiple data-live-search="true" data-size="5" id="service_locations" name="service_locations[]">
+                                        @foreach($service_location_list as $key => $service_loc)
+                                            <option value="{{$service_loc->location_recordid}}" @if (in_array($service_loc->location_recordid, $location_info_list)) selected @endif>{{$service_loc->location_name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
                                     <label>Service URL: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_url" name="service_url" value="{{$service->service_url}}">
                                 </div>
@@ -77,12 +88,12 @@ Edit Service
                                     <input class="form-control selectpicker"  type="text" id="service_email" name="service_email" value="{{$service->service_email}}">
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <!--div class="col-md-4">
                                 <div class="form-group">
                                     <label>Address: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_address" name="service_address" @if($service_address_city) value="{{$service_address_street->address_1}}, {{$service_address_city->address_city}}, {{$service_address_state->address_state_province}}, {{$service_address_postal_code->address_postal_code}} @endif">
                                 </div>
-                            </div>
+                            </div-->
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Status: </label>
@@ -91,7 +102,7 @@ Edit Service
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Taxonomy: </label>
+                                    <label>Categories: </label>
                                     <select class="form-control selectpicker" multiple data-live-search="true" data-size="5" id="service_taxonomy" name="service_taxonomy[]">
                                         @foreach($service_taxonomy_list as $key => $service_taxo)
                                             <option value="{{$service_taxo->taxonomy_recordid}}" @if (in_array($service_taxo->taxonomy_recordid, $taxonomy_info_list)) selected @endif>{{$service_taxo->taxonomy_name}}</option>
@@ -123,13 +134,14 @@ Edit Service
                                     <input class="form-control selectpicker"  type="text" id="service_accreditations" name="service_accreditations" value="{{$service->service_accreditations}}">
                                 </div>
                             </div>
+                            {{--
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Area served: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_licenses" name="service_licenses" value="{{$service->service_licenses}}">
                                 </div>
                             </div>
-                            {{-- <!-- <div class="col-md-4">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Service Schedule: </label>
                                     <select class="form-control selectpicker" multiple data-live-search="true" id="service_schedules"
@@ -139,7 +151,7 @@ Edit Service
                                         @endforeach
                                     </select>
                                 </div>
-                            </div> --> --}}
+                            </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Service Details: </label>
@@ -151,6 +163,7 @@ Edit Service
                                     </select>
                                 </div>
                             </div>
+                            --}}
                             {{-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Meta Data: </label>
@@ -163,6 +176,84 @@ Edit Service
                                     {!! Form::text('service_airs_taxonomy_x',null,['class' => 'form-control selectpicker','id' => 'service_airs_taxonomy_x']) !!}
                                 </div>
                             </div> --}}
+
+                            <div class="form-group col-md-4">
+                                    <label>Income Guidelines: </label>
+                                    <input class="form-control selectpicker" type="text" id="service_licenses"
+                                        name="service_licenses" value="{{ old('service_licenses') }}">
+                                </div>
+                            <div class="form-group col-auto"> 
+                                <label>Insurance Accepted: </label>                                    
+                                <div class="form-check">
+                                    <input type="checkbox" id="chkMedicaid" name="service_insurance[]" value="Medicaid" class="form-check-input"{{ in_array('Medicaid', $checked_insurances, true)? ' checked': '' }}{{ in_array('Not applicable', $checked_insurances, true)? ' disabled': '' }}>
+                                    <label for="chkMedicaid" class="form-check-label">Medicaid</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" id="chkMedicare" name="service_insurance[]" value="Medidcare" class="form-check-input"{{ in_array('Medidcare', $checked_insurances, true)? ' checked': '' }}{{ in_array('Not applicable', $checked_insurances, true)? ' disabled': '' }}>
+                                    <label for="chkMedicare" class="form-check-label">Medicare</label>
+                                </div>                                
+                            </div>
+                            <div class="form-group col-auto">
+                                <label>&nbsp;</label>
+                                <div class="form-check">
+                                    <input type="checkbox" id="chkVeteranBenefits" name="service_insurance[]" value="Veteran benefits" class="form-check-input"{{ in_array('Veteran benefits', $checked_insurances, true)? ' checked': '' }}{{ in_array('Not applicable', $checked_insurances, true)? ' disabled': '' }}>
+                                    <label for="chkVeteranBenefits" class="form-check-label">Veteran benefits</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" id="chkPrivateInsurance" name="service_insurance[]" value="Private insurance" class="form-check-input"{{ in_array('Private insurance', $checked_insurances, true)? ' checked': '' }}{{ in_array('Not applicable', $checked_insurances, true)? ' disabled': '' }}>
+                                    <label for="chkPrivateInsurance" class="form-check-label">Private insurance</label>
+                                </div>
+                            </div>
+                            <div class="form-group col-auto">
+                                <label>&nbsp;</label>
+                                <div class="form-check">
+                                    <input type="checkbox" id="chkNotApplicable" name="service_insurance[]" value="Not applicable" onclick="manageNotApplicableInsurance()" class="form-check-input"{{ in_array('Not applicable', $checked_insurances, true)? ' checked': '' }}>
+                                    <label for="chkNotApplicable" class="form-check-label">Not applicable</label>
+                                </div>                                                                            
+                                <div class="form-check">
+                                    <input type="checkbox" id="chkOtherInsurance" name="service_insurance[]" value="Other" onclick="manageOtherInsurance()" class="form-check-input"{{ isset($service_insurance_other)? ' checked': '' }}{{ in_array('Not applicable', $checked_insurances, true)? ' disabled': '' }}>
+                                    <label for="chkOtherInsurance" class="form-check-label">Other</label>
+                                    <input type="text" id="txtOtherInsurance" name="service_insurance_other" value="{{ $service_insurance_other }}" style="visibility:{{ isset($service_insurance_other)? 'visible': 'hidden'}}">
+                                </div>                                            
+                                <script>
+                                function manageNotApplicableInsurance() {
+                                    var disableAllInsurances = document.getElementById("chkNotApplicable").checked;
+                                    
+                                    document.getElementById("chkMedicaid").disabled = disableAllInsurances;
+                                    document.getElementById("chkMedicare").disabled = disableAllInsurances;
+                                    document.getElementById("chkVeteranBenefits").disabled = disableAllInsurances;
+                                    document.getElementById("chkPrivateInsurance").disabled = disableAllInsurances;
+                                    document.getElementById("chkOtherInsurance").disabled = disableAllInsurances;
+
+                                    if(disableAllInsurances)
+                                    {
+                                        document.getElementById("chkMedicaid").checked = false;
+                                        document.getElementById("chkMedicare").checked = false;
+                                        document.getElementById("chkVeteranBenefits").checked = false;
+                                        document.getElementById("chkPrivateInsurance").checked = false;
+                                        document.getElementById("chkOtherInsurance").checked = false;  
+
+                                        document.getElementById("txtOtherInsurance").value = '';
+                                        document.getElementById("txtOtherInsurance").style.visibility = 'hidden';
+                                    }                        
+                                }
+
+                                function manageOtherInsurance() {
+                                    var otherText = document.getElementById("txtOtherInsurance");
+                                    otherText.value = '';
+
+                                    if (document.getElementById("chkOtherInsurance").checked) {
+                                        otherText.style.visibility = 'visible';
+                                    } else {
+                                        otherText.style.visibility = 'hidden';
+                                    }
+                                }
+
+                                </script>      
+                                
+
+                            </div>                                
+
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Service Schedule: </label>
@@ -354,17 +445,8 @@ Edit Service
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Locations: </label>
-                                    <select class="form-control selectpicker" multiple data-live-search="true" data-size="5" id="service_locations" name="service_locations[]">
-                                        @foreach($service_location_list as $key => $service_loc)
-                                            <option value="{{$service_loc->location_recordid}}" @if (in_array($service_loc->location_recordid, $location_info_list)) selected @endif>{{$service_loc->location_name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                                <!-- <div class="form-group">
+                            {{--
+                            <div class="form-group">
                                     <label>Phone1: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_phone1" name="service_phone1" @if($service_phone1) value="{{$service_phone1->phone_number}}" @endif>
                                 </div>
@@ -373,7 +455,7 @@ Edit Service
                                     <label>Phone2: </label>
                                     <input class="form-control selectpicker"  type="text" id="service_phone2" name="service_phone2" @if($service_phone2) value="{{$service_phone2->phone_number}}" @endif>
                                 </div>
-                            </div> -->
+                            </div>                            
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Contacts: </label>
@@ -384,6 +466,7 @@ Edit Service
                                     </select>
                                 </div>
                             </div>
+                            --}}
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Phones:<a id="add-phone-input"><i class="fas fa-plus btn-success btn float-right mb-5"></i></a> </label>

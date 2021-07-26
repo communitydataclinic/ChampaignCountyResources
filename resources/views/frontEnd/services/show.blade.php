@@ -248,10 +248,10 @@ use Carbon\Carbon;
                                     </h4>
                                 @endif
 
+                                @if(isset($service->languages) && count($service->languages) > 0)
                                 <h4 style="line-height: inherit;">
                                 <span>
                                     <i class="icon fa-language  font-size-18 vertical-align-top mr-0 pr-10"></i>
-                                    @if(isset($service->languages))
                                         @foreach($service->languages as $language)
                                             @if($loop->last)
                                                 {{$language->language}}
@@ -259,14 +259,13 @@ use Carbon\Carbon;
                                                 {{$language->language}},
                                             @endif
                                         @endforeach
-                                    @endif
                                 </span>
                                 </h4>
+                                @endif                                
 
                                 @if($service->service_application_process)
                                     <h4>
-                                        <span class="subtitle"><b>Application: </b></span> {!! $service->service_application_process
-                                !!}
+                                        <span class="subtitle"><b>Application: </b></span> {!! $service->service_application_process !!}
                                     </h4>
                                 @endif
 
@@ -285,6 +284,10 @@ use Carbon\Carbon;
 
                                 @if($service->service_licenses)
                                     <h4><span class="subtitle"><b>Income guidelines: </b></span> {{$service->service_licenses}}</h4>
+                                @endif
+
+                                @if($service->service_insurance)
+                                    <h4><span class="subtitle"><b>Insurance Accepted: </b></span> {{$service->service_insurance}}</h4>
                                 @endif
 
 

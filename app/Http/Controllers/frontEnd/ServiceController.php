@@ -38,10 +38,10 @@ use Carbon\Carbon;
 use App\Model\csv;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 use Auth;
+use Debugbar;
 
 class ServiceController extends Controller
 {
@@ -56,7 +56,7 @@ class ServiceController extends Controller
         // $services = Service::with('locations')->orderBy('service_name')->where('service_status', '=', $service_state_filter);
         $services = Service::with('locations')->orderBy('service_name');
         $locations = Location::with('services', 'organization', 'address');
-
+        
         $sort_by_distance_clickable = false;
         $map = Map::find(1);
         $parent_taxonomy = [];
@@ -296,6 +296,13 @@ class ServiceController extends Controller
             $service->service_metadata = $request->service_metadata;
             $service->service_airs_taxonomy_x = $request->service_airs_taxonomy_x;
 
+            if (isset($request->service_insurance)) {
+                $service->service_insurance = implode('|', $request->service_insurance);
+                if (in_array('Other', $request->service_insurance)) {                  
+                    $service->service_insurance = str_replace('Other', 'Other=' . $request->service_insurance_other, $service->service_insurance);  
+                }                            
+            }
+
             $organization_name = $request->service_organization;
             $service_organization = Organization::where('organization_name', '=', $organization_name)->first();
             $service_organization_id = $service_organization["organization_recordid"];
@@ -307,9 +314,6 @@ class ServiceController extends Controller
                         'service_recordid' => $new_recordid,
                         'location_recordid' => $locationId
                     ]);
-                    $location = Location::where('location_recordid', $locationId)->first();
-                    $location->location_organization = $service_organization_id;
-                    $location->save();
                 }
                 $service->service_locations = join(',', $request->service_locations);
             } else {
@@ -355,6 +359,7 @@ class ServiceController extends Controller
             // $service_phone_info_list = array_unique($service_phone_info_list);
             // $service->phone()->sync($service_phone_info_list);
 
+            
             $schedule_services = [];
 
             if ($request->schedule_days_of_week) {
@@ -627,6 +632,10 @@ class ServiceController extends Controller
 
                 $holiday_schedules = Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->get();
 
+                // Convert insurance service string in a visible text for users
+                $service->service_insurance = str_replace('|', ', ', $service->service_insurance);
+                $service->service_insurance = str_replace('Other=', '', $service->service_insurance);
+
                 return view('frontEnd.services.show', compact('user_orgs','service', 'locations', 'map', 'parent_taxonomy', 'child_taxonomy', 'checked_organizations', 'checked_insurances', 'checked_ages', 'checked_languages', 'checked_settings', 'checked_culturals', 'checked_transportations', 'checked_hours', 'taxonomy_tree', 'service_taxonomy_info_list', 'contact_info_list', 'phone_number_info', 'organization', 'holiday_schedules'));
             } else {
                 Session::flash('message', 'This record has been deleted.');
@@ -696,7 +705,22 @@ class ServiceController extends Controller
 
             $detail_info_list = Detail::select('detail_recordid', 'detail_value')->orderBy('detail_value')->distinct()->get();
 
-            return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules'));
+            $checked_insurances = [];
+            $service_insurance_other = null;
+            if (isset($service->service_insurance)) {
+                $checked_insurances = explode('|', $service->service_insurance);
+                //dump($checked_insurances);
+                $input = preg_quote('Other=', '~');
+                $result = preg_filter('~' . $input . '~', null, $checked_insurances);
+                //dump($result);
+                if (count($result) > 0) {                  
+                    $service_insurance_other = reset($result);
+                }                            
+            }
+            //dump($service_insurance_other);
+            //dd();
+
+            return view('frontEnd.services.edit', compact('service', 'map', 'service_address_street', 'service_address_city', 'service_address_state', 'service_address_postal_code', 'service_organization_list', 'service_location_list', 'service_phone1', 'service_phone2', 'service_contacts_list', 'service_taxonomy_list', 'service_details_list', 'location_info_list', 'contact_info_list', 'taxonomy_info_list', 'schedule_info_list', 'detail_info_list', 'ServiceSchedule', 'ServiceDetails', 'monday', 'tuesday', 'wednesday', 'friday', 'saturday', 'thursday', 'sunday', 'holiday_schedules', 'checked_insurances', 'service_insurance_other'));
         }else{
             Session::flash('message', 'This record has been deleted.');
             Session::flash('status', 'warning');
@@ -713,6 +737,7 @@ class ServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         try {
             $service = Service::where('service_recordid', $id)->first();
             $service->service_name = $request->service_name;
@@ -728,6 +753,13 @@ class ServiceController extends Controller
             $service->service_licenses = $request->service_licenses;
             $service->service_organization = $request->service_organization;
 
+            if (isset($request->service_insurance)) {
+                $service->service_insurance = implode('|', $request->service_insurance);
+                if (in_array('Other', $request->service_insurance)) {                  
+                    $service->service_insurance = str_replace('Other', 'Other=' . $request->service_insurance_other, $service->service_insurance);  
+                }                            
+            }            
+
             if ($request->service_locations) {
                 ServiceLocation::where('service_recordid', $id)->delete();
                 foreach ($request->service_locations as $key => $locationId) {
@@ -735,10 +767,6 @@ class ServiceController extends Controller
                         'service_recordid' => $id,
                         'location_recordid' => $locationId
                     ]);
-
-                    $location = Location::where('location_recordid', $locationId)->first();
-                    $location->location_organization = $request->service_organization;
-                    $location->save();
                 }
                 $service->service_locations = join(',', $request->service_locations);
             } else {
@@ -822,6 +850,11 @@ class ServiceController extends Controller
                 $service->service_address = $service_address_info;
             }
 
+            // if ($request->service_schedules) {
+            //     $service->service_schedule = join(',', $request->service_schedules);
+            // } else {
+            //     $service->service_schedule = '';
+            // }
             $schedule_services = [];
 
             if ($request->schedule_days_of_week) {
@@ -860,6 +893,18 @@ class ServiceController extends Controller
             Schedule::where('schedule_services', $service->service_recordid)->where('schedule_holiday', '1')->delete();
             if ($request->holiday_start_date && $request->holiday_end_date && $request->holiday_open_at && $request->holiday_close_at && ($request->holiday_start_date[0] != null)) {
                 for ($i = 0; $i < count($request->holiday_start_date); $i++) {
+                    // $schedules = 
+                    // if($schedules){
+                    //     $schedules->schedule_start_date = $request->holiday_start_date[$i];
+                    //     $schedules->schedule_end_date = $request->holiday_end_date[$i];
+                    //     $schedules->schedule_opens_at = $request->holiday_open_at[$i];
+                    //     $schedules->schedule_closes_at = $request->schedule_closes_at[$i];
+                    //     if(in_array(($i+1),$request->schedule_closed)){
+                    //         $schedules->schedule_closed = $i+1;
+                    //     }
+                    //     $schedules->save();
+                    //     $schedule_services[] = $schedules->schedule_recordid;
+                    // }else{
                     $schedule_recordid = Schedule::max('schedule_recordid') + 1;
                     $schedules = new Schedule();
                     $schedules->schedule_recordid = $schedule_recordid;
@@ -874,6 +919,7 @@ class ServiceController extends Controller
                     $schedules->schedule_holiday = '1';
                     $schedules->save();
                     $schedule_services[] = $schedule_recordid;
+                    // }
                 }
             }
             $service->schedules()->sync($schedule_services);
@@ -1018,6 +1064,14 @@ class ServiceController extends Controller
 
                     $service->service_url = isset($record['fields']['url']) ? $record['fields']['url'] : null;
                     $service->service_email = isset($record['fields']['email']) ? $record['fields']['email'] : null;
+                    // $service->service_insurance = isset($record['fields']['insurance']) ? $record['fields']['insurance'] : null;
+                    $service->service_medicaid = isset($record['fields']['medicaid']) ? $record['fields']['medicaid'] : null;
+                    // $service->service_medicare = isset($record['fields']['medicare']) ? $record['fields']['medicare'] : null;
+                    // $service->service_veterans = isset($record['fields']['veterans']) ? $record['fields']['veterans'] : null;
+                    // $service->service_private = isset($record['fields']['private']) ? $record['fields']['private'] : null;
+                    // $service->service_notApplicable = isset($record['fields']['notApplicable']) ? $record['fields']['notApplicable'] : null;
+
+
                     $service->service_status = isset($record['fields']['status']) ? $record['fields']['status'] : null;
 
                     if (isset($record['fields']['taxonomy'])) {
@@ -1329,6 +1383,13 @@ class ServiceController extends Controller
             $service->service_licenses = $request->service_licenses;
             $service->service_metadata = $request->service_metadata;
             $service->service_airs_taxonomy_x = $request->service_airs_taxonomy_x;
+            // $service->service_insurance = $request->service_insurance;
+            $service->service_medicaid = $request->service_medicaid;
+            // $service->service_medicare = $request->service_medicare;
+            // $service->service_veterans = $request->service_veterans;
+            // $service->service_private = $request->service_private;
+            // $service->service_notApplicable = $request->service_notApplicable;
+
 
             if ($request->service_locations) {
                 $service->service_locations = join(',', $request->service_locations);
@@ -1490,6 +1551,12 @@ class ServiceController extends Controller
             $service->service_licenses = $request->service_licenses;
             $service->service_metadata = $request->service_metadata;
             $service->service_airs_taxonomy_x = $request->service_airs_taxonomy_x;
+            // $service->service_insurance = $request->service_insurance;
+            $service->service_medicaid = $request->service_medicaid;
+            // $service->service_medicare = $request->service_medicare;
+            // $service->service_veterans = $request->service_veterans;
+            // $service->service_private = $request->service_private;
+            // $service->service_notApplicable = $request->service_notApplicable;
 
             if ($request->service_taxonomies) {
                 $service->service_taxonomy = join(',', $request->service_taxonomies);
@@ -1795,51 +1862,24 @@ class ServiceController extends Controller
     }
     public function delete_service(Request $request)
     {
-        try {                        
-            DB::beginTransaction();
+        try {
+            Service::where('service_recordid', $request->service_recordid)->delete();
 
-            $service = Service::where('service_recordid', $request->service_recordid)->first();
-            
-            // Delete schedules
-            Schedule::where('schedule_services', $service->service_recordid)->delete();
-
-            // Delete service locations
-            ServiceLocation::where('service_recordid', $service->service_recordid)->delete();
-
-            // Delete service phones and phones
-            $phones = $service->phone; 
-            ServicePhone::where('service_recordid', $service->service_recordid)->delete();
-
-            foreach($phones as $phone) {
-                Phone::where('phone_recordid', $phone->phone_recordid)->delete();
-            }
-
-            // Delete service taxonomies
-            ServiceTaxonomy::where('service_recordid', $service->service_recordid)->delete();
-
-            // Delete service            
-            $service->delete();
-
-            DB::commit();  
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            Session::flash('message', $th->getMessage());
-            Session::flash('status', 'error');
-            return redirect()->back();
-        }
-
-        Session::flash('message', 'Service deleted successfully!');
-        Session::flash('status', 'success');
-        if(isset(Auth::user()->role_id)) {
-            if(Auth::user()->role_id == 3) {
-                return redirect('organizations/'.Auth::user()->user_organization);
-            } elseif(Auth::user()->role_id == 1) {
-                return redirect('account/'.Auth::user()->id);
+            Session::flash('message', 'Service deleted successfully!');
+            Session::flash('status', 'success');
+            if(isset(Auth::user()->role_id)) {
+                if(Auth::user()->role_id == 3) {
+                    return redirect('organizations/'.Auth::user()->user_organization);
+                } elseif(Auth::user()->role_id == 1) {
+                    return redirect('account/'.Auth::user()->id);
+                } else {
+                    return redirect('services');
+                }
             } else {
                 return redirect('services');
             }
-        } else {
-            return redirect('services');
+        } catch (\Throwable $th) {
+            dd($th);
         }
     }
 }
