@@ -3,9 +3,13 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use ChristianKuri\LaravelFavorite\Traits\Favoriteable;
+
 
 class Service extends Model
 {
+    use Favoriteable;
+
     protected $primaryKey = 'service_recordid';
 
     protected $fillable = [
@@ -71,4 +75,5 @@ class Service extends Model
 
         return $this->belongsToMany('App\Model\Address', 'service_addresses', 'service_recordid', 'address_recordid');
     }
+    
 }

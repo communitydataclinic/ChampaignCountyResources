@@ -182,7 +182,7 @@ use Illuminate\Support\Facades\Log;
                                     reported the information to be inaccurate
                                 </h4>
                                 <?php endif; ?>
-                                <h4 class="card-title">
+                                <h4 class="card-title" style="width: 90%">
                                     <a href="#">{{$service->service_name}}</a>
                                     @if (Auth::user() && Auth::user()->roles && $organization && Auth::user()->user_organization &&
                                     str_contains(Auth::user()->user_organization, $service->organizations()->first()->organization_recordid) && Auth::user()->roles->name == 'Organization Admin')
@@ -201,6 +201,16 @@ use Illuminate\Support\Facades\Log;
                                         <img src="/images/away.png" style="width:20px; height:20px;">
                                     @endif
                                 </h4>
+                                @if($isFavorite)
+                                <div id="fav-unsave">
+                                    <a href="{{route('services.unsave', $service->service_recordid)}}" style="color: #ff0000; font-size:18px"><i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="" data-original-title="Unsave"  style="color: #ff0000; font-size:18px; padding-right:5px"></i> Unsave</a>
+                                </div>
+                                @else
+                                <div id="fav-save">
+                                    <a href="{{route('services.save', $service->service_recordid)}}" style="color: #3949ab; font-size:18px"><i class="fa fa-star-o" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save"  style="color: #3949ab; font-size:18px; padding-right:5px"></i>Save</a>
+                                </div>
+                                @endif
+                              
                                 @if(isset($service->service_alternate_name))
                                     <h4>
                                         <span class="subtitle"><b>Program Name: </b></span> {{$service->service_alternate_name}}
@@ -226,10 +236,7 @@ use Illuminate\Support\Facades\Log;
                                     </h4>
                                 @endif
 
-
-
-
-
+                            
                             <!--   <h4><span><i class="icon md-phone font-size-18 vertical-align-top mr-0 pr-10"></i> @foreach($service->phone as $phone) {!! $phone->phone_number !!} @endforeach</span></h4> -->
 
                                 <h4 style="line-height: inherit;">
@@ -240,6 +247,8 @@ use Illuminate\Support\Facades\Log;
                                 </span>
                                 </h4>
 
+
+                               
 
                                 @if($service->service_email!=NULL)
                                     <h4 style="line-height: inherit;">
