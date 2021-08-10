@@ -114,7 +114,8 @@ use Illuminate\Support\Facades\Log;
                                     <div class="card">
                                         <div class="card-block">
                                             <?php
-                                            $rest = str_replace(array('"', '[', ']', '.000000Z'), '', Error::where('error_service', '=', $service->service_recordid)->pluck('created_at'));
+                                            $rest = str_replace(array('"', '[', ']', '.000000Z'), '', 
+                                                        Error::where([['error_service', '=', $service->service_recordid], ['error_resolved', '=', false]])->pluck('created_at'));
                                             $rest = str_replace(array('T'), ' ', $rest);
                                             $time_list = explode(",", $rest);
                                             $now = Carbon::now();
@@ -133,7 +134,8 @@ use Illuminate\Support\Facades\Log;
                                             <h4>
                                                 <img src="../../../../images/error-report.png" alt="" width="25" height="25" style="margin-right:10px">
                                                 <?php
-                                                $rest = str_replace(array('"', '[', ']', '.000000Z'), '', Error::where('error_service', '=', $service->service_recordid)->pluck('created_at'));
+                                                $rest = str_replace(array('"', '[', ']', '.000000Z'), '', 
+                                                        Error::where([['error_service', '=', $service->service_recordid], ['error_resolved', '=', false]])->pluck('created_at'));
                                                 $rest = str_replace(array('T'), ' ', $rest);
                                                 $time_list = explode(",", $rest);
                                                 $now = Carbon::now();
