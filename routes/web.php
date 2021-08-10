@@ -148,7 +148,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::resource('/error', 'frontEnd\ErrorReportController');
     Route::get('/add_new_error', 'frontEnd\ErrorReportController@add_new_error');
     Route::post('/delete_error', 'frontEnd\ErrorReportController@delete_error')->name('delete_error');
-
+    Route::put('/resolve_error/{id}', 'frontEnd\ErrorReportController@resolve_error')->name('resolve_error');
 
     // message
     Route::get('messagesSetting', 'frontEnd\MessageController@messagesSetting')->name('messagesSetting');

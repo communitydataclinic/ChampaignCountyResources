@@ -49933,8 +49933,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/chmpgnresftp/champaigncountyresources.communitydataclinic.com/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /home/chmpgnresftp/champaigncountyresources.communitydataclinic.com/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/zypherwind/Documents/Github/Champaign211Resources/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/zypherwind/Documents/Github/Champaign211Resources/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

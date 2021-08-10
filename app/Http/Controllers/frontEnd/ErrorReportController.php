@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use SendGrid;
 use SendGrid\Mail\Mail;
+use Illuminate\Support\Facades\Log; 
 
 class ErrorReportController extends Controller
 {
@@ -26,7 +27,7 @@ class ErrorReportController extends Controller
      */
     public function index()
     {
-        //
+        return csrf_token();
     }
 
     /**
@@ -140,6 +141,30 @@ class ErrorReportController extends Controller
             return redirect()->back();
         } catch (\Throwable $th) {
 
+            Session::flash('message', $th->getMessage());
+            Session::flash('status', 'error');
+            return redirect()->back();
+        }
+    }
+
+
+    public function resolve_error(Request $request, $id)
+    {
+        try {
+            if(Error::where('error_recordid', $id)->exists()) {
+                $error = Error::where('error_recordid', $id)->first();
+                $error -> error_resolved = !($error -> error_resolved);
+                $error -> save();
+                
+                Session::flash('message', 'error successfully resolved');
+                Session::flash('status', 'success');
+                return redirect()->back();
+            } else {
+                Session::flash('message', 'error not found');
+                Session::flash('status', 'error');
+                return redirect()->back();
+            }
+        } catch(\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
             return redirect()->back();

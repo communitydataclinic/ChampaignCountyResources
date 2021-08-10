@@ -18,7 +18,7 @@ use Carbon\Carbon;
 <style type="text/css">
     .grid-container {
         display: grid;
-        grid-template-columns: 200px 100px 80px;
+        grid-template-columns: 200px 100px 165px 100px;
         overflow: scroll;
         margin-top: 5px;
     }
@@ -259,7 +259,7 @@ use Carbon\Carbon;
                             @endforeach
                         </h4>
                     </div>
-                </div>
+                </div> 
                 @endif
                 <!-- Events area design -->
                 <!--Error changing design-->
@@ -269,61 +269,70 @@ use Carbon\Carbon;
                         <h4 class="card_services_title">Reported Errors</h4>
                         <h4 style="margin-top: 20px;">
                             @foreach($error_list as $key => $error)
-                            <div>
-                                <div class="grid-container">
-                                    <div>Created at: {{$error->created_at}}</div>
-                                    <div><button class = "myBtn" id="myBtn" onclick="ShowModal('myModal-{{$error->error_recordid}}')">See details</button></div>
-                                    <div><button type="button" class="red_btn" id="delete-error-btn" value="{{$error->error_recordid}}" data-toggle="modal" data-target=".bs-delete-modal-lg" >Delete</button></div>
-                                    
-                                </div>
-                                <div id="myModal-{{$error->error_recordid}}" class="modal" role="dialog">
-                                    <div class="modal-dialog">
-                                    <!-- Modal content-->
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" onclick="closeModal('myModal-{{$error->error_recordid}}')">&times;</button>
-                                                <h4 class="modal-title">Report details</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="card all_form_field">
-                                                        <div class="card-block">
-                                                            <div>Service: {{$error->error_service_name}}</div>
-                                                            <div>Reporting Content: {{$error->error_content}}</div>
-                                                            <div>Reporter: {{$error->error_username}}</div>
-                                                            <div>Contact Email: {{$error->error_user_email}}</div>
-                                                            <div>Contact Phone: {{$error->error_user_divhone}}</div>
-                                                            <div>Created Time: {{$error->created_at}}</div>
-                                                        </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form action="{{ route('delete_error') }}" method="POST" id="error_delete_filter">
-                                                {!! Form::token() !!}
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                                                    </button>
-                                                    <h4 class="modal-title" id="myModalLabel">Delete service</h4>
-                                                </div>
-                                                <div class="modal-body text-center">
-                                                    <input type="hidden" id="error_recordid" name="error_recordid">
-                                                    <h4>Are you sure to delete this error?</h4>
-                                                    <div id="{{$error->error_service_name}}"></div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-raised btn-lg btn_danger waves-effect waves-classic waves-effect waves-classic">Delete</button>
-                                                    <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" data-dismiss="modal">Close</button>
-                                                </div>
+                            @if($error -> error_resolved != True)
+                                <div>
+                                    <div class="grid-container">
+                                        <div style="margin: auto;">Created at: {{$error->created_at}}</div>
+                                        <div><button class = "btn" id="myBtn" onclick="ShowModal('myModal-{{$error->error_recordid}}')">See details</button></div>
+                                        <div>
+                                            <form method="POST" action="{{ route('resolve_error', ['id' => $error-> error_recordid ]) }}">
+                                                @method('PUT')
+                                                @csrf
+                                                <button type=submit class="btn btn-success" method="PUT">Mark error as resolved</button>
                                             </form>
                                         </div>
+                                        <div><button type="button" class="btn btn-danger" id="delete-error-btn" value="{{$error->error_recordid}}" data-toggle="modal" data-target=".bs-delete-modal-lg" >Delete</button></div>
+                                        
+                                    </div>
+                                    <div id="myModal-{{$error->error_recordid}}" class="modal" role="dialog">
+                                        <div class="modal-dialog">
+                                        <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" onclick="closeModal('myModal-{{$error->error_recordid}}')">&times;</button>
+                                                    <h4 class="modal-title">Report details</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="card all_form_field">
+                                                            <div class="card-block">
+                                                                <div>Service: {{$error->error_service_name}}</div>
+                                                                <div>Reporting Content: {{$error->error_content}}</div>
+                                                                <div>Reporter: {{$error->error_username}}</div>
+                                                                <div>Contact Email: {{$error->error_user_email}}</div>
+                                                                <div>Contact Phone: {{$error->error_user_divhone}}</div>
+                                                                <div>Created Time: {{$error->created_at}}</div>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="modal fade bs-delete-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form action="{{ route('delete_error') }}" method="POST" id="error_delete_filter">
+                                                    {!! Form::token() !!}
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                                        </button>
+                                                        <h4 class="modal-title" id="myModalLabel">Delete service</h4>
+                                                    </div>
+                                                    <div class="modal-body text-center">
+                                                        <input type="hidden" id="error_recordid" name="error_recordid">
+                                                        <h4>Are you sure to delete this error?</h4>
+                                                        <div id="{{$error->error_service_name}}"></div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-raised btn-lg btn_danger waves-effect waves-classic waves-effect waves-classic">Delete</button>
+                                                        <button type="button" class="btn btn-raised btn-lg btn_darkblack waves-effect waves-classic waves-effect waves-classic" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                                @endif
                             @endforeach
                         </h4>
                     </div>

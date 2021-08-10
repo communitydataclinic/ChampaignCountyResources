@@ -5,6 +5,7 @@ use App\Model\Service;
 use App\Model\Suggest;
 use App\Model\Error;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log; 
 ?>
 @extends('layouts.app')
 @section('title')
@@ -122,9 +123,9 @@ use Carbon\Carbon;
                                             $count = 0;
                                             for($i = 0; $i < count($time_list); $i++){
                                                 $time_work[$i] = new Carbon($time_list[$i]);
-                                                $diff[$i] = $time_work[$i]->diffInSeconds($now);
+                                                $diff[$i] = $time_work[$i]->diffInWeekdays($now);
                                                 //86400
-                                                if($diff[$i] >= 1){
+                                                if($diff[$i] > 3){
                                                     $count++;
                                                 }
                                             }
@@ -141,9 +142,9 @@ use Carbon\Carbon;
                                                 $count = 0;
                                                 for($i = 0; $i < count($time_list); $i++){
                                                     $time_work[$i] = new Carbon($time_list[$i]);
-                                                    $diff[$i] = $time_work[$i]->diffInSeconds($now);
+                                                    $diff[$i] = $time_work[$i]->diffInWeekdays($now);
                                                     //86400
-                                                    if($diff[$i] >= 1){
+                                                    if($diff > 3){
                                                         $count++;
                                                     }
                                                 }
