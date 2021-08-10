@@ -61,7 +61,7 @@ class NotifyOrganizations extends Command
                 
                 $diff = $error -> created_at -> diffInWeekDays($now);
 
-                if (count($org_users) > 0 && ($error->email_sent !== null && $error->email_sent != TRUE) && $diff > 3) {
+                if (count($org_users) > 0 && ($error->error_email_sent !== null && $error->error_email_sent != TRUE) && $diff > 3) {
                     try { 
                         $layout = Layout::find(1);
 
@@ -115,7 +115,7 @@ class NotifyOrganizations extends Command
                         }
                         
                         $response = $sendgrid->send($email);
-                        $error->email_sent = TRUE;
+                        $error->error_email_sent = TRUE;
                         $error->save();
                         if ($response->statusCode() == 401) {
                             $error = json_decode($response->body());

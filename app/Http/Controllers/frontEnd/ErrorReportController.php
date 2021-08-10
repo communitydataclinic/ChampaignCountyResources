@@ -61,6 +61,8 @@ class ErrorReportController extends Controller
             'error_name' => 'required',        
         ]);
         try {
+
+            $org = Organization::where('organization_recordid', (int) $request->error_organization) -> first();
             $layout = Layout::find(1);
 
             $site_name = '';
@@ -110,26 +112,24 @@ class ErrorReportController extends Controller
 
             $email->addContent("text/html", $message);
             $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
-
-            // $error = '';
-
-            $username = 'Champaign County 211 Resource Team';
-            $contact_email_list = Email::select('email_info')->pluck('email_info')->toArray();
-
-            foreach ($contact_email_list as $key => $contact_email) {
-                $email->addTo($contact_email, $username);
+            
+            $org_users = null;
+            if (count($org) > 0) {
+                $org_users = User::where('user_organization', $org -> organization_recordid) -> get();
             }
 
-            if ($request->error_email) {
-                $email->addTo($request->error_email, $username);
-            }
-
-            if($user_info != NULL){
-                foreach ($user_info as $key => $user_info_list){
-                    $email->addTo($user_info_list->email, $username);
+            $org_has_active_user = False;
+            foreach($org_users as &$user) {
+                if ($user -> role_id === 3 && $user -> status == 0) {
+                    $name = $user -> last_name . ', ' . $user -> first_name;
+                    $org_has_active_user = True;
+                    $email -> addTo($user -> email, $name);
                 }
             }
-            
+
+            if (!$org_has_active_user) {
+                $email -> addTo('champaigncountyresources@gmail.com', 'Champaign County Resources');
+            }
             
             $response = $sendgrid->send($email);
             if ($response->statusCode() == 401) {
