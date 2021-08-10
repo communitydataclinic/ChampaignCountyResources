@@ -96,6 +96,9 @@
 					</li>
 					@endif
 					<li class="nav-item">
+						<a class="nav-link" href="{{ route('services.allFavorites') }}">Saved Services</a>
+					</li>
+					<li class="nav-item">
 						<a class="btn btn-danger mr-20" href="/register">Register</a>
 					</li>
 				</ul>

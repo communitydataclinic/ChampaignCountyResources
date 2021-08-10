@@ -107,9 +107,6 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     Route::get('/add_new_contact', 'frontEnd\ContactController@add_new_contact');
     Route::post('/contact_delete_filter', 'frontEnd\ContactController@delete_contact');
 
-
-
-
     Route::resource('facilities', 'frontEnd\LocationController');
     Route::any('getFacilities', 'frontEnd\LocationController@index')->name('getFacilities');
 
@@ -143,6 +140,11 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
     //event
     Route::resource('/events', 'frontEnd\EventController');
     
+    //Saved Services
+    Route::get('/favorites', ['uses' => 'frontEnd\ServiceController@allFavorites', 'as' => 'services.allFavorites']);
+    Route::get('services/{id}/save', ['uses' => 'frontEnd\ServiceController@save', 'as' => 'services.save']);
+    Route::get('services/{id}/unsave', ['uses' => 'frontEnd\ServiceController@unsave', 'as' => 'services.unsave']);
+    // Route::get('allFavorites', function() { return view('allFavorites'); });
 
     //error reporting
     Route::resource('/error', 'frontEnd\ErrorReportController');
@@ -163,7 +165,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
 Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('dashboard', ['uses' => 'HomeController@dashboard', 'as' => 'home.dashboard']);
     // Route::get('messagesSetting', 'frontEnd\MessageController@messagesSetting')->name('messagesSetting');
-    Route::resource('pages', 'PagesController');
+    //Route::resource('pages', 'PagesController');
     Route::resource('parties', 'backend\PoliticalPartyController');
     Route::resource('All_Sessions', 'backend\SessionController');
     Route::any('getSessions', 'backend\SessionController@index')->name('All_Sessions.getSessions');
@@ -189,16 +191,18 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
 
     // Route::get('/logout', ['uses' => 'Auth\LoginController@logout']);
 
-    Route::get('/sync_services', ['uses' => 'ServiceController@airtable']);
-    Route::get('/sync_locations', ['uses' => 'LocationController@airtable']);
-    Route::get('/sync_organizations', ['uses' => 'OrganizationController@airtable']);
-    Route::get('/sync_contact', ['uses' => 'ContactController@airtable']);
-    Route::get('/sync_phones', ['uses' => 'PhoneController@airtable']);
-    Route::get('/sync_address', ['uses' => 'AddressController@airtable']);
-    Route::get('/sync_schedule', ['uses' => 'ScheduleController@airtable']);
-    Route::get('/sync_taxonomy', ['uses' => 'TaxonomyController@airtable']);
-    Route::get('/sync_details', ['uses' => 'DetailController@airtable']);
-    Route::get('/sync_service_area', ['uses' => 'AreaController@airtable']);
+    // 2021.08.02 JRA Begin: added frontEnd\ in each route.
+    Route::get('/sync_services', ['uses' => 'frontEnd\ServiceController@airtable']);
+    Route::get('/sync_locations', ['uses' => 'frontEnd\LocationController@airtable']);
+    Route::get('/sync_organizations', ['uses' => 'frontEnd\OrganizationController@airtable']);
+    Route::get('/sync_contact', ['uses' => 'frontEnd\ContactController@airtable']);
+    Route::get('/sync_phones', ['uses' => 'frontEnd\PhoneController@airtable']);
+    Route::get('/sync_address', ['uses' => 'frontEnd\AddressController@airtable']);
+    Route::get('/sync_schedule', ['uses' => 'frontEnd\ScheduleController@airtable']);
+    Route::get('/sync_taxonomy', ['uses' => 'frontEnd\TaxonomyController@airtable']);
+    Route::get('/sync_details', ['uses' => 'frontEnd\DetailController@airtable']);
+    Route::get('/sync_service_area', ['uses' => 'frontEnd\AreaController@airtable']);
+    // 2021.08.02 JRA End: added frontEnd\ in each route.
 
     // add country
     Route::get('/add_country', 'backend\DataController@add_country')->name('add_country.add_country');
@@ -209,7 +213,6 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::post('/email_delete_filter', 'backend\ContactFormController@delete_email')->name('contact_form.delete_email');
     Route::post('/email_create_filter', 'backend\ContactFormController@create_email')->name('contact_form.create_email');
 
-    Route::get('/tb_projects', ['uses' => 'ProjectController@index']);
     Route::get('tb_services', 'frontEnd\ServiceController@tb_services')->name('tables.tb_services');
     Route::get('tb_locations', 'frontEnd\LocationController@tb_location')->name('tables.tb_locations');
     Route::get('tb_organizations', 'frontEnd\OrganizationController@tb_organizations')->name('tables.tb_organizations');
@@ -218,24 +221,11 @@ Route::group(['middleware' => ['web', 'auth', 'permission']], function () {
     Route::get('tb_address', 'frontEnd\AddressController@index')->name('tables.tb_address');
     Route::get('tb_schedule', 'frontEnd\ScheduleController@index')->name('tables.tb_schedule');
     Route::get('tb_service_areas', 'frontEnd\AreaController@index')->name('tables.tb_service_area');
-    // Route::get('tb_services', 'frontEnd\ServiceController@tb_services')->name('tables.tb_services');
-    // Route::resource('tb_locations', 'frontEnd\LocationController');
-    // Route::resource('tb_organizations', 'frontEnd\OrganizationController');
-    // Route::resource('tb_contact', 'frontEnd\ContactController');
-    // Route::resource('tb_phones', 'frontEnd\PhoneController');
-    // Route::resource('tb_address', 'frontEnd\AddressController');
-    // Route::resource('tb_schedule', 'frontEnd\ScheduleController');
-    // Route::resource('tb_service_area', 'frontEnd\AreaController');
-
-    // Route::get('/tb_regular_schedules', function () {
-    //     return redirect('/tb_schedule');
-    // });
-
     Route::resource('tb_taxonomy', 'frontEnd\TaxonomyController');
     Route::post('taxonommyUpdate', 'frontEnd\TaxonomyController@taxonommyUpdate')->name('tb_taxonomy.taxonommyUpdate');
     Route::resource('tb_details', 'frontEnd\DetailController');
-    Route::resource('tb_languages', 'LanguageController');
-    Route::resource('tb_accessibility', 'AccessibilityController');
+    Route::resource('tb_languages', 'backend\LanguageController');
+    Route::resource('tb_accessibility', 'frontEnd\AccessibilityController');
     // Route::resource('tb_deTaxonomyControllertails', 'DetailController');
     // Route::resource('tb_languages', 'LanguageController');
     // Route::resource('tb_accessibility', 'AccessibilityController');
