@@ -1,13 +1,38 @@
 *** Replace the text in < > ***
 
-Add a new migration
+Backup database using Workbench
+Backup website
+zip -r "2021.07.24 ccrpro.zip" champaigncountyresources.communitydataclinic.com
+zip -r "2021.07.24 ccrdev.zip" ccrdev.communitydataclinic.com
+
+I. In DEV database:
+0. Use SSH to go to DEV's root directory (where the artisan command is located)
+
+1. Add a new migration
 php artisan make:migration <migragion_name> --table=<table_name> 
 
-Apply all the new migrations
+2. Modify the code in the new migration file
+
+3. Apply the new migrations
 php artisan migrate 
 
-Apply a the new migration
+OR 
+
+3. Apply an specific migration
+Apply the new migration
 php artisan migrate --path=/database/migrations/<migration_file_name>.php
 
+II. In PRO database:
+1. Copy all files created and modified in DEV to the corresponding directory in PRO 
+
+2. Use SSH to go to PRO's root directory (where the artisan command is located)
+
+3. Check the current migration in this website
+php artisan migrate:status
+
+3. Apply the new migrations
+php artisan migrate 
+
+III. Utility commands
 Check the current migration in this website
 php artisan migrate:status
