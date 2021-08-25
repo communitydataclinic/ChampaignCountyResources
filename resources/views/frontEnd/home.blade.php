@@ -97,8 +97,12 @@ Home
 <div class="page-register layout-full page-dark">
     <div class="page" data-animsition-in="fade-in" data-animsition-out="fade-out">
         <div class="container">
-            <div class="col-md-6">
+            <div class="col-md-6">                
                 <div class="page-content home_slide_content">
+                <div class="alert alert-danger alert-dismissable custom-success-box" style="margin: 15px;">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">!</a>
+                    <strong>Service providers marked with verification icon <img src="images/blue.png" data-toggle="popover" data-placement="top" data-content="This account is verified" style="width:20px; height:20px;" data-original-title="" title="" aria-describedby="popover732231"> have updated their information. Please call before attend any service.</strong>
+                </div>                    
                     <h1 class="text-white">{{ $home->banner_text1 }}</h1>
                     {{-- @php
                         $banner_text2 = $home->banner_text2 ? explode(" ",$home->banner_text2) : [];
