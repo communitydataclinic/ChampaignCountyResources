@@ -210,7 +210,7 @@ use Carbon\Carbon;
                         @if(count($services) != 0)
                             @foreach($services as $service)
                                 @if($service->service_name != null)
-                                    <div class="card">
+                                    <div class="card" id="{{$service -> service_recordid}}">
                                         <div class="card-block">
                                             <?php
                                             $rest = str_replace(array('"', '[', ']', '.000000Z'), '', Error::where('error_service', '=', $service->service_recordid)->pluck('created_at'));
@@ -277,8 +277,9 @@ use Carbon\Carbon;
                                                 @endif
                                                 <p style="float: right;">{{ isset($service->miles)  ? floatval(number_format($service->miles,2)) .' miles'  : '' }}</p>
                                             </h4>
-                                            <div id="fav-unsave">
-                                                <a href="{{route('services.unsave', $service->service_recordid)}}" style="color: #ff0000; font-size:18px"><i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="" data-original-title="Unsave"  style="color: #ff0000; font-size:18px; padding-right:5px"></i> Unsave</a>
+                                            <div id="fav-save{{$service->service_recordid}}" onclick="removeService('{{$service-> service_recordid}}')" style="float:right;">
+                                                <i id='star{{$service-> service_recordid}}' class="fa fa-star" data-toggle="tooltip" data-placement="top" title="" data-original-title="Unsave"  style="color: #ff0000; font-size:18px; padding-right:5px; display: inline-block;"></i>
+                                                <div id="savebutton{{$service-> service_recordid}}" style="color: #ff0000; display: inline-block;" >Unsave</div>
                                             </div>
                                             <h4 class="org_title"><!--span class="subtitle"><b>Service:</b></span-->
                                                 <a class="panel-link" href="/services/{{$service->service_recordid}}">{{$service->service_name}}</a>
@@ -329,8 +330,13 @@ use Carbon\Carbon;
                                     </div>
                                 @endif
                             @endforeach
+                            <div id="no-services" class="alert dark alert-warning ml-15" role="alert" style="background-color: lightblue; border-color: lightblue; display: none;">
+                            <span style="color: #ffffff;">
+                                <b>No saved services available to display.</b>
+                            </span>
+                            </div>
                         @else
-                            <div class="alert dark alert-warning ml-15" role="alert" style="background-color: lightblue; border-color: lightblue;">
+                            <div id="no-services" class="alert dark alert-warning ml-15" role="alert" style="background-color: lightblue; border-color: lightblue;">
                             <span style="color: #ffffff;">
                                 <b>No saved services available to display.</b>
                             </span>
@@ -367,8 +373,9 @@ use Carbon\Carbon;
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-
+        let numServices = '{{count($services)}}';
         $(document).ready(function(){
 
             $("[data-toggle='popover']").popover();
@@ -519,6 +526,27 @@ use Carbon\Carbon;
             });
         });
 
+        function removeService(serviceId) {
+
+            numServices--;
+            console.log(numServices);
+            console.log("called");
+            console.log(serviceId);
+            $(`#star${serviceId}`).attr('title', 'Save')
+            .tooltip('_fixTitle')
+            .tooltip('show');
+            document.getElementById(`fav-save${serviceId}`).onclick = function() {removeService(`${serviceId}`)}
+            document.getElementById(serviceId).style.display = "none";
+            if (numServices <= 0) {
+                document.getElementById("no-services").style.display = "block";
+            }
+
+            axios({
+                method: 'get',
+                url: `/services/${serviceId}/unsave`
+            });
+
+        }
     </script>
 @endsection
 

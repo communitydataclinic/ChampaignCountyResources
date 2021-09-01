@@ -61,7 +61,7 @@ class NotifyOrganizations extends Command
                 
                 $diff = $error -> created_at -> diffInWeekDays($now);
 
-                if (count($org_users) > 0 && ($error->error_email_sent !== null && $error->error_email_sent != TRUE) && $diff > 3) {
+                if (count($org_users) > 0 && ($error->error_email_sent !== null && $error->error_email_sent != TRUE) && $diff > 3 && $error->error_resolved != True) {
                     try { 
                         $layout = Layout::find(1);
 

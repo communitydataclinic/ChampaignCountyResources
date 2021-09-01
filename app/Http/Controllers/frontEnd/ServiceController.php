@@ -40,6 +40,7 @@ use App\Model\csv;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
 use PDF;
 use Auth;
 use Debugbar;
@@ -500,7 +501,9 @@ class ServiceController extends Controller
                        
             if ($service) {
                 $service->addFavorite(session('_token'));
-                return back();
+                Log::info("test");
+                return response()-> json('ok');
+                // return back();
                 // return redirect()->route('services.show', $id);
                 // return redirect('/favorites');
 
@@ -509,6 +512,7 @@ class ServiceController extends Controller
         catch (\Throwable $th) {
             Session::flash('message', $th->getMessage());
             Session::flash('status', 'error');
+            Log::info($th);
             return redirect('services');
         }
     }
@@ -517,10 +521,12 @@ class ServiceController extends Controller
     {
         try {
             $service = Service::where('service_recordid', '=', $id)->first();
-                       
+            
             if ($service) {
+                Log::info($id);
                 $service->removeFavorite(session('_token'));
-                return back();
+                return response() -> json('ok');
+                // return back();
                 // return redirect()->route('services.show', $id);
                 // return redirect('/favorites');
             }

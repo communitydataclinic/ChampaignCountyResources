@@ -114,7 +114,7 @@ class ErrorReportController extends Controller
             $sendgrid = new SendGrid(getenv('SENDGRID_API_KEY'));
             
             $org_users = null;
-            if (count($org) > 0) {
+            if ($org != null) {
                 $org_users = User::where('user_organization', $org -> organization_recordid) -> get();
             }
 

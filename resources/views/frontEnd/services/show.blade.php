@@ -203,15 +203,17 @@ use Illuminate\Support\Facades\Log;
                                         <img src="/images/away.png" style="width:20px; height:20px;">
                                     @endif
                                 </h4>
-                                @if($isFavorite)
-                                <div id="fav-unsave">
-                                    <a href="{{route('services.unsave', $service->service_recordid)}}" style="color: #ff0000; font-size:18px"><i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="" data-original-title="Unsave"  style="color: #ff0000; font-size:18px; padding-right:5px"></i> Unsave</a>
+                                @if($service -> isFavorited(session('_token')))
+                                <div id="fav-save{{$service->service_recordid}}" onclick="removeService('{{$service-> service_recordid}}')" style="float:right;">
+                                    <i id='star{{$service-> service_recordid}}' class="fa fa-star" data-toggle="tooltip" data-placement="top" title="" data-original-title="Unsave"  style="color: #ff0000; font-size:18px; padding-right:5px; display: inline-block;"></i>
+                                    <div id="savebutton{{$service-> service_recordid}}" style="color: #ff0000; display: inline-block;" >Unsave</div>
                                 </div>
                                 @else
-                                <div id="fav-save">
-                                    <a href="{{route('services.save', $service->service_recordid)}}" style="color: #3949ab; font-size:18px"><i class="fa fa-star-o" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save"  style="color: #3949ab; font-size:18px; padding-right:5px"></i>Save</a>
+                                <div id="fav-save{{$service->service_recordid}}" onclick="saveService('{{$service-> service_recordid}}')" style="float:right;">
+                                    <i id='star{{$service-> service_recordid}}' class="fa fa-star-o" data-toggle="tooltip" data-placement="top" title="" data-original-title="Save"  style="color: #3949ab; font-size:18px; padding-right:5px; display: inline-block;"></i>
+                                    <div id="savebutton{{$service-> service_recordid}}" style="color: #3949ab; display: inline-block;" >Save</div>
                                 </div>
-                                @endif
+                                @endif 
                               
                                 @if(isset($service->service_alternate_name))
                                     <h4>
@@ -786,7 +788,9 @@ use Illuminate\Support\Facades\Log;
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        
         $(document).ready(function(){
             // navigator.geolocation.getCurrentPosition(showPosition)
             //$('select#suggest_organization').val([]).change();
@@ -904,6 +908,43 @@ use Illuminate\Support\Facades\Log;
             $('#showHolidays').show();
             $(this).hide()
         })
+
+        function saveService(serviceId) {
+            console.log(`/services/${serviceId}/save`);
+            $(`#star${serviceId}`).attr('title', 'Unsave')
+            .tooltip('_fixTitle')
+            .tooltip('show');
+            document.getElementById(`fav-save${serviceId}`).onclick = function() {removeService(`${serviceId}`)};
+            document.getElementById(`savebutton${serviceId}`).innerHTML = "Unsave";
+            document.getElementById(`savebutton${serviceId}`).style= "color: #ff0000; display: inline-block"
+            document.getElementById(`star${serviceId}`).style="color: #ff0000; display: inline-block;"
+            document.getElementById(`star${serviceId}`).className = "fa fa-star"
+
+            axios({
+                method: 'get',
+                url: `/services/${serviceId}/save`
+            });
+        }
+
+        function removeService(serviceId) {
+            console.log("called");
+            console.log(serviceId);
+            $(`#star${serviceId}`).attr('title', 'Save')
+            .tooltip('_fixTitle')
+            .tooltip('show');
+            document.getElementById(`fav-save${serviceId}`).onclick = function() {saveService(`${serviceId}`)}
+            document.getElementById(`savebutton${serviceId}`).innerHTML = "Save"
+            document.getElementById(`savebutton${serviceId}`).style="color: #3949ab; display:inline-block;"
+
+            document.getElementById(`star${serviceId}`).className="fa fa-star-o";
+            document.getElementById(`star${serviceId}`).style = "color: #3949ab; font-size:18px; padding-right:5px; display:inline-block;";
+
+            axios({
+                method: 'get',
+                url: `/services/${serviceId}/unsave`
+            });
+
+        }
 
     </script>
 @endsection
