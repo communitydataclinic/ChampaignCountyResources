@@ -7,6 +7,10 @@ use App\Model\Event;
 Home
 @stop
 <style>
+    .dropdown-menu {
+        width: max-content !important;
+        text-align: left !important;
+    }
     .navbar-container.container-fluid {
         display: none !important;
     }
@@ -118,9 +122,9 @@ Home
                     <h3 class="text-white">{!! $home->banner_text2 !!}</h3>
                     <form method="post" role="form" autocomplete="off" class="home_serach_form" action="/search">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <div class="form-group text-left form-material" data-plugin="formMaterial">
+                        <div class="form-group text-left form-material" id="scrollable-dropdown-menu"data-plugin="formMaterial">
                             <img src="/frontend/assets/images/search.png" alt="" title="" class="form_icon_img">
-                            <input type="text" class="form-control" id="inputName" name="find" placeholder="Search for service">
+                            <input type="text" class="form-control" id="inputName" name="find" placeholder="Search for service"> 
                         </div>
                         <div class="form-group text-left form-material" data-plugin="formMaterial">
                             <div class="form-group">
@@ -669,13 +673,24 @@ Home
 </div>
 </div> --}}
 
-
+<style>
+        #scrollable-dropdown-menu .tt-dropdown-menu {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+</style>
 <script src="{{asset('js/treeview.js')}}"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js">
+</script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
+
+<script type="text/javascript"> 
+    const source = document.getElementById('inputName');
+
     $(document).ready(function(){
     $('.grand_taxonomy').on('click', function(e){
         var childs = $('.child_node', $(this).parent().parent());
@@ -703,23 +718,22 @@ Home
         $('#selected_taxonomies').val(selected_taxonomy_ids);
         $("#filter").submit();
     });
-    // $('.card-link.taxonomy-link').on('click', function(e){
-    //     console.log($(this).attr('at'));
-    //     var id = $(this).attr('at').replace('/', 'AAA').replace('(', 'BBB').replace(')', 'CCC');
-    //     console.log(id);
 
-    //     $("#category_" +  id).prop( "checked", true );
-    //     $("#filter").submit();
-    // });
-    // $('.child-link').on('click', function(e){
-    //     var id = $(this).attr('at');
-    //     $('#category_'+id).prop('checked', true);
-    //     $("#filter").submit();
-    // });
-    // $('.branch').each(function(){
-    //     if($('ul li', $(this)).length == 0)
-    //         $(this).hide();
-    // });
+    var route = "{{ url('autocomplete-search') }}";
+    $('.typeahead.input-sm').siblings('input.tt-hint').addClass('hint-small');
+    $('.typeahead.input-lg').siblings('input.tt-hint').addClass('hint-large');
+
+    $('.typeahead.input-sm').siblings('input.tt-hint').addClass('hint-small');
+    $('.typeahead.input-lg').siblings('input.tt-hint').addClass('hint-large');
+    $('#inputName').typeahead({
+        source: function (query, process) {
+            return $.get(route, {
+                 query: query
+            }, function (data) {
+                return process(data);
+            });
+        }
+    }); 
 });
 </script>
 @endsection

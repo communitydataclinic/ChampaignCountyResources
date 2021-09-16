@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AutocompleteController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -84,6 +84,7 @@ Route::group(['middleware' => ['web', 'OrganizationAdmin']], function () {
         'uses' => 'frontEnd\ExploreController@filter_event',
     ]);
 
+    Route::get('/autocomplete-search', [AutocompleteController::class, 'autocompleteSearch']);
     // organization route
     Route::resource('/organizations', 'frontEnd\OrganizationController');
     Route::post('/organization_tag/{id}', 'frontEnd\OrganizationController@organization_tag')->name('organization_tag');
