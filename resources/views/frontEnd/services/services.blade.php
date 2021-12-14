@@ -6,6 +6,7 @@ use App\Model\Suggest;
 use App\Model\Error;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log; 
+
 ?>
 @extends('layouts.app')
 @section('title')

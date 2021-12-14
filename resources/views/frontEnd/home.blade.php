@@ -132,7 +132,7 @@ Home
                                     <div class="col-md-9 pl-0">
                                         <img src="/frontend/assets/images/location.png" alt="" title="" class="form_icon_img">
                                         {{-- <input type="text" class="form-control pr-50" id="location1" name="search_address" placeholder="Search Location..."> --}}
-                                        <!--a href="javascript:void(0)" class="input-search-btn" style="z-index: 100;" onclick="getLocation()" ><img src="/frontend/assets/examples/images/location.png" style="width: 20px;margin: 22px 0;"></a-->
+                                        <a href="javascript:void(0)" class="input-search-btn" style="z-index: 100;" onclick=getLocation() ><img src="/frontend/assets/examples/images/location.png" style="width: 20px;margin: 22px 0;"></a>
                                         <input type="text" class="form-control pr-50" id="location1" name="search_address" placeholder="Search Location...">
                                     </div>
                                     <div class="col-md-3 p-0">
@@ -687,8 +687,53 @@ Home
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js">
 </script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    var api_key = '{{ env('GEOCODE_GOOGLE_APIKEY') }}';
+    function getLocation() {
+        navigator.geolocation.getCurrentPosition(successCallback,errorCallback,options)
+    }
+    
+    function displayLocation(latitude,longitude){
+        let url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&sensor=true&key=${api_key}`;
+        $.get(url).done((data) => {
+            document.getElementById("location1").value = data.results[0].formatted_address;
+        });
+
+    };
+
+    function successCallback(position){
+    var x = position.coords.latitude;
+    var y = position.coords.longitude;
+    displayLocation(x,y);
+    };
+
+    var errorCallback = function(error){
+    var errorMessage = 'Unknown error';
+    switch(error.code) {
+        case 1:
+        errorMessage = 'Permission denied';
+        break;
+        case 2:
+        errorMessage = 'Position unavailable';
+        break;
+        case 3:
+        errorMessage = 'Timeout';
+        break;
+    }
+    document.write(errorMessage);
+    };
+
+    var options = {
+        enableHighAccuracy: true,
+        timeout: 1000,
+        maximumAge: 0
+    };
+
+
+</script>
 
 <script type="text/javascript"> 
+
     const source = document.getElementById('inputName');
 
     $(document).ready(function(){
@@ -726,6 +771,8 @@ Home
     $('.typeahead.input-sm').siblings('input.tt-hint').addClass('hint-small');
     $('.typeahead.input-lg').siblings('input.tt-hint').addClass('hint-large');
     $('#inputName').typeahead({
+        items: 5,
+        minLength: 2,
         source: function (query, process) {
             return $.get(route, {
                  query: query

@@ -16,15 +16,14 @@ class AutocompleteController extends Controller
           $filterList = [];
 
           for ($i = 0; $i < sizeof($filterResult); $i++) {
-              LOG::info($filterResult[$i]-> service_name);
+              // LOG::info($filterResult[$i]-> service_name);
               $filterItem = $filterResult[$i]->service_name;
               if (!in_array($filterItem, $filterList)) {
                 array_push($filterList, $filterItem);
               }
           }
 
-          $filterList = array_slice($filterList, 0, 5);
-          Log::info($filterList);
+          // Log::info($filterList);
           return response()->json($filterList);
     } 
 }
